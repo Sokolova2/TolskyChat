@@ -14,6 +14,8 @@ class DeviseCreateUsers < ActiveRecord::Migration[8.1]
       t.string :birth_date
       t.string :avatar
       t.string :description
+      t.string :uid
+      t.string :provider
 
       ## Recoverable
       t.string   :reset_password_token
@@ -26,7 +28,7 @@ class DeviseCreateUsers < ActiveRecord::Migration[8.1]
       t.string   :confirmation_token
       t.datetime :confirmed_at
       t.datetime :confirmation_sent_at
-      t.string   :unconfirmed_email # Only if using reconfirmable
+      t.string   :unconfirmed_email
 
       t.timestamps null: false
     end

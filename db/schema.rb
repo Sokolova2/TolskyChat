@@ -28,9 +28,11 @@ ActiveRecord::Schema[8.1].define(version: 2025_12_03_115704) do
     t.string "last_name"
     t.string "login"
     t.string "phone_number"
+    t.string "provider"
     t.datetime "remember_created_at"
     t.datetime "reset_password_sent_at"
     t.string "reset_password_token"
+    t.string "uid"
     t.string "unconfirmed_email"
     t.datetime "updated_at", null: false
     t.index ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true
