@@ -1,3 +1,5 @@
 %h1 Hello
 = link_to "Login", new_user_session_path
 = button_to "Sign out", destroy_user_session_path, method: :delete
+
+= render 'modal/authentication_model'
