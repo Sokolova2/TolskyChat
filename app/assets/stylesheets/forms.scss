@@ -1,0 +1,21 @@
+.container-form{
+  background-color: rgba(131, 131, 131, 0.9);
+  backdrop-filter: blur(4px);
+}
+
+.space-oauth{
+  display: flex;
+  -webkit-box-align: center;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+  width: 100%;
+}
+
+.space{
+  -webkit-box-flex: 1;
+  flex-grow: 1;
+  min-width: 1px;
+  height: 1px;
+  background-color: rgba(89, 86, 86, 0.8);
+}
