@@ -1,24 +1,18 @@
-- if controller_name != 'sessions'
-  = link_to "Log in", new_session_path(resource_name)
-  %br/
-- if devise_mapping.registerable? && controller_name != 'registrations'
-  = link_to "Sign up", new_registration_path(resource_name)
-  %br/
 - if devise_mapping.recoverable? && controller_name != 'passwords' && controller_name != 'registrations'
-  = link_to "Forgot your password?", new_password_path(resource_name)
-  %br/
-- if devise_mapping.confirmable? && controller_name != 'confirmations'
-  = link_to "Didn't receive confirmation instructions?", new_confirmation_path(resource_name)
-  %br/
-- if devise_mapping.lockable? && resource_class.unlock_strategy_enabled?(:email) && controller_name != 'unlocks'
-  = link_to "Didn't receive unlock instructions?", new_unlock_path(resource_name)
+  .text-center
+    = link_to "Forgot your password?", new_password_path(resource_name)
   %br/
 
-- if devise_mapping.omniauthable?
+.space-oauth.mt-2
+  .space
+  %span or
+  .space
+
+- if devise_mapping.omniauthable? && controller_name != 'passwords'
   -resource_class.omniauth_providers.each do |provider|
-    .d-flex.justify-content-center
-      =form_tag omniauth_authorize_path(resource_name, provider), method: :post, class: 'mt-2 text-center', data: { turbo: false } do
-        %button.gsi-material-button{type: 'submit'}
+    .d-flex.justify-content-center.mb-2
+      =form_tag omniauth_authorize_path(resource_name, provider), method: :post, class: 'mt-2', data: { turbo: false } do
+        %button.btn.btn-outline-primary.gsi-material-button{type: 'submit'}
           .gsi-material-button-state
           .gsi-material-button-content-wrapper
             .gsi-material-button-icon
@@ -28,7 +22,23 @@
                 %path{:d => 'M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z', :fill => '#FBBC05'}
                 %path{:d => 'M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z', :fill => '#34A853'}
                 %path{:d => 'M0 0h48v48H0z', :fill => 'none'}
-            %span.gsi-material-button-contents Sign(up/in) with Google
-            %span{:style => 'display: none;'} Sign(up/in) with Google
-    %br
+            %span.gsi-material-button-contents.text-dark Sign in with Google
+            %span{:style => 'display: none;'} Sign in with Google
+
+- if controller_name != 'sessions'
+  .d-flex.justify-content-center.gap-1
+    %p Already have an account?
+    = link_to "Log in", new_session_path(resource_name)
+  %br/
+- if devise_mapping.registerable? && controller_name != 'registrations' && controller_name != 'passwords'
+  .d-flex.justify-content-center.gap-1
+    %p Don`t have an account?
+    = link_to "Sign up", new_registration_path(resource_name)
+  %br/
+- if devise_mapping.confirmable? && controller_name != 'confirmations' && controller_name != 'passwords'
+  .text-center
+    = link_to "Didn't receive confirmation instructions?", new_confirmation_path(resource_name)
+  %br/
+
+
 
