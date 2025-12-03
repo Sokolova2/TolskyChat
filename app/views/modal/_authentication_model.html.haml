@@ -1,0 +1,19 @@
+%button.btn.btn-primary{"data-bs-target" => "#exampleModal", "data-bs-toggle" => "modal", :type => "button"}
+  Log in
+#exampleModal.modal.fade.mt-5{"aria-hidden" => "true", "aria-labelledby" => "exampleModalLabel", :tabindex => "-1"}
+  .modal-dialog
+    .modal-content
+      .modal-body
+        %ul#myTab.nav.nav-tabs.d-flex.justify-content-center{:role => "tablist"}
+          %li.nav-item{:role => "presentation"}
+            %button#sign-in-tab.nav-link.active{"aria-controls" => "sign-in-tab-pane", "aria-selected" => "true", "data-bs-target" => "#sign-in-tab-pane", "data-bs-toggle" => "tab", :role => "tab", :type => "button"} Log in
+          %li.nav-item{:role => "presentation"}
+            %button#sign-up-tab.nav-link{"aria-controls" => "sign-up-tab-pane", "aria-selected" => "false", "data-bs-target" => "#sign-up-tab-pane", "data-bs-toggle" => "tab", :role => "tab", :type => "button"} Sign up
+        #myTabContent.tab-content
+          #sign-in-tab-pane.tab-pane.fade.show.active{"aria-labelledby" => "sign-in-tab", :role => "tabpanel", :tabindex => "0"}
+            %iframe{ src: new_user_session_path, width: "100%", height: "600", style: "border:0"}
+          #sign-up-tab-pane.tab-pane.fade{"aria-labelledby" => "sign-up-tab", :role => "tabpanel", :tabindex => "0"}
+            %iframe{ src: new_user_registration_path, width: "100%", height: "600", style: "border:0" }
+
+
+
