@@ -1,5 +1,15 @@
 @use 'omniauth_google';
 @use 'forms';
+@use 'home';
+@use 'image';
+@use 'button';
 
 @import 'bootstrap/scss/bootstrap';
 @import 'bootstrap-icons/font/bootstrap-icons';
+
+@import url('https://fonts.googleapis.com/css2?family=Exo+2:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet');
+
+.body {
+  font-family: "Exo 2", sans-serif;
+}
+
