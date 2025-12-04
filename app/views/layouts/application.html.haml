@@ -15,5 +15,6 @@
     %link{:href => "/icon.png", :rel => "apple-touch-icon"}/
     = stylesheet_link_tag :application, "data-turbo-track": Rails.env.production? ? "reload" : ""
     = javascript_importmap_tags
-  %body
+    = turbo_include_tags
+  %body.body
     = yield
