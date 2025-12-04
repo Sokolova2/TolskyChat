@@ -1,8 +1,11 @@
 %p.notice= notice
 %p.alert= alert
+
+.d-flex.justify-content-center.align-items-center
+  = image_tag 'Tolsky.png', :size => '50'
+  %p.fs-2.fw-bolder Tolsky
 .d-flex.justify-content-center.align-items-center
   .d-block
-    %h2.text-center.mb-4.h6 Log in
     = form_for(resource, as: resource_name, url: session_path(resource_name)) do |f|
       .mb-3.mt-3
         .field
@@ -12,5 +15,5 @@
           = f.password_field :password, placeholder: 'Password', autocomplete: "current-password", class: 'form-control rounded-5'
       .mb-3
         .actions
-          = f.submit "Log in", class: 'btn btn-primary w-100 mt-3 text-light rounded-5 btn-authentication'
+          = f.submit "Log in", class: 'button-authentication w-100 mt-3 text-light rounded-5 btn-authentication'
     = render "devise/shared/links"

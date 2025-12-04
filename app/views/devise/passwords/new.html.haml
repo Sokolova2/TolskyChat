@@ -1,6 +1,9 @@
 %p.notice= notice
 %p.alert= alert
 .d-flex.justify-content-center.align-items-center
+  = image_tag 'Tolsky.png', :size => '50'
+  %p.fs-2.fw-bolder Tolsky
+.d-flex.justify-content-center.align-items-center
   .d-block
     %h2.text-center.mb-4.h6 Forgot your password?
     = form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :post }) do |f|
@@ -10,5 +13,5 @@
           = f.email_field :email, autofocus: true, autocomplete: "email",  placeholder: 'Email: email@example.com', class: 'form-control rounded-5'
       .mb-2
         .actions
-          = f.submit "Send me", class: 'btn btn-primary w-100 mt-3 text-light rounded-5'
+          = f.submit "Send me", class: 'button-authentication w-100 mt-3 text-light rounded-5'
     = render "devise/shared/links"
