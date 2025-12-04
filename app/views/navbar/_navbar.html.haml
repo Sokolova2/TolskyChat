@@ -1,0 +1,57 @@
+.sidebar
+  = image_tag 'Tolsky.png', size: 60, class: 'mt-4'
+
+  .menu-item
+    = link_to conversations_path, class: 'menu-icon' do
+      %i.bi.bi-house
+    %p.menu-text Home
+
+  .menu-item
+    = link_to "#", class: 'menu-icon' do
+      %i.bi.bi-chat
+    %p.menu-text Messages
+
+  .menu-item
+    %button.menu-icon{"data-bs-target" => "#staticBackdrop", "data-bs-toggle" => "modal", :type => "button"}
+      %i.bi.bi-person-lines-fill
+    %p.menu-text Contact
+
+  .menu-item
+    %button.menu-icon{"data-bs-toggle" => "modal", "data-bs-target" => "#exampleModal", type: "button"}
+      %i.bi.bi-search
+    %p.menu-text Users
+
+  .menu-item.mb-5
+    = link_to "#", class: 'menu-icon' do
+      %i.bi.bi-archive
+    %p.menu-text Archive
+
+  .menu-item.mt-4
+    = link_to "#", class: 'menu-icon' do
+      %i.bi.bi-plus
+
+  .dropdown.dropup
+    %button.btn.p-0.border-0{"data-bs-toggle" => "dropdown", "aria-expanded" => "false", :type => "button"}
+      = image_tag current_user.avatar.url(:thumb), class: "avatar"
+
+    %ul.ms-5.p-3.dropdown-menu.dropdown-menu-end
+      .d-block.ms-2
+        .mb-3
+          -if user_signed_in?
+            .d-flex.align-items-center.gap-2.mb-2
+              = image_tag current_user.avatar.url, class: 'rounded-circle avatar'
+              %p= current_user.login
+      %li
+        %a.dropdown-item{ href: "#" } Profile
+      %li
+        %a.dropdown-item{ href: "#" } Preferences
+      %li
+        %hr.dropdown-divider
+      %li
+        = button_to "Sign out", destroy_user_session_path, method: :delete, class: "dropdown-item text-danger"
+
+= render 'navbar/modal_users'
+= render 'navbar/modal_contact'
+
+
+

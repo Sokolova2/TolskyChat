@@ -1,1 +1,5 @@
-%h1 Hello
+= render 'navbar/navbar'
+.d-flex.justify-content-center.search-block.p-2
+  %form.d-flex{:role => "search"}
+    %input.form-control.me-2.w-100{"aria-label" => "Search", :placeholder => "Search", :type => "search"}/
+    %button.btn.btn-outline-success{:type => "submit"} Search

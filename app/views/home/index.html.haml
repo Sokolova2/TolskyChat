@@ -1,11 +1,7 @@
 .home-page
   .d-flex.justify-content-between.align-items-center.me-4.ms-4
     %p.h3.mt-4.text-light.text-with-shadow Tolsky Chat
-    - if user_signed_in?
-      = image_tag current_user.avatar.url(:thumb), size: 50, class: 'mt-4'
-      = button_to 'Sign out', destroy_user_session_path, method: :delete, class: 'mt-4'
-    - else
-      = button_to 'Log in', new_user_session_path, method: :get, class: "btn btn-light mt-4"
+    = button_to 'Log in', new_user_session_path, method: :get, class: 'btn btn-light mt-4'
 
   .hero-section
     .d-flex.flex-column.align-items-center.justify-content-center.flex-md-row
