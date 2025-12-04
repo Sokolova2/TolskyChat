@@ -1,3 +1,5 @@
 class ConversationsController < ApplicationController
-  def index; end
+  def index
+    @contacts = Contact.all
+  end
 end
