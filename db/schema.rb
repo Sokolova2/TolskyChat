@@ -18,9 +18,11 @@ ActiveRecord::Schema[8.1].define(version: 2025_12_04_161653) do
     t.boolean "approved", default: false
     t.boolean "blocked", default: false
     t.datetime "created_at", null: false
+    t.bigint "receiver_id", null: false
+    t.bigint "sender_id", null: false
     t.datetime "updated_at", null: false
-    t.bigint "user_id", null: false
-    t.index ["user_id"], name: "index_contacts_on_user_id"
+    t.index ["receiver_id"], name: "index_contacts_on_receiver_id"
+    t.index ["sender_id"], name: "index_contacts_on_sender_id"
   end
 
   create_table "conversations", force: :cascade do |t|
@@ -58,5 +60,6 @@ ActiveRecord::Schema[8.1].define(version: 2025_12_04_161653) do
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
-  add_foreign_key "contacts", "users"
+  add_foreign_key "contacts", "users", column: "receiver_id"
+  add_foreign_key "contacts", "users", column: "sender_id"
 end
