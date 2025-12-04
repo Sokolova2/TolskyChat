@@ -11,7 +11,7 @@ class DeviseCreateUsers < ActiveRecord::Migration[8.1]
       t.string :last_name
       t.string :login
       t.string :phone_number
-      t.string :birth_date
+      t.date :birth_date
       t.string :avatar
       t.string :description
       t.string :uid
