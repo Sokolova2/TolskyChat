@@ -1,5 +1,6 @@
 class User < ApplicationRecord
-  has_many :contacts
+  has_many :sent_contacts, class_name: "Contact", foreign_key: "sender_id"
+  has_many :received_contacts, class_name: "Contact", foreign_key: "receiver_id"
 
   mount_uploader :avatar, AvatarUploader
 
@@ -13,8 +14,14 @@ class User < ApplicationRecord
         user.uid = auth.uid
         user.email = auth.info.email
         user.password = Devise.friendly_token[0, 20]
-        user.first_name = auth.info.email.split('@').first
+        user.login = auth.info.email.split('@').first
       end
+    end
+  end
+
+  class << self
+    def search(search)
+      SearchService.new(self).search(search)
     end
   end
 end
