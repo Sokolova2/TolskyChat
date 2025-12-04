@@ -79,3 +79,5 @@ end
 
 gem "devise"
 gem "dotenv"
+gem 'carrierwave', '~> 3.0'
+gem 'mini_magick'
