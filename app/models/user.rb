@@ -1,4 +1,6 @@
 class User < ApplicationRecord
+  has_many :contacts
+
   mount_uploader :avatar, AvatarUploader
 
   devise :database_authenticatable, :registerable,
