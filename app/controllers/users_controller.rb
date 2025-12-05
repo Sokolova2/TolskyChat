@@ -6,4 +6,9 @@ class UsersController < ApplicationController
   def show
     @user = User.find(params[:id])
   end
+
+  def update
+    current_user.update(deleted_at: Time.current)
+    redirect_to conversations_path
+  end
 end
