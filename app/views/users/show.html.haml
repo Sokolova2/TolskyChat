@@ -1,0 +1,12 @@
+= link_to :back, class: 'text-decoration-none text-dark' do
+  %i.bi.bi-box-arrow-left.fs-2
+= image_tag @user.avatar.url(:thumb), class: 'w-100'
+%p.fs-3.text-center= @user.login
+- if @user.first_name.present? && @user.last_name.present?
+  %p= @user.first_name
+  %p= @user.last_name
+- if @user.phone_number.present? && @user.birth_date.present?
+  %p= @user.phone_number
+  %p= @user.birth_date
+- if @user.description.present?
+  %p= @user.description

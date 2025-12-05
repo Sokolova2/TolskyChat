@@ -1,6 +1,7 @@
 #staticBackdrop.modal.fade{"aria-hidden" => "true", "aria-labelledby" => "staticBackdropLabel", "data-bs-backdrop" => "static", "data-bs-keyboard" => "false", :tabindex => "-1"}
   .modal-dialog
     .modal-content
-      %button.btn-close{"aria-label" => "Close", "data-bs-dismiss" => "modal", :type => "button"}
+      .d-flex.justify-content-end.m-2
+        %button.btn-close{"aria-label" => "Close", "data-bs-dismiss" => "modal", :type => "button"}
       .modal-body
         %iframe{ src: contacts_path, width: "100%", height: "600", style: "border:0" }
