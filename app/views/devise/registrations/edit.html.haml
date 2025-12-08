@@ -2,7 +2,10 @@
   %i.bi.bi-arrow-left
 %h2.text-center.mt-4
   Edit #{resource_name.to_s.humanize}
-= button_to 'Archive my account', user_path(current_user), method: :patch, class: 'button-authentication mt-3 text-light rounded-5 mb-3 text-center ms-5'
+- if current_user.deleted_at.present?
+  = button_to 'Unarchive my account', user_path(current_user), method: :patch, class: 'button-authentication mt-3 text-light rounded-5 mb-3 text-center ms-5'
+- else
+  = button_to 'Archive my account', user_path(current_user), method: :patch, class: 'button-authentication mt-3 text-light rounded-5 mb-3 text-center ms-5'
 .d-flex.justify-content-center
   .d-block
   = form_for(resource, as: resource_name, url: registration_path(resource_name), html: { method: :put }, multipart: true) do |f|
