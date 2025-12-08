@@ -1,4 +1,4 @@
-= link_to :back, class: 'text-decoration-none text-dark' do
+= link_to contacts_path, class: 'text-decoration-none text-dark' do
   %i.bi.bi-box-arrow-left.fs-2
 = image_tag @user.avatar.url(:thumb), class: 'w-100'
 %p.fs-3.text-center= @user.login
