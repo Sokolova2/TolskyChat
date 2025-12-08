@@ -1,6 +1,7 @@
 class User < ApplicationRecord
   has_many :sent_contacts, class_name: "Contact", foreign_key: "sender_id"
   has_many :received_contacts, class_name: "Contact", foreign_key: "receiver_id"
+  has_many :notifications
 
   mount_uploader :avatar, AvatarUploader
 
