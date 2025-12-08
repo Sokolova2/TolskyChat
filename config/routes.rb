@@ -10,4 +10,5 @@ Rails.application.routes.draw do
   resources :conversations
   resources :contacts
   resources :users
+  resources :notifications
 end
