@@ -2,7 +2,10 @@ class ContactsController < ApplicationController
   before_action :set_contact, only: %i[show update destroy]
 
   def index
-    @contacts = Contact.all
+    @contacts = Contact
+                  .where(sender_id: current_user.id, approved: true)
+                  .joins("JOIN users ON users.id = contacts.receiver_id")
+                  .where("users.deleted_at IS NULL")
   end
 
   def show; end
@@ -11,7 +14,7 @@ class ContactsController < ApplicationController
     @new_contact = Contact.create(sender_id: current_user.id, receiver_id: params[:receiver_id])
 
     if @new_contact.save
-      redirect_to contacts_path
+      redirect_to users_path
     else
       redirect_to users_path, alert: @new_contact.errors.full_messages
     end
