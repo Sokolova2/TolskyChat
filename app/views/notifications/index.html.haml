@@ -1,0 +1,4 @@
+- if @notifications.present?
+  - @notifications.each do |notification|
+    %p= notification.content
+    %p= notification.created_at.strftime("%d/%m/%Y %H:%M")
