@@ -7,17 +7,17 @@
     %p.menu-text Home
 
   .menu-item
-    = link_to "#", class: 'menu-icon' do
+    %button.menu-icon{"data-bs-toggle" => "modal", "data-bs-target" => "#messagesModal"}
       %i.bi.bi-chat
     %p.menu-text Messages
 
   .menu-item
-    %button.menu-icon{"data-bs-target" => "#staticBackdrop", "data-bs-toggle" => "modal", :type => "button"}
+    %button.menu-icon{"data-bs-toggle" => "modal", "data-bs-target" => "#contactModal"}
       %i.bi.bi-person-lines-fill
     %p.menu-text Contact
 
   .menu-item
-    %button.menu-icon{"data-bs-toggle" => "modal", "data-bs-target" => "#exampleModal", type: "button"}
+    %button.menu-icon{"data-bs-toggle" => "modal", "data-bs-target" => "#usersModal"}
       %i.bi.bi-search
     %p.menu-text Users
 
@@ -49,8 +49,9 @@
       %li
         = button_to "Sign out", destroy_user_session_path, method: :delete, class: "dropdown-item text-danger"
 
-= render 'navbar/modal_users'
-= render 'navbar/modal_contact'
+= render 'navbar/modal_messages', modal_id: 'messagesModal'
+= render 'navbar/modal_users', modal_id: 'usersModal'
+= render 'navbar/modal_contact', modal_id: 'contactModal'
 
 
 
