@@ -14,6 +14,13 @@ module Users
     end
 
     protected
+    def after_sign_up_path_for(resource)
+      conversations_path
+    end
+
+    def after_update_path_for(resource)
+      conversations_path
+    end
 
     def configure_sign_up_params
       devise_parameter_sanitizer.permit(:sign_up, keys: %i[first_name last_name login phone_number birth_date avatar description])
