@@ -14,7 +14,12 @@ class ContactsController < ApplicationController
     @new_contact = Contact.create(sender_id: current_user.id, receiver_id: params[:receiver_id])
 
     if @new_contact.save
-      # Notification.create(user_id: receiver_id, )
+      Notification.create(
+        sender_id: current_user.id,
+        receiver_id: @new_contact.receiver_id,
+        contact_id: @new_contact.id,
+        content: 'You have received a friend request'
+      )
       redirect_to users_path
     else
       redirect_to users_path, alert: @new_contact.errors.full_messages
