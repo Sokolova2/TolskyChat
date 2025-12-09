@@ -2,6 +2,7 @@
   = f.text_field :search, placeholder: 'Searching...', data: {action: 'input->search#search', search_target: 'input'}, class: 'form-control rounded-5 p-2 text-center search'
   = f.submit 'Search', class: 'btn btn-outline-none', hidden: true
 
+%div{'data-controller' => 'reload'}
 .mt-4
   -@users.each do |user|
     - unless current_user == user || user.deleted_at.present?

@@ -7,9 +7,17 @@
     %p.menu-text Home
 
   .menu-item
-    %button.menu-icon{"data-bs-toggle" => "modal", "data-bs-target" => "#messagesModal"}
-      %i.bi.bi-chat
-    %p.menu-text Messages
+    - if user_signed_in?
+      - unread_messages = current_user.receiver_notifications.where(read: false).count
+      - if unread_messages == 0
+        %button.menu-icon.ms-2{"data-bs-toggle" => "modal", "data-bs-target" => "#messagesModal"}
+          %i.bi.bi-chat
+        %p.menu-text Notifications
+      - if unread_messages.positive?
+        %button.menu-icon.bg-light.ms-2{"data-bs-toggle" => "modal", "data-bs-target" => "#messagesModal"}
+          %i.bi.bi-chat.text-dark
+          %span.fs-6.mt-auto.text-dark= unread_messages
+        %p.menu-text Notifications
 
   .menu-item
     %button.menu-icon{"data-bs-toggle" => "modal", "data-bs-target" => "#contactModal"}
