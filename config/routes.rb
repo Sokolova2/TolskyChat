@@ -1,11 +1,13 @@
+# frozen_string_literal: true
+
 Rails.application.routes.draw do
   devise_for :users, controllers: {
-    omniauth_callbacks: "users/omniauth_callbacks",
-    registrations: "users/registrations",
-    sessions: "users/sessions"
+    omniauth_callbacks: 'users/omniauth_callbacks',
+    registrations: 'users/registrations',
+    sessions: 'users/sessions'
   }
 
-  root to: "home#index"
+  root to: 'home#index'
 
   resources :conversations
   resources :contacts

@@ -1,11 +1,13 @@
+# frozen_string_literal: true
+
 class ContactsController < ApplicationController
   before_action :set_contact, only: %i[show update destroy]
 
   def index
     @contacts = Contact
-                  .where(sender_id: current_user.id, approved: true)
-                  .joins("JOIN users ON users.id = contacts.receiver_id")
-                  .where("users.deleted_at IS NULL")
+                .where(sender_id: current_user.id, approved: true)
+                .joins('JOIN users ON users.id = contacts.receiver_id')
+                .where(users: { deleted_at: nil })
   end
 
   def show; end
@@ -14,12 +16,7 @@ class ContactsController < ApplicationController
     @new_contact = Contact.create(sender_id: current_user.id, receiver_id: params[:receiver_id])
 
     if @new_contact.save
-      Notification.create(
-        sender_id: current_user.id,
-        receiver_id: @new_contact.receiver_id,
-        contact_id: @new_contact.id,
-        content: 'You have received a friend request'
-      )
+      create_notification
       redirect_to users_path
     else
       redirect_to users_path, alert: @new_contact.errors.full_messages
@@ -43,10 +40,19 @@ class ContactsController < ApplicationController
   def set_contact
     @contact = Contact.find(params[:id])
 
-    if @contact.sender_id == current_user.id
-      @user = @contact.receiver
-    else
-      @user = @contact.sender
-    end
+    @user = if @contact.sender_id == current_user.id
+              @contact.receiver
+            else
+              @contact.sender
+            end
+  end
+
+  def create_notification
+    Notification.create(
+      sender_id: current_user.id,
+      receiver_id: @new_contact.receiver_id,
+      contact_id: @new_contact.id,
+      content: 'You have received a friend request'
+    )
   end
 end

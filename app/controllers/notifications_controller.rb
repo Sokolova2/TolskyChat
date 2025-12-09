@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class NotificationsController < ApplicationController
   before_action :set_notification, only: %i[update destroy reject]
   before_action :set_contact, only: %i[update destroy reject]
@@ -33,6 +35,7 @@ class NotificationsController < ApplicationController
 
     redirect_to notifications_path
   end
+
   def destroy
     @notification.destroy
     redirect_to notifications_path

@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 Devise.setup do |config|
-  # config.secret_key = '3484bdc8ae76ca2cb212dd279b60cf15e8da14deac06b5b2f11efbcce960f135ef0cfe583edae58cef3c88f1f713f8a3734fbf3c248297270c0efff407ed7900'
-
   config.mailer_sender = 'please-change-me-at-config-initializers-devise@example.com'
 
   require 'devise/orm/active_record'
@@ -11,21 +9,7 @@ Devise.setup do |config|
 
   config.strip_whitespace_keys = [:email]
 
-  # config.params_authenticatable = true
-
-  # config.http_authenticatable = false
-
-  # config.http_authenticatable_on_xhr = true
-
-  # config.http_authentication_realm = 'Application'
-
-  # config.paranoid = true
-
   config.skip_session_storage = [:http_auth]
-
-  # config.clean_up_csrf_token_on_authentication = true
-
-  # config.reload_routes = true
 
   config.stretches = Rails.env.test? ? 1 : 12
 

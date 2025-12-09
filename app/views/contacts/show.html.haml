@@ -12,6 +12,8 @@
   %p= @user.description
 
 - if @contact.blocked == false
-  = button_to 'Block', contact_path(@contact), method: :patch, params: { blocked: true }, class: "text-decoration-none text-dark"
+  = button_to 'Block', contact_path(@contact), method: :patch, params: { blocked: true }, 
+class: 'text-decoration-none text-dark'
 - else
-  = button_to 'Unlock', contact_path(@contact), method: :patch, params: { blocked: false }, class: "text-decoration-none text-dark"
+  = button_to 'Unlock', contact_path(@contact), method: :patch, params: { blocked: false }, 
+class: 'text-decoration-none text-dark'

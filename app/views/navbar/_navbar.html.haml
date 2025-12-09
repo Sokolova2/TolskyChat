@@ -9,38 +9,38 @@
   .menu-item
     - if user_signed_in?
       - unread_messages = current_user.receiver_notifications.where(read: false).count
-      - if unread_messages == 0
-        %button.menu-icon.ms-2{"data-bs-toggle" => "modal", "data-bs-target" => "#messagesModal"}
+      - if unread_messages.zero?
+        %button.menu-icon.ms-2{ 'data-bs-toggle' => 'modal', 'data-bs-target' => '#messagesModal' }
           %i.bi.bi-chat
         %p.menu-text Notifications
       - if unread_messages.positive?
-        %button.menu-icon.bg-light.ms-2{"data-bs-toggle" => "modal", "data-bs-target" => "#messagesModal"}
+        %button.menu-icon.bg-light.ms-2{ 'data-bs-toggle' => 'modal', 'data-bs-target' => '#messagesModal' }
           %i.bi.bi-chat.text-dark
           %span.fs-6.mt-auto.text-dark= unread_messages
         %p.menu-text Notifications
 
   .menu-item
-    %button.menu-icon{"data-bs-toggle" => "modal", "data-bs-target" => "#contactModal"}
+    %button.menu-icon{ 'data-bs-toggle' => 'modal', 'data-bs-target' => '#contactModal' }
       %i.bi.bi-person-lines-fill
     %p.menu-text Contact
 
   .menu-item
-    %button.menu-icon{"data-bs-toggle" => "modal", "data-bs-target" => "#usersModal"}
+    %button.menu-icon{ 'data-bs-toggle' => 'modal', 'data-bs-target' => '#usersModal' }
       %i.bi.bi-search
     %p.menu-text Users
 
   .menu-item.mb-5
-    = link_to "#", class: 'menu-icon' do
+    = link_to '#', class: 'menu-icon' do
       %i.bi.bi-archive
     %p.menu-text Archive
 
   .menu-item.mt-4
-    = link_to "#", class: 'menu-icon' do
+    = link_to '#', class: 'menu-icon' do
       %i.bi.bi-plus
 
   .dropdown.dropup
-    %button.btn.p-0.border-0{"data-bs-toggle" => "dropdown", "aria-expanded" => "false", :type => "button"}
-      = image_tag current_user.avatar.url(:thumb), class: "avatar"
+    %button.btn.p-0.border-0{ 'data-bs-toggle' => 'dropdown', 'aria-expanded' => 'false', :type => 'button' }
+      = image_tag current_user.avatar.url(:thumb), class: 'avatar'
 
     %ul.ms-5.p-3.dropdown-menu.dropdown-menu-end
       .d-block.ms-2
@@ -51,11 +51,11 @@
               %p= current_user.login
       = link_to 'Profile', edit_user_registration_path, class: 'text-decoration-none text-dark ms-3'
       %li
-        %a.dropdown-item{ href: "#" } Preferences
+        %a.dropdown-item{ href: '#' } Preferences
       %li
         %hr.dropdown-divider
       %li
-        = button_to "Sign out", destroy_user_session_path, method: :delete, class: "dropdown-item text-danger"
+        = button_to 'Sign out', destroy_user_session_path, method: :delete, class: 'dropdown-item text-danger'
 
 = render 'navbar/modal_messages', modal_id: 'messagesModal'
 = render 'navbar/modal_users', modal_id: 'usersModal'

@@ -6,7 +6,7 @@
         .m-3
           %p= notification.content
           %p= "From: #{notification.sender.login}"
-          %p= notification.created_at.strftime("%B %d, %Y %H:%M")
+          %p= notification.created_at.strftime('%B %d, %Y %H:%M')
         .d-flex.justify-content-end.mb-2.me-2
           = button_to notification_path(notification), method: :delete, class: 'btn btn-outline-danger' do
             %i.bi.bi-trash

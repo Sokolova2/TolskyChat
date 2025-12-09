@@ -15,8 +15,8 @@ ActiveRecord::Schema[8.1].define(version: 2025_12_09_130438) do
   enable_extension "pg_catalog.plpgsql"
 
   create_table "contacts", force: :cascade do |t|
-    t.boolean "approved", default: false
-    t.boolean "blocked", default: false
+    t.boolean "approved", default: false, null: false
+    t.boolean "blocked", default: false, null: false
     t.datetime "created_at", null: false
     t.bigint "receiver_id", null: false
     t.bigint "sender_id", null: false
@@ -29,7 +29,7 @@ ActiveRecord::Schema[8.1].define(version: 2025_12_09_130438) do
     t.datetime "created_at", null: false
     t.datetime "deleted_at"
     t.string "name"
-    t.boolean "public", default: true
+    t.boolean "public", default: true, null: false
     t.string "type"
     t.datetime "updated_at", null: false
   end

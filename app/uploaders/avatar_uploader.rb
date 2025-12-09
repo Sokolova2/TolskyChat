@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class AvatarUploader < CarrierWave::Uploader::Base
   include CarrierWave::MiniMagick
 
@@ -7,8 +9,8 @@ class AvatarUploader < CarrierWave::Uploader::Base
     "uploads/#{model.class.to_s.underscore}/#{mounted_as}/#{model.id}"
   end
 
-  def default_url(*args)
-    ActionController::Base.helpers.asset_path("avatar.png")
+  def default_url(*_args)
+    ActionController::Base.helpers.asset_path('avatar.png')
   end
 
   def size_range
@@ -20,6 +22,6 @@ class AvatarUploader < CarrierWave::Uploader::Base
   end
 
   def extension_allowlist
-    %w(jpg jpeg png)
+    %w[jpg jpeg png]
   end
 end

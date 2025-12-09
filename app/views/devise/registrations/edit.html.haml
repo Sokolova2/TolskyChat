@@ -3,13 +3,15 @@
 %h2.text-center.mt-4
   Edit #{resource_name.to_s.humanize}
 - if current_user.deleted_at.present?
-  = button_to 'Unarchive my account', user_path(current_user), method: :patch, class: 'button-authentication mt-3 text-light rounded-5 mb-3 text-center ms-5'
+  = button_to 'Unarchive my account', user_path(current_user), method: :patch, 
+class: 'button-authentication mt-3 text-light rounded-5 mb-3 text-center ms-5'
 - else
-  = button_to 'Archive my account', user_path(current_user), method: :patch, class: 'button-authentication mt-3 text-light rounded-5 mb-3 text-center ms-5'
+  = button_to 'Archive my account', user_path(current_user), method: :patch, 
+class: 'button-authentication mt-3 text-light rounded-5 mb-3 text-center ms-5'
 .d-flex.justify-content-center
   .d-block
   = form_for(resource, as: resource_name, url: registration_path(resource_name), html: { method: :put }, multipart: true) do |f|
-    = render "devise/shared/error_messages", resource: resource
+    = render 'devise/shared/error_messages', resource: resource
     .d-block
       .text-center
         = image_tag current_user.avatar.url(:thumb), size: 300
@@ -27,7 +29,7 @@
           = f.text_field :login, placeholder: 'Login', class: 'form-control rounded-5'
       .mb-3
         .field
-          = f.email_field :email, autofocus: true, autocomplete: "Email", placeholder: 'login', class: 'form-control rounded-5'
+          = f.email_field :email, autofocus: true, autocomplete: 'Email', placeholder: 'login', class: 'form-control rounded-5'
         - if devise_mapping.confirmable? && resource.pending_reconfirmation?
           %div
             Currently waiting confirmation for: #{resource.unconfirmed_email}
@@ -39,19 +41,22 @@
           = f.date_field :birth_date, class: 'form-control rounded-5'
       .mb-3
         .field
-          = f.textarea :description, size: "70x5", placeholder: 'About you', class: 'form-control rounded-5'
+          = f.textarea :description, size: '70x5', placeholder: 'About you', class: 'form-control rounded-5'
       .mb-3
         .field
-          = f.password_field :password, autocomplete: "new-password", placeholder: 'Password', class: 'form-control rounded-5'
+          = f.password_field :password, autocomplete: 'new-password', placeholder: 'Password', class: 'form-control rounded-5'
       .mb-3
         .field
-          = f.password_field :password_confirmation, autocomplete: "new-password", placeholder: 'Password confirmation', class: 'form-control rounded-5'
+          = f.password_field :password_confirmation, autocomplete: 'new-password', placeholder: 'Password confirmation', 
+class: 'form-control rounded-5'
       .mb-3
         .field
-          = f.password_field :current_password, autocomplete: "current-password", placeholder: 'Current password', class: 'form-control rounded-5'
+          = f.password_field :current_password, autocomplete: 'current-password', placeholder: 'Current password', 
+class: 'form-control rounded-5'
       .mb-3
         .actions
-          = f.submit "Update", class: 'button-authentication mt-3 text-light rounded-5 mb-3 w-100'
+          = f.submit 'Update', class: 'button-authentication mt-3 text-light rounded-5 mb-3 w-100'
       %h3 Cancel my account
-      = button_to "Cancel my account", registration_path(resource_name), data: { confirm: "Are you sure?", turbo_confirm: "Are you sure?" }, method: :delete, class: 'button-authentication mt-3 text-light rounded-5 mb-3 w-50 text-center'
+      = button_to 'Cancel my account', registration_path(resource_name), 
+data: { confirm: 'Are you sure?', turbo_confirm: 'Are you sure?' }, method: :delete, class: 'button-authentication mt-3 text-light rounded-5 mb-3 w-50 text-center'
   %br
