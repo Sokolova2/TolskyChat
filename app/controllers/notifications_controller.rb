@@ -4,7 +4,7 @@ class NotificationsController < ApplicationController
   before_action :set_notification, only: %i[update destroy reject]
   before_action :set_contact, only: %i[update destroy reject]
   def index
-    @notifications = Notification.where(receiver_id: current_user.id)
+    @notifications = Notification.where(receiver_id: current_user.id).update(read: true)
   end
 
   def update

@@ -5,7 +5,8 @@ class ContactsController < ApplicationController
 
   def index
     @contacts = Contact
-                .where(sender_id: current_user.id, approved: true)
+                .where(approved: true)
+                .where('sender_id = :id OR receiver_id = :id', id: current_user.id)
                 .joins('JOIN users ON users.id = contacts.receiver_id')
                 .where(users: { deleted_at: nil })
   end
