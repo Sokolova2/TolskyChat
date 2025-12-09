@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class User < ApplicationRecord
-  has_many :sent_contacts, # rubocop/disable: Layout/LineLength
+  has_many :sent_contacts,
            class_name: 'Contact',
            foreign_key: 'sender_id',
            inverse_of: :sender,
@@ -18,7 +18,7 @@ class User < ApplicationRecord
            foreign_key: 'sender_id',
            inverse_of: :sender,
            dependent: :destroy
-  
+
   has_many :receiver_notifications,
            class_name: 'Notification',
            foreign_key: 'receiver_id',
