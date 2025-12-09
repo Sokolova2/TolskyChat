@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2025_12_08_171635) do
+ActiveRecord::Schema[8.1].define(version: 2025_12_09_130438) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -35,12 +35,15 @@ ActiveRecord::Schema[8.1].define(version: 2025_12_08_171635) do
   end
 
   create_table "notifications", force: :cascade do |t|
+    t.integer "contact_id"
     t.string "content"
     t.datetime "created_at", null: false
-    t.string "read"
+    t.string "read", default: "f"
+    t.bigint "receiver_id", null: false
+    t.bigint "sender_id", null: false
     t.datetime "updated_at", null: false
-    t.bigint "user_id", null: false
-    t.index ["user_id"], name: "index_notifications_on_user_id"
+    t.index ["receiver_id"], name: "index_notifications_on_receiver_id"
+    t.index ["sender_id"], name: "index_notifications_on_sender_id"
   end
 
   create_table "users", force: :cascade do |t|
@@ -72,5 +75,7 @@ ActiveRecord::Schema[8.1].define(version: 2025_12_08_171635) do
 
   add_foreign_key "contacts", "users", column: "receiver_id"
   add_foreign_key "contacts", "users", column: "sender_id"
-  add_foreign_key "notifications", "users"
+  add_foreign_key "notifications", "contacts"
+  add_foreign_key "notifications", "users", column: "receiver_id"
+  add_foreign_key "notifications", "users", column: "sender_id"
 end
