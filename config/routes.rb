@@ -17,4 +17,7 @@ Rails.application.routes.draw do
       delete :reject
     end
   end
+
+  post "notifications/mark_all_as_read", to: "notifications#mark_all_as_read"
+
 end

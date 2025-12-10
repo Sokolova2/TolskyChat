@@ -1,9 +1,11 @@
 # frozen_string_literal: true
 
 class ApplicationController < ActionController::Base
-  # Only allow modern browsers supporting webp images, web push, badges, import maps, CSS nesting, and CSS :has.
-  allow_browser versions: :modern
+  after_action :set_user_cookie, if: :user_signed_in?
 
-  # Changes to the importmap will invalidate the etag for HTML responses
-  stale_when_importmap_changes
+  private
+
+  def set_user_cookie
+    cookies.encrypted[:user_id] = current_user.id
+  end
 end
