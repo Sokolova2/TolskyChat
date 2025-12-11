@@ -7,7 +7,7 @@ module Users
     end
 
     def after_sign_in_path_for(_resource_or_scope)
-      conversations_path
+      rooms_index_path
     end
   end
 end

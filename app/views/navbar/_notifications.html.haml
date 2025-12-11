@@ -2,12 +2,12 @@
 - if user_signed_in?
   - unread_messages = current_user.receiver_notifications.where(read: false).count
   - if unread_messages.zero?
-    %button.menu-icon.ms-2{ 'data-bs-toggle' => 'modal', 'data-bs-target' => '#messagesModal' }
+    %button.menu-icon.ms-1{ 'data-bs-toggle' => 'modal', 'data-bs-target' => '#messagesModal' }
       %i.bi.bi-chat
-    %p.menu-text Notifications
+    %p.menu-text Activity
   %span#notifications_counter
     - if unread_messages.positive?
-      %button.menu-icon.bg-light.ms-2{ 'data-bs-toggle' => 'modal', 'data-bs-target' => '#messagesModal' }
+      %button.menu-icon.bg-light.ms-1{ 'data-bs-toggle' => 'modal', 'data-bs-target' => '#messagesModal' }
         %i.bi.bi-chat.text-dark
         %span.fs-6.mt-auto.text-dark= unread_messages
-      %p.menu-text Notifications
+      %p.menu-text Activity

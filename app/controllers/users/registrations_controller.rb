@@ -20,7 +20,7 @@ module Users
     end
 
     def after_update_path_for(_resource)
-      conversations_path
+      rooms_index_path
     end
 
     def configure_sign_up_params

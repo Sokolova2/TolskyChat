@@ -1,4 +1,2 @@
-# frozen_string_literal: true
-
-class Conversation < ApplicationRecord
+class Conversation < Room
 end

@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 Rails.application.routes.draw do
+  get "rooms/index"
   devise_for :users, controllers: {
     omniauth_callbacks: 'users/omniauth_callbacks',
     registrations: 'users/registrations',
@@ -9,7 +10,9 @@ Rails.application.routes.draw do
 
   root to: 'home#index'
 
+  resources :rooms
   resources :conversations
+  resources :personal_chats
   resources :contacts
   resources :users
   resources :notifications do
@@ -17,7 +20,4 @@ Rails.application.routes.draw do
       delete :reject
     end
   end
-
-  post "notifications/mark_all_as_read", to: "notifications#mark_all_as_read"
-
 end

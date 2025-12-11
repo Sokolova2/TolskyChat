@@ -1,0 +1,2 @@
+class PersonalChatsController < ApplicationController
+end

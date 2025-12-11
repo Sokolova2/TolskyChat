@@ -1,0 +1,2 @@
+class PersonalChat < Room
+end

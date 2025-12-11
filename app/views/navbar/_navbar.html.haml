@@ -2,7 +2,7 @@
   = image_tag 'Tolsky.png', size: 60, class: 'mt-4'
 
   .menu-item
-    = link_to conversations_path, class: 'menu-icon' do
+    = link_to rooms_index_path, class: 'menu-icon' do
       %i.bi.bi-house
     %p.menu-text Home
 
@@ -10,46 +10,53 @@
     = render 'navbar/notifications'
 
   .menu-item
-    %button.menu-icon{ 'data-bs-toggle' => 'modal', 'data-bs-target' => '#contactModal' }
+    %button.menu-icon.ms-1{ 'data-bs-toggle' => 'modal', 'data-bs-target' => '#contactModal' }
       %i.bi.bi-person-lines-fill
     %p.menu-text Contact
 
   .menu-item
-    %button.menu-icon{ 'data-bs-toggle' => 'modal', 'data-bs-target' => '#usersModal' }
+    %button.menu-icon.ms-1{ 'data-bs-toggle' => 'modal', 'data-bs-target' => '#usersModal' }
       %i.bi.bi-search
     %p.menu-text Users
 
-  .menu-item.mb-5
+  .menu-item.mb-5.ms-1
     = link_to '#', class: 'menu-icon' do
       %i.bi.bi-archive
     %p.menu-text Archive
 
-  .menu-item.mt-4
-    = link_to '#', class: 'menu-icon' do
-      %i.bi.bi-plus
+  .mt-5
+    .menu-item.mt-4.ms-2.mt-5.mb-4
+      = link_to new_conversation_path, class: 'menu-icon' do
+        %i.bi.bi-plus
 
-  .dropdown.dropup
-    %button.btn.p-0.border-0{ 'data-bs-toggle' => 'dropdown', 'aria-expanded' => 'false', :type => 'button' }
-      = image_tag current_user.avatar.url(:thumb), class: 'avatar'
+    .dropdown.dropup.ms-1
+      %button.btn.p-0.border-0{ 'data-bs-toggle' => 'dropdown', 'aria-expanded' => 'false', :type => 'button' }
+        = image_tag current_user.avatar.url(:thumb), class: 'avatar'
 
-    %ul.ms-5.p-3.dropdown-menu.dropdown-menu-end
-      .d-block.ms-2
-        .mb-3
-          -if user_signed_in?
-            .d-flex.align-items-center.gap-2.mb-2
-              = image_tag current_user.avatar.url, class: 'rounded-circle avatar'
-              %p= current_user.login
-      = link_to 'Profile', edit_user_registration_path, class: 'text-decoration-none text-dark ms-3'
-      %li
-        %a.dropdown-item{ href: '#' } Preferences
-      %li
-        %hr.dropdown-divider
-      %li
-        = button_to 'Sign out', destroy_user_session_path, method: :delete, class: 'dropdown-item text-danger'
+      %ul.ms-5.p-3.dropdown-menu.dropdown-menu-end
+        .d-block.ms-2
+          .mb-3
+            -if user_signed_in?
+              .d-flex.align-items-center.gap-2.mb-2
+                = image_tag current_user.avatar.url, class: 'rounded-circle avatar'
+                %p= current_user.login
+        = link_to 'Profile', edit_user_registration_path, class: 'text-decoration-none text-dark ms-3'
+        %li
+          %a.dropdown-item{ href: '#' } Preferences
+        %li
+          %hr.dropdown-divider
+        %li
+          = button_to 'Sign out', destroy_user_session_path, method: :delete, class: 'dropdown-item text-danger'
 
 = render 'navbar/modal_messages', modal_id: 'messagesModal'
 = render 'navbar/modal_users', modal_id: 'usersModal'
 = render 'navbar/modal_contact', modal_id: 'contactModal'
+
+.d-flex.justify-content-center.search-block.p-2
+  %form.d-flex{ role: 'search' }
+    %input.form-control.me-2.w-100{ 'aria-label' => 'Search', :placeholder => 'Search', :type => 'search' }/
+    %button.btn.btn-outline-success{ type: 'submit' } Search
+
 
 
 
