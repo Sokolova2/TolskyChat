@@ -25,6 +25,8 @@ class User < ApplicationRecord
            inverse_of: :receiver,
            dependent: :destroy
 
+  has_many :participants, dependent: :destroy
+
   mount_uploader :avatar, AvatarUploader
 
   devise :database_authenticatable, :registerable,
