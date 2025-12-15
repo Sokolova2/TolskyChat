@@ -1,5 +1,5 @@
 = form_with(url: users_path, method: :get, data: { turbo_frame: 'result-search', controller: 'search' }) do |f|
-  = f.text_field :search, placeholder: 'Searching...', data: { action: 'input->search#search', search_target: 'input' }, 
+  = f.text_field :search, placeholder: 'Searching...', data: { action: 'input->search#search', search_target: 'input' },
 class: 'form-control rounded-5 p-2 text-center search'
   = f.submit 'Search', class: 'btn btn-outline-none', hidden: true
 
@@ -17,5 +17,5 @@ class: 'form-control rounded-5 p-2 text-center search'
         - elsif Contact.exists?(sender_id: current_user.id, receiver_id: user.id, approved: false)
           Pending approval
         -else
-          = button_to 'Add to contact', contacts_path, method: :post, params: { receiver_id: user.id }, 
+          = button_to 'Add to contact', contacts_path, method: :post, params: { receiver_id: user.id },
 class: 'btn btn-outline-dark'
