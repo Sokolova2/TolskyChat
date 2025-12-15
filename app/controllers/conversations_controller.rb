@@ -12,7 +12,7 @@ class ConversationsController < ApplicationController
   end
 
   def create
-    @conversation_new = Conversation.new(conversation_params)
+    @conversation_new = RoomService.new(conversation_params, current_user).call
 
     if @conversation_new.save
       redirect_to conversation_path(@conversation_new)
@@ -24,6 +24,6 @@ class ConversationsController < ApplicationController
   private
 
   def conversation_params
-    params.require(:conversation).permit(:name, :is_private, :type, :deleted_at)
+    params.require(:conversation).permit(:name, :is_private, :deleted_at)
   end
 end

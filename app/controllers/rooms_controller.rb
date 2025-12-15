@@ -2,6 +2,6 @@
 
 class RoomsController < ApplicationController
   def index
-    @rooms = Room.public_rooms
+    @conversations = Conversation.all
   end
 end
