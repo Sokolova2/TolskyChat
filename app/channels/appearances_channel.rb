@@ -1,6 +1,7 @@
 class AppearancesChannel < ApplicationCable::Channel
   def subscribed
-    stream_from "appearances_channel"
+    Rails.logger.info "[AppearancesChannel] subscribed"
+    stream_from 'AppearancesChannel'
   end
 
   def unsubscribed
