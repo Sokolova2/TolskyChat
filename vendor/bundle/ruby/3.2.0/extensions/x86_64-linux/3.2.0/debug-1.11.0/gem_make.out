@@ -1,0 +1,19 @@
+current directory: /home/karina/projects/TolskyChat/vendor/bundle/ruby/3.2.0/gems/debug-1.11.0/ext/debug
+/usr/share/rvm/rubies/ruby-3.2.3/bin/ruby extconf.rb
+creating Makefile
+
+current directory: /home/karina/projects/TolskyChat/vendor/bundle/ruby/3.2.0/gems/debug-1.11.0/ext/debug
+make DESTDIR\= sitearchdir\=./.gem.20251215-7474-qf43ro sitelibdir\=./.gem.20251215-7474-qf43ro clean
+
+current directory: /home/karina/projects/TolskyChat/vendor/bundle/ruby/3.2.0/gems/debug-1.11.0/ext/debug
+make DESTDIR\= sitearchdir\=./.gem.20251215-7474-qf43ro sitelibdir\=./.gem.20251215-7474-qf43ro
+compiling debug.c
+compiling iseq_collector.c
+linking shared-object debug/debug.so
+
+current directory: /home/karina/projects/TolskyChat/vendor/bundle/ruby/3.2.0/gems/debug-1.11.0/ext/debug
+make DESTDIR\= sitearchdir\=./.gem.20251215-7474-qf43ro sitelibdir\=./.gem.20251215-7474-qf43ro install
+/usr/bin/install -c -m 0755 debug.so ./.gem.20251215-7474-qf43ro/debug
+
+current directory: /home/karina/projects/TolskyChat/vendor/bundle/ruby/3.2.0/gems/debug-1.11.0/ext/debug
+make DESTDIR\= sitearchdir\=./.gem.20251215-7474-qf43ro sitelibdir\=./.gem.20251215-7474-qf43ro clean

@@ -1,0 +1,19 @@
+current directory: /home/karina/projects/TolskyChat/vendor/bundle/ruby/3.2.0/gems/erb-6.0.0/ext/erb/escape
+/usr/share/rvm/rubies/ruby-3.2.3/bin/ruby extconf.rb
+checking for rb_ext_ractor_safe() in ruby.h... yes
+creating Makefile
+
+current directory: /home/karina/projects/TolskyChat/vendor/bundle/ruby/3.2.0/gems/erb-6.0.0/ext/erb/escape
+make DESTDIR\= sitearchdir\=./.gem.20251215-7474-m3757z sitelibdir\=./.gem.20251215-7474-m3757z clean
+
+current directory: /home/karina/projects/TolskyChat/vendor/bundle/ruby/3.2.0/gems/erb-6.0.0/ext/erb/escape
+make DESTDIR\= sitearchdir\=./.gem.20251215-7474-m3757z sitelibdir\=./.gem.20251215-7474-m3757z
+compiling escape.c
+linking shared-object erb/escape.so
+
+current directory: /home/karina/projects/TolskyChat/vendor/bundle/ruby/3.2.0/gems/erb-6.0.0/ext/erb/escape
+make DESTDIR\= sitearchdir\=./.gem.20251215-7474-m3757z sitelibdir\=./.gem.20251215-7474-m3757z install
+/usr/bin/install -c -m 0755 escape.so ./.gem.20251215-7474-m3757z/erb
+
+current directory: /home/karina/projects/TolskyChat/vendor/bundle/ruby/3.2.0/gems/erb-6.0.0/ext/erb/escape
+make DESTDIR\= sitearchdir\=./.gem.20251215-7474-m3757z sitelibdir\=./.gem.20251215-7474-m3757z clean
