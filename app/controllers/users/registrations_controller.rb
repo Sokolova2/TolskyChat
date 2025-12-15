@@ -20,7 +20,7 @@ module Users
     end
 
     def after_update_path_for(_resource)
-      rooms_index_path
+      rooms_path
     end
 
     def configure_sign_up_params
