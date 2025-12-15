@@ -1,1 +1,6 @@
 = render 'navbar/navbar'
+
+.conversations-block.w-25
+  - @conversations.each do |conversation|
+    .d-flex.gap-1
+      = link_to conversation.name, conversation_path(conversation), class: 'ms-4 text-decoration-none text-light'
