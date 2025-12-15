@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2025_12_10_152325) do
+ActiveRecord::Schema[8.1].define(version: 2025_12_15_121019) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -44,6 +44,15 @@ ActiveRecord::Schema[8.1].define(version: 2025_12_10_152325) do
     t.datetime "updated_at", null: false
     t.index ["receiver_id"], name: "index_notifications_on_receiver_id"
     t.index ["sender_id"], name: "index_notifications_on_sender_id"
+  end
+
+  create_table "participants", force: :cascade do |t|
+    t.bigint "conversation_id", null: false
+    t.datetime "created_at", null: false
+    t.string "role", default: "Member", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.index ["user_id"], name: "index_participants_on_user_id"
   end
 
   create_table "rooms", force: :cascade do |t|
@@ -87,4 +96,6 @@ ActiveRecord::Schema[8.1].define(version: 2025_12_10_152325) do
   add_foreign_key "notifications", "contacts"
   add_foreign_key "notifications", "users", column: "receiver_id"
   add_foreign_key "notifications", "users", column: "sender_id"
+  add_foreign_key "participants", "rooms", column: "conversation_id"
+  add_foreign_key "participants", "users"
 end
