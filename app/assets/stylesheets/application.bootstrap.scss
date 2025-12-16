@@ -5,18 +5,30 @@
 @use 'button';
 @use 'text';
 @use 'navbar';
-@use 'conversation';
+@use 'room';
 
 @import 'bootstrap/scss/bootstrap';
 @import 'bootstrap-icons/font/bootstrap-icons';
 
 @import url('https://fonts.googleapis.com/css2?family=Exo+2:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet');
 
+html, body {
+  height: 100%;
+  margin: 0;
+  overflow: hidden;
+}
+
 .body {
   font-family: "Exo 2", sans-serif;
 }
 
 .body-page{
-  background-color: #4b165f;
-  min-height: 94.2vh;
+  background-color: rgb(75, 30, 90);
+  height: 100vh;
+}
+
+.body-page > .d-flex {
+  display: flex;
+  height: 90%;
+  width: 98%;
 }

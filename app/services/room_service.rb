@@ -9,7 +9,7 @@ class RoomService
   def call
     conversation = Conversation.create(@params)
 
-    Participant.create(user: @user, conversation: conversation, role: 'Owner')
+    conversation.participants.create(user: @user, conversation: conversation, role: 'Owner')
 
     conversation
   end

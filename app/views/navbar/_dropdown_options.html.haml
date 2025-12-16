@@ -1,0 +1,18 @@
+.dropdown.dropup.ms-1
+  %button.btn.p-0.border-0{ 'data-bs-toggle' => 'dropdown', 'aria-expanded' => 'false', :type => 'button' }
+    = image_tag current_user.avatar.url(:thumb), class: 'avatar'
+
+  %ul.ms-5.p-3.dropdown-menu.dropdown-menu-end
+    .d-block.ms-2
+      .mb-3
+        -if user_signed_in?
+          .d-flex.align-items-center.gap-2.mb-2
+            = image_tag current_user.avatar.url, class: 'rounded-circle avatar'
+            %p= current_user.login
+    = link_to 'Profile', edit_user_registration_path, class: 'text-decoration-none text-dark ms-3'
+    %li
+      %a.dropdown-item{ href: '#' } Preferences
+    %li
+      %hr.dropdown-divider
+    %li
+      = button_to 'Sign out', destroy_user_session_path, method: :delete, class: 'dropdown-item text-danger'

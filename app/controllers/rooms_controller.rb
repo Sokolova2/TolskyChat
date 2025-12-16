@@ -2,6 +2,8 @@
 
 class RoomsController < ApplicationController
   def index
-    @conversations = Conversation.all
+    @conversations = Conversation
+                       .joins(:participants)
+                       .where(participants: { user_id: current_user.id })
   end
 end

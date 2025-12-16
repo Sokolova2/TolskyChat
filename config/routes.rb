@@ -14,6 +14,7 @@ Rails.application.routes.draw do
   resources :personal_chats
   resources :contacts
   resources :users
+  resources :messages
   resources :notifications do
     member do
       delete :reject

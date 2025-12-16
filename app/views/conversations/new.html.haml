@@ -1,5 +1,4 @@
-= render 'navbar/navbar'
-
+%h4.text-center Create new Room
 = form_with(model: @conversation_new) do |form|
   .d-flex.justify-content-center.mt-5
     .d-block
@@ -10,5 +9,13 @@
         .field
           = form.select :is_private, [['Public', true], ['Private', false]], { selected: 'Public' }, { class: 'form-control rounded-2' }
       .mb-3
+        .field
+          = form.fields_for :participants do |participant|
+            - sent_users = current_user.sent_contacts.map(&:receiver)
+            - received_users = current_user.received_contacts.map(&:sender)
+            - contact_users = (sent_users + received_users).uniq
+            = participant.select :user_id, options_from_collection_for_select(contact_users, :id, :login), {}, class: 'form-control rounded-2'
+      .mb-3
         .actions
           = form.submit 'Create', class: 'btn btn-secondary'
+

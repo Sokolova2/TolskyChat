@@ -27,6 +27,8 @@ class User < ApplicationRecord
 
   has_many :participants, dependent: :destroy
 
+  has_many :messages, dependent: :destroy
+
   mount_uploader :avatar, AvatarUploader
 
   devise :database_authenticatable, :registerable,

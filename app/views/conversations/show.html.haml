@@ -1,2 +1,10 @@
-.body-page
-  = render 'navbar/navbar'
+= turbo_frame_tag "room" do
+  %h5= @conversation.name
+
+  = form_with(model: Message.new, url: messages_path) do |f|
+    = f.hidden_field :conversation_id, value: @conversation.id
+    = f.text_field :content
+
+    = f.submit 'Send'
+
+

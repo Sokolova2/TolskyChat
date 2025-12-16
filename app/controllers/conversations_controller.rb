@@ -9,13 +9,14 @@ class ConversationsController < ApplicationController
 
   def new
     @conversation_new = Conversation.new
+    @conversation_new.participants.build
   end
 
   def create
     @conversation_new = RoomService.new(conversation_params, current_user).call
 
     if @conversation_new.save
-      redirect_to conversation_path(@conversation_new)
+      redirect_to new_conversation_path
     else
       redirect_to new_conversation_path, alert: @conversation_new.errors.full_messages
     end
