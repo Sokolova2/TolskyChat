@@ -15,6 +15,7 @@ Rails.application.routes.draw do
   resources :contacts
   resources :users
   resources :messages
+  resources :participants
   resources :notifications do
     member do
       delete :reject

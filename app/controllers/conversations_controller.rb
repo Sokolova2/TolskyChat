@@ -1,11 +1,10 @@
 class ConversationsController < ApplicationController
+  before_action :set_conversation, only: %i[show destroy]
   def index
     @conversations = Conversation.all
   end
 
-  def show
-    @conversation = Conversation.find(params[:id])
-  end
+  def show; end
 
   def new
     @conversation_new = Conversation.new
@@ -22,9 +21,20 @@ class ConversationsController < ApplicationController
     end
   end
 
+  def destroy
+    @conversation.destroy
+  end
+
   private
 
   def conversation_params
-    params.require(:conversation).permit(:name, :is_private, :deleted_at)
+    params.require(:conversation).permit(
+      :name, :is_private,
+      :deleted_at,
+      participants_attributes: [:user_id, :role])
+  end
+
+  def set_conversation
+    @conversation = Conversation.find(params[:id])
   end
 end

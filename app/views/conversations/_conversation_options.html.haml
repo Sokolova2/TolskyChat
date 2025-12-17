@@ -1,0 +1,21 @@
+%a.btn.btn-dark.rounded-5.w-100{ 'aria-controls' => 'collapseExample', 'aria-expanded' => 'false', 'data-bs-toggle' => 'collapse', :href => '#collapseExample', :role => 'button' }
+  Add users in room
+#collapseExample.collapse
+  .card.card-body.mt-3
+    = form_with(model: Participant.new, url: participants_path, data: { turbo: false }) do |f|
+      = f.hidden_field :conversation_id, value: @conversation.id
+
+      - sent_users = current_user.sent_contacts.map(&:receiver)
+      - received_users = current_user.received_contacts.map(&:sender)
+      - contact_users = (sent_users + received_users).uniq
+
+      - contact_users.each do |user|
+        .form-check
+          = check_box_tag 'user_ids[]', user.id, false,
+            class: 'form-check-input',
+            id: "user_#{user.id}"
+          = f.label "participant_user_id_#{user.id}", user.login, class: 'form-check-label'
+
+      .actions.mt-3
+        = f.submit 'Add user', class: 'btn btn-dark form-control rounded-5'
+
