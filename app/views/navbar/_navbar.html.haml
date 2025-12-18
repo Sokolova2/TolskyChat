@@ -30,10 +30,14 @@
 
   = render 'navbar/dropdown_options'
 
-= render 'navbar/modal_messages', modal_id: 'messagesModal'
-= render 'navbar/modal_users', modal_id: 'usersModal'
-= render 'navbar/modal_contact', modal_id: 'contactModal'
-= render 'navbar/modal_new_room', modal_id: 'newRoomModal'
+= render 'modal/modal', modal_id: 'messagesModal' do
+  %iframe{ src: notifications_path, width: '100%', height: '600', style: 'border:0' }
+= render 'modal/modal', modal_id: 'usersModal' do
+  %iframe{ src: users_path, width: '100%', height: '600', style: 'border:0' }
+= render 'modal/modal', modal_id: 'contactModal' do
+  %iframe{ src: contacts_path, width: '100%', height: '600', style: 'border:0' }
+= render 'modal/modal', modal_id: 'newRoomModal' do
+  %iframe{ src: new_conversation_path, width: '100%', height: '600', style: 'border:0' }
 
 = form_with(url: users_path, method: :get, data: { turbo_frame: 'result-search', controller: 'search' }) do |f|
   .d-flex.justify-content-center.search-block.pb-1
