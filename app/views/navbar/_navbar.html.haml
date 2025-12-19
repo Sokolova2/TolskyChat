@@ -6,20 +6,21 @@
       %i.bi.bi-house
     %p.menu-text Home
 
-  .menu-item
-    = render 'navbar/notifications'
+  .menu-item.ms-2
+    %div#notifications_counter
+      = render 'navbar/notifications'
 
-  .menu-item
-    %button.menu-icon.ms-1{ 'data-bs-toggle' => 'modal', 'data-bs-target' => '#contactModal' }
+  .menu-item.ms-2
+    = link_to contacts_path, data: { turbo_frame: "modal" }, class: 'menu-icon' do
       %i.bi.bi-person-lines-fill
     %p.menu-text Contact
 
-  .menu-item
-    %button.menu-icon.ms-1{ 'data-bs-toggle' => 'modal', 'data-bs-target' => '#usersModal' }
+  .menu-item.ms-2
+    = link_to users_path, data: { turbo_frame: "modal" }, class: 'menu-icon' do
       %i.bi.bi-search
     %p.menu-text Users
 
-  .menu-item.mb-5.ms-1
+  .menu-item.mb-5.ms-2
     = link_to '#', class: 'menu-icon' do
       %i.bi.bi-archive
     %p.menu-text Archive
@@ -30,14 +31,7 @@
 
   = render 'navbar/dropdown_options'
 
-= render 'modal/modal', modal_id: 'messagesModal' do
-  %iframe{ src: notifications_path, width: '100%', height: '600', style: 'border:0' }
-= render 'modal/modal', modal_id: 'usersModal' do
-  %iframe{ src: users_path, width: '100%', height: '600', style: 'border:0' }
-= render 'modal/modal', modal_id: 'contactModal' do
-  %iframe{ src: contacts_path, width: '100%', height: '600', style: 'border:0' }
-= render 'modal/modal', modal_id: 'newRoomModal' do
-  %iframe{ src: new_conversation_path, width: '100%', height: '600', style: 'border:0' }
+= render "modal/modal"
 
 = form_with(url: users_path, method: :get, data: { turbo_frame: 'result-search', controller: 'search' }) do |f|
   .d-flex.justify-content-center.search-block.pb-1

@@ -4,7 +4,19 @@ class NotificationsController < ApplicationController
   before_action :set_notification, only: %i[update destroy reject]
   before_action :set_contact, only: %i[update destroy reject]
   def index
-    @notifications = Notification.where(receiver_id: current_user.id).update(read: true)
+    @notifications = current_user.receiver_notifications.order(created_at: :desc)
+    @notifications.update_all(read: true)
+
+    NotificationsChannel.broadcast_to(
+      current_user,
+      html: render_to_string(
+        partial: 'navbar/notifications',
+        locals: { current_user: current_user }
+      )
+    )
+    respond_to do |format|
+      format.html
+    end
   end
 
   def update

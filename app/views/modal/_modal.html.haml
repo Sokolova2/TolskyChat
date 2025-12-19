@@ -1,7 +1,6 @@
-.modal.fade{ id: modal_id, tabindex: '-1', 'aria-hidden' => 'true' }
+.modal.fade{ tabindex: '-1', 'data-controller' => 'modal' }
   .modal-dialog
     .modal-content
       .modal-body
-        = yield
-
+        = turbo_frame_tag "modal"
 

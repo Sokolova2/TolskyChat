@@ -1,11 +1,9 @@
-= turbo_frame_tag 'users_frame' do
-  = turbo_stream_from 'users'
-  = form_with(url: users_path, method: :get, data: { turbo_frame: 'result-search', controller: 'search' }) do |f|
+= turbo_frame_tag "modal" do
+  = form_with(url: users_path, method: :get, data: { controller: 'search', turbo_frame: 'result-search' }) do |f|
     = f.text_field :search, placeholder: 'Searching...', data: { action: 'input->search#search', search_target: 'input' },
   class: 'form-control rounded-5 p-2 text-center search'
-    = f.submit 'Search', class: 'btn btn-outline-none', hidden: true
+    = f.submit 'Search', hidden: true
 
-  %div{ 'data-controller' => 'reload' }
   .mt-4
     -@users.each do |user|
       - unless user.deleted_at.present?

@@ -35,12 +35,6 @@ class User < ApplicationRecord
          :recoverable, :rememberable, :validatable, :confirmable, :omniauthable, omniauth_providers: [:google_oauth2]
 
   scope :all_except, ->(user) { where.not(id: user) }
-  after_create_commit -> {
-    broadcast_append_to 'users_frame',
-                        target: 'users_frame',
-                        partial: 'users/user',
-                        locals: { user: self }
-  }
 
   class << self
     def from_omniauth(auth)
