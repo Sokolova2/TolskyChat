@@ -23,6 +23,8 @@ class ConversationsController < ApplicationController
 
   def destroy
     @conversation.destroy
+
+    redirect_to rooms_path
   end
 
   private

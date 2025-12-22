@@ -5,7 +5,7 @@
       - user = (contact.sender_id == current_user.id ? contact.receiver : contact.sender)
       .d-flex.justify-content-between.align-items-center
         .d-flex.justify-content-between
-          = link_to contact_path(contact), class: 'text-decoration-none text-dark' do
+          = link_to contact_path(contact), data: { turbo_frame: 'modal' }, class: 'text-decoration-none text-dark' do
             .d-flex.gap-2.align-items-center.mt-2
               = image_tag user.avatar.url(:thumb), size: 50
               %p= user.login

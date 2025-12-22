@@ -2,7 +2,7 @@ import consumer from "channels/consumer"
 
 consumer.subscriptions.create("NotificationsChannel", {
   connected() {
-    // Called when the subscription is ready for use on the server
+    console.log("Connected to NotificationsChannel")
   },
 
   disconnected() {
@@ -10,9 +10,19 @@ consumer.subscriptions.create("NotificationsChannel", {
   },
 
   received(data) {
-    const container = document.getElementById("notifications_counter")
-    if (container) {
-      container.outerHTML = data.html
+    const counter = document.getElementById("notification-counter")
+    if (!counter || data.count === undefined) return
+
+    if (data.count > 0) {
+      counter.textContent = data.count
+      counter.classList.remove("d-none")
+    } else {
+      counter.classList.add("d-none")
+    }
+
+    const list = document.getElementById("notifications-list")
+    if (list && data.html) {
+      list.insertAdjacentHTML("afterbegin", data.html)
     }
   }
 });

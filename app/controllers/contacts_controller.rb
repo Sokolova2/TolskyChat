@@ -14,7 +14,7 @@ class ContactsController < ApplicationController
   def show; end
 
   def create
-    @new_contact = Contact.create(sender_id: current_user.id, receiver_id: params[:receiver_id])
+    @new_contact = Contact.new(sender_id: current_user.id, receiver_id: params[:receiver_id])
 
     if @new_contact.save
       create_notification

@@ -1,19 +1,20 @@
-= link_to contacts_path, class: 'text-decoration-none text-dark' do
-  %i.bi.bi-box-arrow-left.fs-2
-= image_tag @user.avatar.url(:thumb), class: 'w-100'
-%p.fs-3.text-center= @user.login
-- if @user.first_name.present? && @user.last_name.present?
-  %p= @user.first_name
-  %p= @user.last_name
-- if @user.phone_number.present? && @user.birth_date.present?
-  %p= @user.phone_number
-  %p= @user.birth_date
-- if @user.description.present?
-  %p= @user.description
+= turbo_frame_tag "modal" do
+  = link_to contacts_path, class: 'text-decoration-none text-dark' do
+    %i.bi.bi-box-arrow-left.fs-2
+  = image_tag @user.avatar.url(:thumb), class: 'w-100'
+  %p.fs-3.text-center= @user.login
+  - if @user.first_name.present? && @user.last_name.present?
+    %p= @user.first_name
+    %p= @user.last_name
+  - if @user.phone_number.present? && @user.birth_date.present?
+    %p= @user.phone_number
+    %p= @user.birth_date
+  - if @user.description.present?
+    %p= @user.description
 
-- if @contact.blocked == false
-  = button_to 'Block', contact_path(@contact), method: :patch, params: { blocked: true }, 
-class: 'text-decoration-none text-dark'
-- else
-  = button_to 'Unlock', contact_path(@contact), method: :patch, params: { blocked: false }, 
-class: 'text-decoration-none text-dark'
+  - if @contact.blocked == false
+    = button_to 'Block', contact_path(@contact), method: :patch, params: { blocked: true },
+  class: 'text-decoration-none text-dark'
+  - else
+    = button_to 'Unlock', contact_path(@contact), method: :patch, params: { blocked: false },
+  class: 'text-decoration-none text-dark'

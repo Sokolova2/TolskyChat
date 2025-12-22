@@ -2,6 +2,5 @@
 
 = link_to notifications_path, data: { turbo_frame: 'modal' }, class: 'menu-icon text-decoration-none' do
   %i.bi.bi-chat
-  - if unread_messages.positive?
-    %span.fs-6.mt-auto.text-light= unread_messages
+  %span.fs-6.mt-auto.text-light#notification-counter{ class: ("d-none" unless unread_messages.positive?) }= unread_messages
 %p.menu-text Activity

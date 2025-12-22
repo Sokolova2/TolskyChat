@@ -11,15 +11,11 @@ module ApplicationCable
     private
 
     def find_verified_user
-      verified_user = User.find_by(id: cookies.encrypted[:user_id])
-      return verified_user if verified_user
-
-      if Rails.env.development?
-        Rails.logger.warn("Could not find verified user")
-        return nil
+      if verified_user = User.find_by(id: cookies.encrypted[:user_id])
+        verified_user
+      else
+        reject_unauthorized_connection
       end
-
-      reject_unauthorized_connection
     end
   end
 end

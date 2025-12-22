@@ -9,14 +9,8 @@ class NotificationsController < ApplicationController
 
     NotificationsChannel.broadcast_to(
       current_user,
-      html: render_to_string(
-        partial: 'navbar/notifications',
-        locals: { current_user: current_user }
-      )
+      { count: 0 }
     )
-    respond_to do |format|
-      format.html
-    end
   end
 
   def update

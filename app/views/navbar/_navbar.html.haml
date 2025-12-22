@@ -7,8 +7,7 @@
     %p.menu-text Home
 
   .menu-item.ms-2
-    %div#notifications_counter
-      = render 'navbar/notifications'
+    = render 'navbar/notifications'
 
   .menu-item.ms-2
     = link_to contacts_path, data: { turbo_frame: "modal" }, class: 'menu-icon' do
@@ -24,9 +23,11 @@
     = link_to '#', class: 'menu-icon' do
       %i.bi.bi-archive
     %p.menu-text Archive
+
   %br
-  .mt-5
-    %button.menu-icon.ms-2.mt-5{ 'data-bs-toggle' => 'modal', 'data-bs-target' => '#newRoomModal' }
+
+  .mt-5.ms-2
+    = link_to new_conversation_path, data: { turbo_frame: 'modal' }, class: 'menu-icon' do
       %i.bi.bi-plus
 
   = render 'navbar/dropdown_options'

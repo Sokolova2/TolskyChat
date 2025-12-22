@@ -1,14 +1,15 @@
-%h4.text-center Create new Room
-= form_with(model: @conversation_new) do |form|
-  .d-flex.justify-content-center.mt-5
-    .d-block
-      .mb-3
-        .field
-          = form.text_field :name, placeholder: 'Name', class: 'form-control rounded-2'
-      .mb-3
-        .field
-          = form.select :is_private, [['Public', true], ['Private', false]], { selected: 'Public' }, { class: 'form-control rounded-2' }
-      .mb-3
-        .actions
-          = form.submit 'Create', class: 'btn btn-secondary'
+= turbo_frame_tag "modal" do
+  %h4.text-center Create new Room
+  = form_with(model: @conversation_new) do |form|
+    .d-flex.justify-content-center.mt-5
+      .d-block
+        .mb-3
+          .field
+            = form.text_field :name, placeholder: 'Name', class: 'form-control rounded-2'
+        .mb-3
+          .field
+            = form.select :is_private, [['Public', true], ['Private', false]], { selected: 'Public' }, { class: 'form-control rounded-2' }
+        .mb-3
+          .actions
+            = form.submit 'Create', class: 'btn btn-secondary'
 
