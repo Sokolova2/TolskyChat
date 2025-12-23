@@ -1,0 +1,5 @@
+= turbo_stream.remove dom_id(@notification)
+
+= turbo_stream.prepend 'contacts',
+  partial: 'contacts/contacts',
+  locals: { contact: @contact }

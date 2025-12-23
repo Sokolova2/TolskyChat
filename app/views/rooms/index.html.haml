@@ -4,18 +4,25 @@
   .d-flex
     .conversations-block.pt-2
       %h5.text-light.ps-2.pb-3 TolskyChat
-      - @conversations.each do |conversation|
-        .d-flex.align-items-center.gap-5
-          = link_to conversation_path(conversation),
-            class: "conversation-link text-decoration-none text-light",
-            data: { turbo_frame: "room" } do
-            .name-conversation
-              %p.ps-2= conversation.name
-          = button_to conversation_path(conversation), method: :delete, class: 'btn btn-border-none text-light' do
-            %i.bi.bi-trash3
+      = turbo_frame_tag "conversations_list" do
+        - @conversations.each do |conversation|
+          .d-flex.align-items-center.gap-5
+            = link_to conversation_path(conversation),
+              class: "conversation-link text-decoration-none text-light",
+              data: { turbo_frame: "room" } do
+              .name-conversation
+                %p.ps-2= conversation.name
+            = button_to conversation_path(conversation), method: :delete, class: 'btn btn-border-none text-light' do
+              %i.bi.bi-trash3
     .tabs.room-block
-      = turbo_frame_tag "room" do
-        Hello from TolskyChat
+      - if @current_conversation.present?
+        = turbo_frame_tag "room", src: conversation_path(@current_conversation), loading: "lazy" do
+          Loading chat...
+      - else
+        = turbo_frame_tag "room" do
+          Hello from TolskyChat
+
+
 
 
 

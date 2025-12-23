@@ -7,7 +7,7 @@ class Contact < ApplicationRecord
   belongs_to :receiver, class_name: 'User'
   has_many :notifications, dependent: :destroy
 
-  validate :unique_contact
+  validate :unique_contact, on: :create
 
   def unique_contact
     if Contact.where(
