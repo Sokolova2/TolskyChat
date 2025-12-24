@@ -3,3 +3,7 @@
 = turbo_stream.prepend 'contacts',
   partial: 'contacts/contacts',
   locals: { contact: @contact }
+
+= turbo_stream.replace dom_id(@user, :status),
+  partial: 'users/users',
+  locals: { user: @user }

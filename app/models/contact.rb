@@ -20,4 +20,12 @@ class Contact < ApplicationRecord
       errors.add(:base, 'Contact already exists')
     end
   end
+
+  scope :between, -> (sender, receiver) do
+    where(
+      "(sender_id = :sender AND receiver_id = :receiver) OR
+        (sender_id = :receiver AND receiver_id = :sender)",
+      sender: sender, receiver: receiver
+    )
+  end
 end

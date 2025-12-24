@@ -13,10 +13,5 @@
               .d-flex.gap-2.align-items-center.mt-2
                 = image_tag user.avatar.url(:thumb), size: 50
                 %p.mt-1= user.login
-            - if Contact.exists?(sender_id: current_user.id, receiver_id: user.id, approved: true)
-              In your contacts
-            - elsif Contact.exists?(sender_id: current_user.id, receiver_id: user.id, approved: false)
-              Pending approval
-            -else
-              = button_to 'Add to contact', contacts_path, method: :post, params: { receiver_id: user.id },
-    class: 'btn btn-outline-dark'
+            = turbo_frame_tag dom_id(user, :status) do
+              = render 'users/users', user: user

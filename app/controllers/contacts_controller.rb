@@ -33,7 +33,10 @@ class ContactsController < ApplicationController
   def destroy
     @contact.destroy
 
-    redirect_to contacts_path
+    respond_to do |format|
+      format.turbo_stream
+      format.html { redirect_to contacts_path, notice: 'Contact was successfully destroyed.' }
+    end
   end
 
   private

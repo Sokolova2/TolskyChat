@@ -16,6 +16,9 @@ class NotificationsController < ApplicationController
   def update
     if @contact.update(approved: true)
       @notification.destroy
+
+      @user = User.find(@contact.sender_id)
+
       Notification.create(
         sender_id: current_user.id,
         receiver_id: @contact.sender_id,

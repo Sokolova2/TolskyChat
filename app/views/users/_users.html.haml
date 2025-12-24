@@ -1,0 +1,10 @@
+- return unless user.present?
+- contacts = Contact.between(current_user.id, user.id)
+
+- if contacts.where(approved: true).exists?
+  In your contacts
+- elsif contacts.exists?
+  Pending approval
+- else
+  = button_to 'Add to contact', contacts_path, method: :post, params: { receiver_id: user.id },
+    class: 'btn btn-outline-dark'

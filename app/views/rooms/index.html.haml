@@ -3,7 +3,8 @@
 .body-page
   .d-flex
     .conversations-block.pt-2
-      %h5.text-light.ps-2.pb-3 TolskyChat
+      .me-5
+        %h5.text-light.ps-2.pb-3.me-5 TolskyChat
       = turbo_frame_tag "conversations_list" do
         - @conversations.each do |conversation|
           .d-flex.align-items-center.gap-5

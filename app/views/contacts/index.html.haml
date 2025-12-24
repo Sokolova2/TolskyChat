@@ -19,3 +19,6 @@
 
             = button_to contact_path(contact), method: :delete, class: 'btn btn-outline-dark' do
               %i.bi.bi-trash
+  - else
+    %p.text-center.text-muted.mt-4
+      You don’t have any contacts yet
