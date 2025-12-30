@@ -1,5 +1,9 @@
+# frozen_string_literal: true
+
 class ConversationsController < ApplicationController
   before_action :set_conversation, only: %i[show destroy]
+  before_action :set_participants, only: %i[show]
+
   def index
     @conversations = Conversation.all
   end
@@ -41,5 +45,9 @@ class ConversationsController < ApplicationController
 
   def set_conversation
     @conversation = Conversation.find(params[:id])
+  end
+
+  def set_participants
+    @participants = Participant.where(conversation_id: @conversation.id).order(role: :desc)
   end
 end

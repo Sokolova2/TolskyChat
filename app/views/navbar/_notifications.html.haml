@@ -1,6 +1,6 @@
 - unread_messages = current_user.receiver_notifications.where(read: false).count
 
-= link_to notifications_path, data: { turbo_frame: 'modal' }, class: 'menu-icon text-decoration-none' do
+= link_to notifications_path, data: { turbo_frame: 'modal', turbo_prefetch: false }, class: 'menu-icon text-decoration-none' do
   %i.bi.bi-chat
   %span.fs-6.mt-auto.text-light#notification-counter{ class: ("d-none" unless unread_messages.positive?) }= unread_messages
 %p.menu-text Activity

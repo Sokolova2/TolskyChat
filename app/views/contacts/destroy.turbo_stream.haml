@@ -1,6 +1,5 @@
-- if @contacts.present?
-  = turbo_stream.remove dom_id(@contact)
-- else
+= turbo_stream.remove dom_id(@contact)
+- if @contacts.blank?
   = turbo_stream.replace 'contacts' do
     %p.text-center.text-muted.mt-4
       You don’t have any contacts yet

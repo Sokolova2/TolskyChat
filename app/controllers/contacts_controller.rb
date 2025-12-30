@@ -4,11 +4,7 @@ class ContactsController < ApplicationController
   before_action :set_contact, only: %i[show update destroy]
 
   def index
-    @contacts = Contact
-                .where(approved: true)
-                .where('sender_id = :id OR receiver_id = :id', id: current_user.id)
-                .joins('JOIN users ON users.id = contacts.receiver_id')
-                .where(users: { deleted_at: nil })
+    @contacts = Contact.user_contacts(current_user.id)
   end
 
   def show; end
@@ -32,6 +28,7 @@ class ContactsController < ApplicationController
 
   def destroy
     @contact.destroy
+    @contacts = Contact.user_contacts(current_user.id)
 
     respond_to do |format|
       format.turbo_stream
