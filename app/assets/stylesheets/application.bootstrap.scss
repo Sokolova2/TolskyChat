@@ -8,6 +8,8 @@
 @use 'room';
 @use 'modal';
 
+$bootstrap-icons-font-path: "/assets";
+
 @import 'bootstrap/scss/bootstrap';
 @import 'bootstrap-icons/font/bootstrap-icons';
 
