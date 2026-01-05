@@ -28,4 +28,12 @@ class Contact < ApplicationRecord
       sender: sender, receiver: receiver
     )
   end
+
+  scope :user_contacts, -> (user) {
+    select('contacts.*, contacts.id as contact_id')
+      .where(approved: true)
+      .where('sender_id = :id OR receiver_id = :id', id: user)
+      .joins('JOIN users ON users.id = contacts.receiver_id')
+      .where(users: { deleted_at: nil })
+  }
 end

@@ -8,3 +8,5 @@ pin_all_from 'app/javascript/controllers', under: 'controllers'
 pin 'bootstrap', to: 'bootstrap.bundle.min.js'
 pin "@rails/actioncable", to: "actioncable.esm.js"
 pin_all_from "app/javascript/channels", under: "channels"
+pin "trix"
+pin "@rails/actiontext", to: "actiontext.esm.js"

@@ -4,12 +4,14 @@
   "dependencies": {
     "@hotwired/stimulus": "^3.2.2",
     "@popperjs/core": "^2.11.8",
+    "@rails/actiontext": "^8.1.100",
     "autoprefixer": "^10.4.22",
     "bootstrap": "^5.3.8",
     "bootstrap-icons": "^1.13.1",
     "nodemon": "^3.1.11",
     "postcss": "^8.5.6",
     "postcss-cli": "^11.0.1",
+    "trix": "^2.1.15"
     "sass": "^1.97.1"
   },
   "scripts": {

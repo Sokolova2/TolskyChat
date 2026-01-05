@@ -8,7 +8,7 @@
             = form.text_field :name, placeholder: 'Name', class: 'form-control rounded-2'
         .mb-3
           .field
-            = form.select :is_private, [['Public', true], ['Private', false]], { selected: 'Public' }, { class: 'form-control rounded-2' }
+            = form.select :is_private, [['Public', false], ['Private', true]], { selected: 'Public' }, { class: 'form-control rounded-2' }
         .mb-3
           .actions
             = form.submit 'Create', class: 'btn btn-secondary'

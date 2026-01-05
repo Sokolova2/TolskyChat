@@ -13,8 +13,7 @@
 
 
   = form_with(model: Message.new, url: messages_path) do |f|
-    = f.hidden_field :conversation_id, value: @conversation.id
-    = f.text_field :content
-
-    = f.submit 'Send'
+    .field
+      = f.hidden_field :conversation_id, value: @conversation.id
+      = f.rich_text_area :content
 
