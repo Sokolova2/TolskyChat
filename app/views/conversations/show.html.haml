@@ -1,23 +1,31 @@
 = turbo_frame_tag "room" do
-  .shadow-lg
-    .d-flex.justify-content-between.align-items-center.ms-3.me-3.p-3
-      %h5= @conversation.name
-      %button.btn.btn-outline-dark.ms-1{ 'data-bs-toggle' => 'modal', 'data-bs-target' => '#conversationModal' }
-        %i.bi.bi-three-dots
+  .chat-container
+    .chat-header.shadow-lg
+      .d-flex.justify-content-between.align-items-center.ms-3.me-3.p-3
+        %h5= @conversation.name
+        %button.btn.btn-outline-dark.ms-1{ 'data-bs-toggle' => 'modal', 'data-bs-target' => '#conversationModal' }
+          %i.bi.bi-three-dots
 
-    .modal.fade#conversationModal{ tabindex: '-1', 'aria-hidden' => 'true' }
-      .modal-dialog
-        .modal-content
-          .modal-body
-            = render 'conversations/conversation_options'
+      .modal.fade#conversationModal{ tabindex: '-1', 'aria-hidden' => 'true' }
+        .modal-dialog
+          .modal-content
+            .modal-body
+              = render 'conversations/conversation_options'
+    .chat-messages
+      - @messages.each do |message|
+        .message
+          .d-flex.gap-2.align-items-center.ps-3
+            = image_tag message.user.avatar.url, size: 50
+            %p= message.user.login
+          .ps-3
+            .ps-5
+              = message.content
+    .chat-input.mt-5
+      = form_with(model: Message.new, url: messages_path) do |f|
+        .field
+          = f.hidden_field :conversation_id, value: @conversation.id
+          = f.rich_textarea :content
 
-  - @messages.each do |message|
-    %p= message.content
-  = form_with(model: Message.new, url: messages_path) do |f|
-    .field
-      = f.hidden_field :conversation_id, value: @conversation.id
-      = f.rich_textarea :content
-
-    .actions
-      = f.submit 'Send'
+        .actions
+          = f.submit 'Send'
 

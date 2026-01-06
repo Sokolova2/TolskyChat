@@ -1,3 +1,5 @@
+@use 'reset';
+@use 'actiontext';
 @use 'omniauth_google';
 @use 'forms';
 @use 'home';
@@ -7,7 +9,7 @@
 @use 'navbar';
 @use 'room';
 @use 'modal';
-@use 'actiontext';
+@use 'conversation-page';
 
 $bootstrap-icons-font-path: "/assets";
 

@@ -1,0 +1,44 @@
+turbo-frame#room {
+  display: block;
+  height: 100vh;
+}
+
+.chat-container{
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.chat-header{
+  flex-shrink: 0;
+}
+
+.chat-messages{
+  flex: 1;
+  overflow-y: auto;
+  min-height: 0;
+  border-bottom: 0;
+}
+
+.chat-input{
+  flex-shrink: 0;
+  background: #FFFFFF;
+  padding: 12px;
+  border-top: 1px solid #dddddd;
+  margin-bottom: 6rem;
+}
+
+.chat-messages .trix-content img{
+  max-width: 200px;
+  height: 200px;
+  object-fit: cover;
+  border-radius: 10px;
+}
+
+.chat-messages .trix-content p{
+  margin: 0;
+}
+
+.chat-messages .trix-content action-text-attachment {
+  padding: 0 !important;
+}
