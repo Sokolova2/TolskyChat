@@ -6,9 +6,9 @@ class MessagesController < ApplicationController
   def create
     @message = Message.new(user: current_user, conversation: @conversation, content: message_params[:content])
 
-    if @message.save
-      redirect_to conversation_path(@conversation)
-    end
+    return unless @message.save
+
+    redirect_to conversation_path(@conversation)
   end
 
   private

@@ -7,13 +7,13 @@
         %h5.text-light.ps-2.pb-3.me-5 TolskyChat
       = turbo_frame_tag "conversations_list" do
         - @conversations.each do |conversation|
-          .d-flex.align-items-center.gap-5
+          .d-flex.align-items-center.gap-5.ps-2
             = link_to conversation_path(conversation),
               class: "conversation-link text-decoration-none text-light",
               data: { turbo_frame: "room" } do
               .name-conversation
-                %p.ps-2= conversation.name
-            = button_to conversation_path(conversation), method: :delete, class: 'btn btn-border-none text-light' do
+                %p.p-0.m-0= conversation.name
+            = button_to conversation_path(conversation), method: :delete, class: 'btn text-light' do
               %i.bi.bi-trash3
     .tabs.room-block
       - if @current_conversation.present?

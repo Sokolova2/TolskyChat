@@ -8,7 +8,9 @@ class ConversationsController < ApplicationController
     @conversations = Conversation.all
   end
 
-  def show; end
+  def show
+    @messages = @conversation.messages
+  end
 
   def new
     @conversation_new = Conversation.new

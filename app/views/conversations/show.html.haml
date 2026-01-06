@@ -11,9 +11,13 @@
           .modal-body
             = render 'conversations/conversation_options'
 
-
+  - @messages.each do |message|
+    %p= message.content
   = form_with(model: Message.new, url: messages_path) do |f|
     .field
       = f.hidden_field :conversation_id, value: @conversation.id
-      = f.rich_text_area :content
+      = f.rich_textarea :content
+
+    .actions
+      = f.submit 'Send'
 
