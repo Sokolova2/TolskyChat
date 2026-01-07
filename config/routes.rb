@@ -7,6 +7,8 @@ Rails.application.routes.draw do
     sessions: 'users/sessions'
   }
 
+  mount ActionCable.server => '/cable'
+
   root to: 'home#index'
 
   resources :rooms
