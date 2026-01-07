@@ -1,10 +1,10 @@
+# frozen_string_literal: true
+
 class ChatroomChannel < ApplicationCable::Channel
   def subscribed
-    stream_from "ChatroomChannel"
-    ActionCable.server.broadcast(
-    "ChatroomChannel",
-    "Channel is subscribed"
-    )
+    conversation = Conversation.find(params[:conversation_id])
+
+    stream_for conversation
   end
 
   def unsubscribed
