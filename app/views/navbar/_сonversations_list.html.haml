@@ -1,0 +1,22 @@
+.body-page
+  .d-flex
+    .conversations-block.pt-2
+      .me-5
+        %h5.text-light.ps-2.pb-3.me-5 TolskyChat
+      = turbo_frame_tag "conversations_list" do
+        - @conversations.each do |conversation|
+          .d-flex.align-items-center.gap-5.ps-2
+            = link_to conversation_path(conversation),
+              class: "conversation-link text-decoration-none text-light",
+              data: { turbo_frame: "room" } do
+              .name-conversation
+                %p.p-0.m-0= conversation.name
+            = button_to conversation_path(conversation), method: :delete, class: 'btn text-light' do
+              %i.bi.bi-trash3
+    .tabs.room-block
+      - if @current_conversation.present?
+        = turbo_frame_tag "room", src: conversation_path(@current_conversation), loading: "lazy" do
+          Loading chat...
+      - else
+        = turbo_frame_tag "room" do
+          = render 'rooms/default_page'
