@@ -1,0 +1,10 @@
+.message
+  .d-flex.gap-2.align-items-start.ps-3
+    - if message.user.avatar&.url.present?
+      = image_tag message.user.avatar.url, class: "chat-avatar"
+    - else
+      .chat-avatar.placeholder
+    .message-body
+      %b= message.user.login
+      .message-content
+        = message.content

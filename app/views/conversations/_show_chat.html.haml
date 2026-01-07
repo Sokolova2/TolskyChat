@@ -1,0 +1,23 @@
+.chat-container.container-content.bg-light
+  .chat-header.shadow-lg
+    .d-flex.justify-content-between.align-items-center.ms-3.me-3.p-3
+      %h5= @conversation.name
+      %button.btn.btn-outline-dark.ms-1{ 'data-bs-toggle' => 'modal', 'data-bs-target' => '#conversationModal' }
+        %i.bi.bi-three-dots
+
+    .modal.fade#conversationModal{ tabindex: '-1', 'aria-hidden' => 'true' }
+      .modal-dialog
+        .modal-content
+          .modal-body
+            = render 'conversations/conversation_options'
+  .chat-messages#chatroom
+    = render @conversation.messages
+  .chat-input.mt-5
+    = form_with(model: @message, url: messages_path) do |f|
+      .field
+        = f.hidden_field :conversation_id, value: @conversation.id
+        = f.rich_textarea :content
+
+      .actions
+        = f.submit 'Send'
+
