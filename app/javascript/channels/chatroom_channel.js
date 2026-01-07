@@ -1,15 +1,31 @@
 import consumer from "channels/consumer"
 
-consumer.subscriptions.create("ChatroomChannel", {
-  connected() {
-    // Called when the subscription is ready for use on the server
-  },
+document.addEventListener("turbo:load", () => {
+  const chatroom = document.getElementById("chatroom")
+  if (!chatroom) return
 
-  disconnected() {
-    // Called when the subscription has been terminated by the server
-  },
+  const match = window.location.pathname.match(/conversations\/(\d+)/)
+  if (!match) return
 
-  received(data) {
-    // Called when there's incoming data on the websocket for this channel
-  }
-});
+  const conversationId = match[1]
+
+  consumer.subscriptions.create(
+      {
+        channel: "ChatroomChannel",
+        conversation_id: conversationId
+      },
+      {
+        connected(){
+          console.log("Connected to ChatroomChannel")
+
+        },
+
+        received(data) {
+          chatroom.insertAdjacentHTML("beforeend", data.html)
+
+          const trix = document.querySelector("trix-editor")
+          if (trix) trix.editor.loadHTML("")
+        }
+      }
+  )
+})
