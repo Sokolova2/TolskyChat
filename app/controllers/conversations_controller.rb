@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 class ConversationsController < ApplicationController
+  before_action :set_conversations, only: %i[index show]
   before_action :set_conversation, only: %i[show destroy]
   before_action :set_participants, only: %i[show]
 
@@ -9,7 +10,7 @@ class ConversationsController < ApplicationController
   end
 
   def show
-    @messages = @conversation.messages
+    @message = Message.new
   end
 
   def new
@@ -39,10 +40,11 @@ class ConversationsController < ApplicationController
   private
 
   def conversation_params
-    params.require(:conversation).permit(
-      :name, :is_private,
-      :deleted_at,
-      participants_attributes: [:user_id, :role])
+    params.require(:conversation).permit(:name, :is_private, :deleted_at, participants_attributes: [:user_id, :role])
+  end
+
+  def set_conversations
+    @conversations = Conversation.all
   end
 
   def set_conversation

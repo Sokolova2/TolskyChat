@@ -4,11 +4,19 @@ class MessagesController < ApplicationController
   before_action :set_conversation, only: :create
 
   def create
-    @message = Message.new(user: current_user, conversation: @conversation, content: message_params[:content])
+    message = Message.new(message_params)
+    message.user = current_user
 
-    return unless @message.save
+    return unless message.save
 
-    redirect_to conversation_path(@conversation)
+    ChatroomChannel.broadcast_to(
+      @conversation,
+      html: render_to_string(
+        partial: 'messages/message',
+        locals: { message: message }
+      )
+    )
+    head :ok
   end
 
   private
