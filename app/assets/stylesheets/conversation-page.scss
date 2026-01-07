@@ -1,12 +1,8 @@
-turbo-frame#room {
-  display: block;
-  height: 100vh;
-}
-
 .chat-container{
   height: 100%;
   display: flex;
   flex-direction: column;
+  width: 100%;
 }
 
 .chat-header{
@@ -25,7 +21,7 @@ turbo-frame#room {
   background: #FFFFFF;
   padding: 12px;
   border-top: 1px solid #dddddd;
-  margin-bottom: 6rem;
+  border-radius: 8px;
 }
 
 .chat-messages .trix-content img{
@@ -41,4 +37,30 @@ turbo-frame#room {
 
 .chat-messages .trix-content action-text-attachment {
   padding: 0 !important;
+}
+
+.chat-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.chat-avatar.placeholder {
+  background: #ccc;
+}
+
+.message {
+  margin-bottom: 12px;
+}
+
+.message-content {
+  margin-top: 4px;
+}
+
+.container-content{
+  flex: 1;
+  height: 92vh;
+  width: 100%;
+  border-radius: 0 8px 8px 0;
 }
