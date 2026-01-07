@@ -364,6 +364,7 @@ GEM
       erb
       psych (>= 4.0.0)
       tsort
+    redis (3.3.5)
     regexp_parser (2.11.3)
     reline (0.6.3)
       io-console (~> 0.5)
@@ -520,6 +521,7 @@ DEPENDENCIES
   propshaft
   puma (>= 5.0)
   rails (~> 8.1.1)
+  redis (~> 3.0)
   rubocop
   rubocop-factory_bot
   rubocop-haml
