@@ -144,6 +144,7 @@
     <orderEntry type="library" scope="PROVIDED" name="rb-fsevent (v0.11.2, RVM: ruby-3.2.3) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="rb-inotify (v0.11.1, RVM: ruby-3.2.3) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="rdoc (v6.16.1, RVM: ruby-3.2.3) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="redis (v3.3.5, RVM: ruby-3.2.3) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="regexp_parser (v2.11.3, RVM: ruby-3.2.3) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="reline (v0.6.3, RVM: ruby-3.2.3) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="responders (v3.1.1, RVM: ruby-3.2.3) [gem]" level="application" />
