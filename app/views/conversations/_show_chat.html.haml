@@ -10,13 +10,14 @@
         .modal-content
           .modal-body
             = render 'conversations/conversation_options'
-  .chat-messages#chatroom
-    = render @conversation.messages
-  .chat-input.mt-5
-    = form_with(model: @message, url: messages_path) do |f|
+  #chatroom.chat-messages
+    .chat-messages-inner
+      = render @conversation.messages
+  .chat-input{ data: { controller: "reaction-form" } }
+    = form_with(model: @message, url: messages_path, id: "message_form") do |f|
       .field
         = f.hidden_field :conversation_id, value: @conversation.id
-        = f.rich_textarea :content
+        = f.rich_textarea :content, autofocus: true
 
       .actions
         = f.submit 'Send'
