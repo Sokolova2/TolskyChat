@@ -1,0 +1,11 @@
+- blob = attachment.blob
+
+- if blob.video?
+  %video{ controls: true, style: "max-width: 300px;" }
+    %source{ src: url_for(blob), type: blob.content_type }
+
+- elsif blob.image?
+  = image_tag url_for(blob), style: "max-width: 300px;"
+
+- else
+  = link_to blob.filename, url_for(blob)

@@ -4,5 +4,14 @@
     .message-body
       %b= message.user.login
       .message-content
-        = message.content
+        - message.content.body.attachments.each do |attachment|
+          - blob = attachment.attachable
+          - if blob.video?
+            %video{ controls: true, width: 300, class: "mt-2 rounded" }
+              %source{ src: url_for(blob), type: blob.content_type }
+          - elsif blob.image?
+            = image_tag url_for(blob), width: 300, class: "mt-2"
+          - else
+            = link_to blob.filename, url_for(blob)
+        = message.content.to_s.html_safe
     %p= message.created_at.strftime("%H:%M")
