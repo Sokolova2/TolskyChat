@@ -11,6 +11,12 @@ class ConversationsController < ApplicationController
 
   def show
     @message = Message.new
+    @conversations = Conversation
+                       .joins(:participants)
+                       .where(participants: { user_id: current_user.id })
+                       .order(:created_at)
+
+    @current_conversation = @conversations.first
   end
 
   def new
@@ -27,7 +33,7 @@ class ConversationsController < ApplicationController
         format.html {redirect_to conversations_path}
       end
     else
-      redirect_to new_conversation_path, alert: @conversation_new.errors.full_messages
+      redirect_to new_conversation_path, alert: @conversation_new.errors.full_messages.to_sentence
     end
   end
 

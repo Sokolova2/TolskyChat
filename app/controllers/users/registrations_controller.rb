@@ -34,9 +34,6 @@ module Users
     end
 
     def update_resource(resource, params)
-      if resource.encrypted_password.blank?
-        resource.update_without_password(account_update_params.except(:current_password))
-      end
       if params[:password].present? && params[:password_confirmation].present?
         resource.update_with_password(account_update_params)
       else
