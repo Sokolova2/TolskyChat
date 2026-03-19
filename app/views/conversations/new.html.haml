@@ -1,6 +1,8 @@
 = turbo_frame_tag "modal" do
   %h4.text-center Create new Room
   = form_with(model: @conversation_new) do |form|
+    - if flash[:alert]
+      .alert.alert-message= flash[:alert]
     .d-flex.justify-content-center.mt-5
       .d-block
         .mb-3
