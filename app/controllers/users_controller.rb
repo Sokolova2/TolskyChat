@@ -13,10 +13,11 @@ class UsersController < ApplicationController
 
   def update
     if current_user.deleted_at.present?
+      flash[:notice] = 'Your account is unarchived'
       current_user.update(deleted_at: nil)
     else
+      flash[:alert] = 'Your account is archived'
       current_user.update(deleted_at: Time.current)
-      redirect_to conversations_path
     end
 
     redirect_to edit_user_path(current_user)

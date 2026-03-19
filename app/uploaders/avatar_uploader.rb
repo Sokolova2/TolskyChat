@@ -21,6 +21,9 @@ class AvatarUploader < CarrierWave::Uploader::Base
     process resize_to_fit: [50, 50]
   end
 
+  version :medium do
+    process resize_to_fit: [300, 300]
+  end
   def extension_allowlist
     %w[jpg jpeg png]
   end
