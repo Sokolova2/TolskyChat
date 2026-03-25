@@ -12,11 +12,14 @@ Rails.application.routes.draw do
   root to: 'home#index'
 
   resources :rooms
-  resources :conversations
+
+  resources :conversations do
+    resources :messages
+  end
+
   resources :personal_chats
   resources :contacts
   resources :users
-  resources :messages
   resources :participants
   resources :notifications do
     member do
