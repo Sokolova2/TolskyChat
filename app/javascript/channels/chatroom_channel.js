@@ -23,12 +23,20 @@ document.addEventListener("turbo:load", () => {
         },
 
         received(data) {
-          chatroom.insertAdjacentHTML("beforeend", data.html)
+            if (data.action === "delete"){
+                const el = document.getElementById(`message_${data.message_id}`)
+                if(el) el.remove()
+                return
+            }
 
-          const trix = document.querySelector("trix-editor")
-          if (trix) trix.editor.loadHTML("");
+            if (!data.html) return
 
-          chatroom.scrollTop = chatroom.scrollHeight
+            chatroom.insertAdjacentHTML("beforeend", data.html)
+
+            const trix = document.querySelector("trix-editor")
+            if (trix) trix.editor.loadHTML("");
+
+            chatroom.scrollTop = chatroom.scrollHeight
         }
       }
   )
