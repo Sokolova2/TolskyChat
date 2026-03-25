@@ -14,12 +14,22 @@
     .chat-messages-inner
       = render @conversation.messages.sort_by(&:created_at)
   .chat-input{ data: { controller: "reaction-form" } }
-    = form_with(model: @message, url: messages_path, id: "message_form", html: { multipart: true }, data: { controller: 'emoji-picker' }) do |f|
+    = form_with(model: @message, url: conversation_messages_path(@conversation), id: "message_form", html: { multipart: true }, data: { controller: 'emoji-picker' }) do |f|
       .field
         = f.hidden_field :conversation_id, value: @conversation.id
         = content_tag(:div, "", class: "pickerContainer", data: { emoji_picker_target: "pickerContainer" })
-        = f.rich_textarea :content, autofocus: true, data: { emoji_picker_target: "trixEditor" }
+        = f.rich_textarea :content, autofocus: true, data: { controller: "trix-preview", emoji_picker_target: "trixEditor" }
         = f.file_field :featured_image, id: 'file_input', style: 'display:none'
       .actions
         = f.submit 'Send'
+
+    .modal.fade#videoModal.modal-video{ tabindex: "-1" }
+      .modal-dialog.modal-dialog-centered
+        .modal-content
+          .modal-body
+            #video-modal-preview
+            %button.btn.btn-secondary{ type: "button", "data-bs-dismiss" => "modal" } Cancel
+            %button.btn.btn-dark#sendVideoBtn Send
+
+
 
