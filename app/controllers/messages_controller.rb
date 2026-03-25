@@ -2,6 +2,7 @@
 
 class MessagesController < ApplicationController
   before_action :set_conversation, only: :create
+  before_action :set_conversation_from_params, only: :destroy
 
   def create
     message = Message.new(message_params)
@@ -19,10 +20,29 @@ class MessagesController < ApplicationController
     head :ok
   end
 
+  def destroy
+    message = @conversation.messages.find(params[:id])
+    return head :forbidden unless message.user == current_user
+
+    message.destroy
+
+    ChatroomChannel.broadcast_to(
+      @conversation,
+      action: 'delete',
+      message_id: message.id
+    )
+
+    head :ok
+  end
+
   private
 
   def set_conversation
     @conversation = Conversation.find(message_params[:conversation_id])
+  end
+
+  def set_conversation_from_params
+    @conversation = Conversation.find(params[:conversation_id])
   end
 
   def message_params
