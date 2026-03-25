@@ -29,6 +29,6 @@
         - if clean_text.present?
           = clean_text
       .context-menu.hidden
-        %button{ data: { action: "click->context-menu#delete" } } Delete
+        %button{ data: { action: "click->context-menu#delete" }, class: 'btn text-white' } Delete
     %p= message.created_at.strftime("%H:%M")
 
