@@ -2,3 +2,42 @@
   background-color: #261B23;
   height: 2.4rem;
 }
+
+.image-wrapper {
+  position: relative;
+  display: inline-block;
+}
+
+.image-wrapper img {
+  display: block;
+  max-width: 100%;
+  max-height: 90vh;
+}
+
+.download-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  color: white;
+  padding: 8px;
+  text-decoration: none;
+  font-size: 18px;
+}
+
+.download-btn:hover {
+  background: rgba(0,0,0,0.8);
+}
+
+.context-menu {
+  position: fixed;
+  background: #1e1e1e;
+  color: white;
+  border-radius: 8px;
+  padding: 6px 0;
+  z-index: 9999;
+  min-width: 140px;
+}
+
+.hidden {
+  display: none !important;
+}
