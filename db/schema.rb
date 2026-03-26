@@ -73,11 +73,12 @@ ActiveRecord::Schema[8.1].define(version: 2026_01_06_122023) do
   end
 
   create_table "messages", force: :cascade do |t|
-    t.bigint "conversation_id", null: false
     t.datetime "created_at", null: false
     t.boolean "read", default: false, null: false
+    t.bigint "room_id", null: false
     t.datetime "updated_at", null: false
     t.bigint "user_id", null: false
+    t.index ["room_id"], name: "index_messages_on_room_id"
     t.index ["user_id"], name: "index_messages_on_user_id"
   end
 
@@ -94,11 +95,12 @@ ActiveRecord::Schema[8.1].define(version: 2026_01_06_122023) do
   end
 
   create_table "participants", force: :cascade do |t|
-    t.bigint "conversation_id", null: false
     t.datetime "created_at", null: false
     t.string "role", default: "Member", null: false
+    t.bigint "room_id", null: false
     t.datetime "updated_at", null: false
     t.bigint "user_id", null: false
+    t.index ["room_id"], name: "index_participants_on_room_id"
     t.index ["user_id"], name: "index_participants_on_user_id"
   end
 
@@ -142,11 +144,11 @@ ActiveRecord::Schema[8.1].define(version: 2026_01_06_122023) do
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "contacts", "users", column: "receiver_id"
   add_foreign_key "contacts", "users", column: "sender_id"
-  add_foreign_key "messages", "rooms", column: "conversation_id"
+  add_foreign_key "messages", "rooms"
   add_foreign_key "messages", "users"
   add_foreign_key "notifications", "contacts"
   add_foreign_key "notifications", "users", column: "receiver_id"
   add_foreign_key "notifications", "users", column: "sender_id"
-  add_foreign_key "participants", "rooms", column: "conversation_id"
+  add_foreign_key "participants", "rooms"
   add_foreign_key "participants", "users"
 end
