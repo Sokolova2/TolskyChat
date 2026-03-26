@@ -5,9 +5,7 @@ class ConversationsController < ApplicationController
   before_action :set_conversation, only: %i[show destroy]
   before_action :set_participants, only: %i[show]
 
-  def index
-    @conversations = Conversation.all
-  end
+  def index; end
 
   def show
     @message = Message.new
@@ -58,6 +56,6 @@ class ConversationsController < ApplicationController
   end
 
   def set_participants
-    @participants = Participant.where(conversation_id: @conversation.id).order(role: :desc)
+    @participants = @conversation.participants.order(role: :desc)
   end
 end

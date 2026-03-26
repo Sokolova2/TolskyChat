@@ -1,33 +1,37 @@
 # frozen_string_literal: true
 
 class MessagesController < ApplicationController
-  before_action :set_conversation, only: :create
-  before_action :set_conversation_from_params, only: :destroy
+  before_action :set_room, only: :create
+  before_action :set_room_from_params, only: :destroy
 
   def create
-    message = Message.new(message_params)
-    message.user = current_user
+    message = @room.messages.create(message_params.merge(user: current_user))
 
     return unless message.save
 
+    message.reload
+
     ChatroomChannel.broadcast_to(
-      @conversation,
+      @room,
       html: render_to_string(
         partial: 'messages/message',
         locals: { message: message }
       )
     )
-    head :ok
+    respond_to do |format|
+      format.turbo_stream { head :ok }
+      format.html { head :ok }
+    end
   end
 
   def destroy
-    message = @conversation.messages.find(params[:id])
+    message = @room.messages.find(params[:id])
     return head :forbidden unless message.user == current_user
 
     message.destroy
 
     ChatroomChannel.broadcast_to(
-      @conversation,
+      @room,
       action: 'delete',
       message_id: message.id
     )
@@ -37,15 +41,15 @@ class MessagesController < ApplicationController
 
   private
 
-  def set_conversation
-    @conversation = Conversation.find(message_params[:conversation_id])
+  def set_room
+    @room = Room.find(params[:room_id])
   end
 
-  def set_conversation_from_params
-    @conversation = Conversation.find(params[:conversation_id])
+  def set_room_from_params
+    @room = Room.find(params[:room_id])
   end
 
   def message_params
-    params.require(:message).permit(:content, :conversation_id, :featured_image)
+    params.require(:message).permit(:content, :room_id, :featured_image)
   end
 end
