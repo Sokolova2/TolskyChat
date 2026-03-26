@@ -11,11 +11,11 @@ Rails.application.routes.draw do
 
   root to: 'home#index'
 
-  resources :rooms
-
-  resources :conversations do
+  resources :rooms do
     resources :messages
   end
+
+  resources :conversations
 
   resources :personal_chats
   resources :contacts
