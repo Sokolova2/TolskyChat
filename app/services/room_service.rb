@@ -10,9 +10,18 @@ class RoomService
     conversation = Conversation.create(@params)
 
     if conversation.save
-      conversation.participants.create(user: @user, conversation: conversation, role: 'Owner')
+      conversation.participants.create(user: @user, room: conversation, role: 'Owner')
     end
 
     conversation
+  end
+
+  def call_chat(second_user)
+    chat = PersonalChat.create(@params)
+
+    if chat.save
+      chat.participants.create(user: @user, room: chat)
+      chat.participants.create(user: second_user, room: chat)
+    end
   end
 end
