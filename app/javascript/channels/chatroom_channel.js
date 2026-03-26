@@ -6,15 +6,18 @@ document.addEventListener("turbo:load", () => {
       chatroom.scrollTop = chatroom.scrollHeight
   }
 
-  const match = window.location.pathname.match(/conversations\/(\d+)/)
+  const match =
+      window.location.pathname.match(/rooms\/(\d+)/)||
+      window.location.pathname.match(/conversations\/(\d+)/)
+
   if (!match) return
 
-  const conversationId = match[1];
+  const roomId = match[1];
 
   consumer.subscriptions.create(
       {
         channel: "ChatroomChannel",
-        conversation_id: conversationId
+        room_id: roomId
       },
       {
         connected(){

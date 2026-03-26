@@ -3,7 +3,7 @@ import { Controller } from "@hotwired/stimulus"
 // Connects to data-controller="context-menu"
 export default class extends Controller {
   static values = {
-    conversationId: Number
+    roomId: Number
   }
 
   connect() {
@@ -38,7 +38,7 @@ export default class extends Controller {
   delete(){
     const messageId = this.element.id.replace("message_", "")
 
-    fetch(`/conversations/${this.conversationIdValue}/messages/${messageId}`, {
+    fetch(`/rooms/${this.roomIdValue}/messages/${messageId}`, {
       method: "DELETE",
       headers: {
         "X-CSRF-Token": document.querySelector('meta[name="csrf-token"]').content
