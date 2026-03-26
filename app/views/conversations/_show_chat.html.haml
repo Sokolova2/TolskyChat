@@ -1,10 +1,14 @@
 .chat-container.container-content.bg-light
   .chat-header.shadow-lg
     .d-flex.justify-content-between.align-items-center.ms-3.me-3.p-3
-      %h5= @conversation.name
+      .d-flex.gap-2
+        %h5= @conversation.name
+        - if @conversation.is_private?
+          %p.text-secondary private
+        - elsif @conversation
+          %p.text-secondary public
       %button.btn.btn-outline-dark.ms-1{ 'data-bs-toggle' => 'modal', 'data-bs-target' => '#conversationModal' }
         %i.bi.bi-three-dots
-
     .modal.fade#conversationModal{ tabindex: '-1', 'aria-hidden' => 'true' }
       .modal-dialog
         .modal-content
@@ -14,9 +18,8 @@
     .chat-messages-inner
       = render @conversation.messages.sort_by(&:created_at)
   .chat-input{ data: { controller: "reaction-form" } }
-    = form_with(model: @message, url: conversation_messages_path(@conversation), id: "message_form", html: { multipart: true }, data: { controller: 'emoji-picker' }) do |f|
+    = form_with(model: @message, url: room_messages_path(@conversation), id: "message_form", html: { multipart: true }, data: { controller: 'emoji-picker' }) do |f|
       .field
-        = f.hidden_field :conversation_id, value: @conversation.id
         = content_tag(:div, "", class: "pickerContainer", data: { emoji_picker_target: "pickerContainer" })
         = f.rich_textarea :content, autofocus: true, data: { controller: "trix-preview", emoji_picker_target: "trixEditor" }
         = f.file_field :featured_image, id: 'file_input', style: 'display:none'

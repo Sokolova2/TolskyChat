@@ -1,0 +1,12 @@
+.d-flex.align-items-center.ps-2.gap-5
+  = link_to conversation_path(conversation),
+    class: "conversation-link text-decoration-none text-light" do
+    .name-conversation
+      %p.p-0.m-0= conversation.name
+
+  = button_to conversation_path(conversation),
+    method: :delete,
+    data: { turbo_confirm: 'Delete?' },
+    class: 'btn text-light' do
+    %i.bi.bi-trash3
+

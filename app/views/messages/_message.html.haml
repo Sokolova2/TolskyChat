@@ -1,34 +1,17 @@
-.message{ id: "message_#{message.id}", data: { controller: "context-menu", context_menu_conversation_id_value: message.conversation_id } }
+.message{ id: "message_#{message.id}", data: { controller: "context-menu", context_menu_room_id_value: message.room_id } }
   .d-flex.gap-2.align-items-start.ps-3
     = image_tag message.user.avatar.url, class: "chat-avatar"
     .message-body
       %b= message.user.login
       .message-content
         - message.content.body.attachments.each do |attachment|
-          - blob = attachment.attachable
-          - if blob.video?
-            %video{ controls: true, width: 300, class: "mt-2 rounded" }
-              %source{ src: url_for(blob), type: blob.content_type }
-          - elsif blob.image?
-            - modal_id = "modal_#{blob.id}"
-            %button.btn{"data-bs-target" => "##{modal_id}", "data-bs-toggle" => "modal", :type => "button"}
-              = image_tag url_for(blob), width: 300, class: "mt-2"
-            .modal.fade.image-modal{id: modal_id, "aria-hidden" => "true", :tabindex => "-1", "data-bs-dismiss" => "modal"}
-              .modal-dialog.modal-dialog-centered
-                .modal-content
-                  .modal-body{ style: "position: relative;" }
-                    .image-wrapper
-                      = link_to url_for(blob), download: blob.filename.to_s, class: "download-btn" do
-                        %i.bi.bi-download.fs-3
-                      = image_tag url_for(blob), class: "img-fluid"
-          - else
-            = link_to blob.filename, url_for(blob)
+          = render 'messages/blobs', attachment: attachment
         - text = message.content.body.to_plain_text
         - clean_text = text.lines.reject { |line| line.match?(/^\[.*\.(jpg|jpeg|png|gif|webp|mp4|mov|webm)\]$/i) }.join.strip
 
         - if clean_text.present?
           = clean_text
       .context-menu.hidden
-        %button{ data: { action: "click->context-menu#delete" }, class: 'btn text-white' } Delete
+        %button{ data: { action: "click->context-menu#delete" }, class: 'btn btn-outline-dark text-white' } Delete
     %p= message.created_at.strftime("%H:%M")
 
