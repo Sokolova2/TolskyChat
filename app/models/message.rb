@@ -2,7 +2,7 @@
 
 class Message < ApplicationRecord
   belongs_to :user
-  belongs_to :conversation, class_name: 'Room', foreign_key: :conversation_id
+  belongs_to :room
 
   has_one_attached :featured_image
   has_rich_text :content
