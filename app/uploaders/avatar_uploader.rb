@@ -10,7 +10,7 @@ class AvatarUploader < CarrierWave::Uploader::Base
   end
 
   def default_url(*_args)
-    ActionController::Base.helpers.asset_path('avatar.png')
+    ActionController::Base.helpers.asset_path('avatar.svg')
   end
 
   def size_range
