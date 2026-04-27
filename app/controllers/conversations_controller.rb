@@ -1,21 +1,9 @@
 # frozen_string_literal: true
 
 class ConversationsController < ApplicationController
-  before_action :set_conversations, only: %i[index show]
-  before_action :set_conversation, only: %i[show destroy]
-  before_action :set_participants, only: %i[show]
+  before_action :set_conversations, only: %i[index]
 
   def index; end
-
-  def show
-    @message = Message.new
-    @conversations = Conversation
-                       .joins(:participants)
-                       .where(participants: { user_id: current_user.id })
-                       .order(:created_at)
-
-    @current_conversation = @conversations.first
-  end
 
   def new
     @conversation_new = Conversation.new
@@ -48,14 +36,6 @@ class ConversationsController < ApplicationController
   end
 
   def set_conversations
-    @conversations = Conversation.all
-  end
-
-  def set_conversation
-    @conversation = Conversation.find(params[:id])
-  end
-
-  def set_participants
-    @participants = @conversation.participants.order(role: :desc)
+    @conversations = Room.all
   end
 end
