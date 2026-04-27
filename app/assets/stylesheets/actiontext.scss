@@ -933,3 +933,16 @@ trix-editor .attachment--preview img{
 .trix-content .attachment__caption {
   display: none;
 }
+
+.audio-controls {
+  position: absolute;
+  top: -60;
+  right: 10px;
+  background: white;
+  padding: 8px;
+  border-radius: 12px;
+  box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+  display: flex;
+  gap: 8px;
+  z-index: 10;
+}

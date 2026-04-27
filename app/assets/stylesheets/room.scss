@@ -55,3 +55,19 @@
   flex: 1;
   padding-right: 7rem;
 }
+
+.avatar-initial {
+  width: 42px;
+  height: 42px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: #2c2c2c;
+  color: #fff;
+
+  border-radius: 6px;
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 1;
+}
