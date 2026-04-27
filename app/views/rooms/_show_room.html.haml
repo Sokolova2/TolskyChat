@@ -1,0 +1,44 @@
+.chat-container.container-content.bg-light
+  .chat-header.shadow-lg
+    .d-flex.justify-content-between.align-items-center.ms-3.me-3.p-3
+      .d-flex.gap-2
+        %h5= room.name
+        - if room.is_a?(Conversation)
+          - if room.is_private?
+            %p.text-secondary private
+          - elsif room
+            %p.text-secondary public
+      - if room.is_a?(Conversation)
+        %button.btn.btn-outline-dark.ms-1{ 'data-bs-toggle' => 'modal', 'data-bs-target' => '#conversationModal' }
+          %i.bi.bi-three-dots
+        .modal.fade#conversationModal{ tabindex: '-1', 'aria-hidden' => 'true' }
+          .modal-dialog
+            .modal-content
+              .modal-body
+                = render 'rooms/conversation_options', room: room
+      - else
+        - second_user = room.participants.includes(:user).map(&:user).find{ |u| u.id != current_user.id }
+        - contact = Contact.find_by(sender: current_user, receiver: second_user) || Contact.find_by(sender: second_user, receiver: current_user)
+        = link_to contact_path(contact), data: { turbo_frame: "modal" }, class: 'menu-icon' do
+          %i.bi.bi-three-dots.btn.btn-outline-dark.ms-1
+
+  #chatroom.chat-messages
+    .chat-messages-inner
+      = render room.messages.sort_by(&:created_at)
+  .chat-input{ data: { controller: "reaction-form" } }
+    = form_with(model: @message, url: room_messages_path(room), id: "message_form", html: { multipart: true }, data: { controller: 'emoji-picker' }) do |f|
+      .field
+        = content_tag(:div, "", class: "pickerContainer", data: { emoji_picker_target: "pickerContainer" })
+        = f.rich_textarea :content, autofocus: true, data: { controller: "trix-preview", emoji_picker_target: "trixEditor" }
+        = f.file_field :featured_image, id: 'file_input', style: 'display:none'
+      .actions
+        = f.submit 'Send'
+
+    .modal.fade#videoModal.modal-video{ tabindex: "-1" }
+      .modal-dialog.modal-dialog-centered
+        .modal-content
+          .modal-body
+            #video-modal-preview
+            %button.btn.btn-secondary{ type: "button", "data-bs-dismiss" => "modal" } Cancel
+            %button.btn.btn-dark#sendVideoBtn Send
+

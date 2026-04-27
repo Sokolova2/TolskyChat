@@ -2,8 +2,6 @@
   .conversations-block.pt-2
     .me-5
       %h5.text-light.ps-2.pb-3.me-5 TolskyChat
-    = turbo_frame_tag "conversations_list" do
-      - (@conversations || []).each do |conversation|
-        = render 'conversations/conversation', conversation: conversation, data: { turbo_frame: "_top" }
-      - (@personal_chats || []).each do |chat|
-        = render 'personal_chats/personal_chat', chat: chat, data: { turbo_frame: "_top" }
+    = turbo_frame_tag "room_list" do
+      - @rooms.each do |room|
+        = render 'navbar/rooms', room: room

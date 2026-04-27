@@ -7,7 +7,7 @@
     %p.fs-2.fw-bolder Tolsky
   .d-flex.justify-content-center.align-items-center
     .d-block
-      = form_for(resource, as: resource_name, url: session_path(resource_name)) do |f|
+      = form_for(resource, as: resource_name, url: session_path(resource_name), data: { turbo: false }) do |f|
         .mb-3.mt-3
           .field
             = f.email_field :email, autofocus: true, placeholder: 'Email', autocomplete: 'email', class: 'form-control rounded-5'

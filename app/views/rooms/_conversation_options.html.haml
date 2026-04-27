@@ -1,0 +1,42 @@
+= turbo_frame_tag "modal" do
+  .d-flex.justify-content-between.align-items-center.m-3
+    %h4= room.name
+    - if room.is_private?
+      %p private
+    - else
+      %p public
+
+  .m-3
+    %h5.ms-2.mb-3 Members
+    - room.participants.each do |participant|
+      .d-flex.justify-content-between
+        .d-flex.gap-2.align-items-center.mb-2
+          = image_tag participant.user.avatar.url, size: 45
+          %p= participant.user.login
+        %p= participant.role
+
+  .d-flex.gap-2.align-items-center.m-3
+    %a.btn.btn-outline-dark{ 'aria-controls' => 'collapseExample', 'aria-expanded' => 'false', 'data-bs-toggle' => 'collapse', :href => '#collapseExample', :role => 'button' }
+      %i.bi.bi-people.fs-4
+    %p.fs-5 Add members
+  #collapseExample.collapse
+    .card.card-body.mt-3
+      = form_with(model: Participant.new, url: participants_path, data: { turbo: false }) do |f|
+        = f.hidden_field :room_id, value: room.id
+
+        - contacts = current_user.sent_contacts.or(current_user.received_contacts)
+
+        - contacts.each do |contact|
+          - next unless contact.approved?
+
+          - user = contact.sender == current_user ? contact.receiver : contact.sender
+
+          .form-check
+            = check_box_tag 'user_ids[]', user.id, false,
+              class: 'form-check-input',
+              id: "user_#{user.id}"
+            = image_tag user.avatar.url, size: 40
+            = f.label "participant_user_id_#{user.id}", user.login, class: 'form-check-label'
+
+        .actions.mt-3.text-center
+          = f.submit 'Add user', class: 'btn btn-outline-dark form-control rounded-4 w-25'

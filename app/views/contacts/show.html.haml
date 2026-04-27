@@ -19,4 +19,4 @@
     = button_to 'Unlock', contact_path(@contact), method: :patch, params: { blocked: false },
   class: 'text-decoration-none text-white btn btn-dark'
 
-  = button_to 'Create chat'
+  = button_to 'Create chat', personal_chats_path, method: :post, params: { personal_chat: { second_user_id: @user.id } }
