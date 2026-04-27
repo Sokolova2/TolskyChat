@@ -3,5 +3,5 @@
     .me-5
       %h5.text-light.ps-2.pb-3.me-5 TolskyChat
     = turbo_frame_tag "room_list" do
-      - @rooms.each do |room|
+      - rooms.each do |room|
         = render 'navbar/rooms', room: room

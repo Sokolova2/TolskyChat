@@ -2,7 +2,7 @@
 
 .page-bg
   .d-flex
-    = render 'navbar/room_list'
+    = render 'navbar/room_list', rooms: @rooms
     .room-wrapper
       = render 'rooms/show_room', room: @room
 

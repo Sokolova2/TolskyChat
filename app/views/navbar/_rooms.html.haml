@@ -6,11 +6,28 @@
       .name-conversation
         .d-flex.gap-2.align-items-center
           .avatar-wrapper
-            - if room.is_a?(PersonalChat)
-              = image_tag room.display_avatar(current_user)&.url, size: 42, class: 'rounded-2'
+            - if room.is_a?(PersonalChat) && room.other_user(current_user).present?
+              - user = room.other_user(current_user)
+
+              - if user&.avatar&.present?
+                = image_tag user.avatar.url, size: 42, class: 'rounded-2'
+              - else
+                %span.bg-dark.text-white.text-center.align-content-center.pt-2.pb-2.ps-3.pe-3.rounded-2.fs-5
+                  = user.login.to_s.first.upcase
+
+            - elsif room.is_a?(PersonalChat)
+              = image_tag "avatar.svg", size: 42, class: "rounded-2"
+
             - else
-              %span.bg-dark.text-white.text-center.align-content-center.pt-2.pb-2.ps-3.pe-3.rounded-2.fs-5= room.display_name(current_user)
-          %p.p-0.m-0= room.display_name(current_user)
+              %span.avatar-initial= room.display_name(current_user).first.upcase
+
+          %p.p-0.m-0
+            - if room.is_a?(PersonalChat) && room.other_user(current_user).present?
+              = room.other_user(current_user)&.login
+            - elsif room.is_a?(PersonalChat)
+              %span.text-white User is deleted
+            - else
+              %p.pt-2= room.display_name(current_user)
 
     = button_to room_path(room),
       method: :delete,

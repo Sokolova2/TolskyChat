@@ -1,5 +1,12 @@
 - blob = attachment.attachable
-- if blob.video?
+
+
+- if blob.audio?
+  .audio-message.mt-2
+    %p.text-muted.small= blob.filename.to_s
+    %audio{ controls: true }
+      %source{ src: url_for(blob), type: blob.content_type }
+- elsif blob.video?
   %video{ controls: true, width: 300, class: "mt-2 rounded" }
     %source{ src: url_for(blob), type: blob.content_type }
 - elsif blob.image?

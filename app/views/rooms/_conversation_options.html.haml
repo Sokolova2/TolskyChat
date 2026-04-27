@@ -11,7 +11,7 @@
     - room.participants.each do |participant|
       .d-flex.justify-content-between
         .d-flex.gap-2.align-items-center.mb-2
-          = image_tag participant.user.avatar.url, size: 45
+          = image_tag participant.user.avatar.url, size: 45, class: 'rounded-circle'
           %p= participant.user.login
         %p= participant.role
 
