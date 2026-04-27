@@ -3,21 +3,30 @@ import { Controller } from "@hotwired/stimulus"
 export default class extends Controller {
   connect() {
     this.element.addEventListener("trix-attachment-add", (event) => {
-      const attachment = event.attachment
+      const file = event.attachment.file
+      if (!file) return
 
-      if (attachment.file && attachment.file.type.startsWith("video/")) {
+      if (file.type.startsWith("video/")) {
         event.preventDefault()
+        this.openVideoModal(file)
+      }
 
-        this.openModal(attachment.file)
+      if (file.type.startsWith("audio/")) {
+        event.preventDefault()
+        this.openAudioModal(file)
       }
     })
 
     document.getElementById("sendVideoBtn")?.addEventListener("click", () => {
       this.send()
     })
+
+    document.getElementById("sendAudioBtn")?.addEventListener("click", () => {
+      this.send()
+    })
   }
 
-  openModal(file) {
+  openVideoModal(file) {
     this.file = file
     const url = URL.createObjectURL(file)
 
@@ -31,6 +40,25 @@ export default class extends Controller {
     modal.show()
   }
 
+  openAudioModal(file) {
+    this.file = file
+    const url = URL.createObjectURL(file)
+
+    const preview = document.getElementById("audio-modal-preview")
+
+    preview.innerHTML = `
+    <div style="display:flex; flex-direction:column; gap:10px;">
+      <p style="margin:0;"><strong>${file.name}</strong></p>
+
+      <audio controls style="width:100%;">
+        <source src="${url}" type="${file.type}">
+      </audio>
+    </div>
+  `
+
+    new bootstrap.Modal(document.getElementById("audioModal")).show()
+  }
+
   send() {
     const form = document.getElementById("message_form")
 
@@ -42,11 +70,12 @@ export default class extends Controller {
   }
 
   clearModal() {
-    const preview = document.getElementById("video-modal-preview")
-    if (preview) preview.innerHTML = ""
+    document.getElementById("video-modal-preview").innerHTML = ""
+    document.getElementById("audio-modal-preview").innerHTML = ""
+    const videoModal = bootstrap.Modal.getInstance(document.getElementById("videoModal"))
+    videoModal?.hide()
 
-    const modalEl = document.getElementById("videoModal")
-    const modal = bootstrap.Modal.getInstance(modalEl)
-    modal?.hide()
+    const audioModal = bootstrap.Modal.getInstance(document.getElementById("audioModal"))
+    audioModal?.hide()
   }
 }
