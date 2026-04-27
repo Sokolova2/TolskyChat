@@ -3,6 +3,7 @@
 class RoomsController < ApplicationController
   before_action :authenticate_user!
   before_action :set_rooms, only: %i[index show]
+  before_action :set_room, only: :destroy
 
   def index
     conversation_set
@@ -18,6 +19,12 @@ class RoomsController < ApplicationController
     elsif @room.is_a?(PersonalChat)
       @participants = @room.participants
     end
+  end
+
+  def destroy
+    @room.destroy
+
+    redirect_to rooms_path
   end
 
   private
@@ -43,5 +50,9 @@ class RoomsController < ApplicationController
     .joins(:participants)
     .where(participants: { user_id: current_user.id })
     .distinct
+  end
+
+  def set_room
+    @room = Room.find(params[:id])
   end
 end

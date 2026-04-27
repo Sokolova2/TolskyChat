@@ -16,17 +16,10 @@ class ConversationsController < ApplicationController
     if @conversation_new.save
       respond_to do |format|
         format.turbo_stream
-        format.html {redirect_to conversations_path}
       end
     else
       redirect_to new_conversation_path, alert: @conversation_new.errors.full_messages.to_sentence
     end
-  end
-
-  def destroy
-    @conversation.destroy
-
-    redirect_to rooms_path
   end
 
   private
@@ -36,6 +29,6 @@ class ConversationsController < ApplicationController
   end
 
   def set_conversations
-    @conversations = Room.all
+    @conversations = current_user.rooms
   end
 end

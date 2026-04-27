@@ -1,9 +1,7 @@
 # frozen_string_literal: true
 
 class PersonalChatsController < ApplicationController
-  before_action :set_chat, only: :show
-  before_action :set_participants, only: :show
-  before_action :set_chats, only: %i[index show]
+  before_action :set_chats, only: %i[index]
 
   def index; end
 
@@ -14,14 +12,11 @@ class PersonalChatsController < ApplicationController
     if @personal_chat_new.persisted?
       respond_to do |format|
         format.turbo_stream
-        format.html {redirect_to personal_chat_path(@personal_chat_new)}
       end
     else
       redirect_to personal_chat_path, alert: @personal_chat_new.errors.full_messages.to_sentence
     end
   end
-
-  def destroy; end
 
   private
 
@@ -30,6 +25,6 @@ class PersonalChatsController < ApplicationController
   end
 
   def set_chats
-    @conversations = Room.all
+    @personal_chats = current_user.rooms
   end
 end

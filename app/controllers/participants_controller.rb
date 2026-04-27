@@ -8,16 +8,16 @@ class ParticipantsController < ApplicationController
       @conversation.participants.find_or_create_by(user_id: id)
     end
 
-    redirect_to rooms_path
+    redirect_to room_path(@conversation)
   end
 
   private
 
   def set_conversation
-    @conversation = Conversation.find(participant_params[:conversation_id])
+    @conversation = Room.find(participant_params[:room_id])
   end
 
   def participant_params
-    params.require(:participant).permit(:user_id, :conversation_id)
+    params.require(:participant).permit(:user_id, :room_id)
   end
 end

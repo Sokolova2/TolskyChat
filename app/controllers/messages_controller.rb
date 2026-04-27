@@ -5,22 +5,23 @@ class MessagesController < ApplicationController
   before_action :set_room_from_params, only: :destroy
 
   def create
-    message = @room.messages.create(message_params.merge(user: current_user))
+    message = @room.messages.new(message_params.merge(user: current_user))
 
-    return unless message.save
-
-    message.reload
-
-    ChatroomChannel.broadcast_to(
-      @room,
-      html: render_to_string(
-        partial: 'messages/message',
-        locals: { message: message }
+    if message.save
+      ChatroomChannel.broadcast_to(
+        @room,
+        html: render_to_string(
+          partial: 'messages/message',
+          formats: [:html],
+          locals: { message: message }
+        )
       )
-    )
-    respond_to do |format|
-      format.turbo_stream { head :ok }
-      format.html { head :ok }
+      respond_to do |format|
+        format.turbo_stream { head :ok }
+        format.html { head :ok }
+      end
+    else
+      head :unprocessable_entity
     end
   end
 
@@ -50,6 +51,6 @@ class MessagesController < ApplicationController
   end
 
   def message_params
-    params.require(:message).permit(:content, :room_id, :featured_image)
+    params.require(:message).permit(:content, :room_id, :featured_image, :audio_file)
   end
 end
