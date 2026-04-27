@@ -338,6 +338,7 @@ trix-editor .attachment__metadata {
     white-space: nowrap; }
 
 .trix-content {
+  display: block;
   line-height: 1.5;
   overflow-wrap: break-word;
   word-break: break-word; }
@@ -375,7 +376,9 @@ trix-editor .attachment__metadata {
     overflow-x: auto; }
   .trix-content img {
     width: 100%;
-    height: auto; }
+    height: auto;
+    border-radius: 10px;
+  }
   .trix-content .attachment {
     display: flex;
     position: relative;
@@ -921,4 +924,12 @@ trix-editor .attachment--preview img{
   height: 100px;
   object-fit: cover;
   border-radius: 8px;
+}
+
+.trix-content figcaption {
+  display: none;
+}
+
+.trix-content .attachment__caption {
+  display: none;
 }
