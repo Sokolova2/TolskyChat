@@ -62,6 +62,7 @@ GEM
       activerecord (= 8.1.1)
       activesupport (= 8.1.1)
       marcel (~> 1.0)
+    activestorage-cloudinary-service (0.2.3)
     activesupport (8.1.1)
       base64
       bigdecimal
@@ -507,6 +508,7 @@ PLATFORMS
   x86_64-linux-musl
 
 DEPENDENCIES
+  activestorage-cloudinary-service
   bootsnap
   brakeman
   bundler-audit

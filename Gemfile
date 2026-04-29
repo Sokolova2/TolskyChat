@@ -90,3 +90,5 @@ gem 'dotenv'
 gem 'mini_magick'
 gem 'redis', '~> 3.0'
 gem 'cloudinary'
+
+gem "activestorage-cloudinary-service"
