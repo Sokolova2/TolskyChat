@@ -10,6 +10,3 @@ production:
   service: Disk
   root: <%= Rails.root.join("storage") %>
 
-cloudinary:
-  service: Cloudinary
-  folder: tolskychat
