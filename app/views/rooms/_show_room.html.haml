@@ -22,19 +22,24 @@
           = link_to contact_path(contact), data: { turbo_frame: "modal" }, class: 'menu-icon' do
             %i.bi.bi-three-dots.btn.btn-outline-dark.ms-1
 
-        %button.btn.btn-primary{ data: { action: "voice#start",
-          voice_other_user_id: second_user.id,
-          voice_caller_id: current_user.id
+        %div{ :data => {controller: "voice",
+          voice_current_user_id_value: current_user.id,
+          voice_other_user_id_value: second_user.id,
+          voice_caller_id_value: current_user.id}
           }
-        }
-          📞 Start Call
-        %button#returnToCall.btn.btn-success.d-none{ data: { action: "voice#returnToCall" } }
-          🔙 Back to call
-        %p{ data: { voice_target: "status" } }
-          Idle
-        = render 'rooms/outgoing', second_user: second_user
-        = render 'rooms/incoming', second_user: second_user
-        = render 'rooms/active', second_user: second_user
+          %button.btn.btn-primary{ data: { action: "voice#start",
+            voice_other_user_id: second_user.id,
+            voice_caller_id: current_user.id
+            }
+          }
+            📞 Start Call
+          %button#returnToCall.btn.btn-success.d-none{ data: { action: "voice#returnToCall" } }
+            🔙 Back to call
+          %p{ data: { voice_target: "status" } }
+            Idle
+          = render 'rooms/outgoing', second_user: second_user
+          = render 'rooms/incoming', second_user: second_user
+          = render 'rooms/active', second_user: second_user
   #chatroom.chat-messages
     .chat-messages-inner
       = render room.messages.sort_by(&:created_at)
