@@ -1,0 +1,23 @@
+.modal.fade#activeCallModal{ tabindex: "-1" }
+  .modal-dialog.modal-dialog-centered
+    .modal-content.p-3.text-center
+
+      .mb-2.d-flex.justify-content-center
+        %img{ src: second_user.avatar_url, width: 400 }
+
+      %h5= second_user.login
+
+      %p.text-success{ data: { voice_target: "status" } }
+        🔊 In call
+
+      %h6#callTimer 00:00
+
+      .d-flex.justify-content-center.gap-2.mt-3
+
+        %button.btn.btn-warning{ data: { action: "voice#toggleMute" } }
+          %i.bi.bi-mic
+          Mute
+
+        %button.btn.btn-danger{ data: { action: "voice#endCall" } }
+          %i.bi.bi-x-lg
+          End

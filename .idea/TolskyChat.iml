@@ -54,6 +54,7 @@
     <orderEntry type="library" scope="TEST" name="bundler-audit (v0.9.3, RVM: ruby-3.2.3) [gem]" level="application" />
     <orderEntry type="library" scope="TEST" name="capybara (v3.40.0, RVM: ruby-3.2.3) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="carrierwave (v3.1.2, RVM: ruby-3.2.3) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="cloudinary (v2.4.5, RVM: ruby-3.2.3) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="concurrent-ruby (v1.3.5, RVM: ruby-3.2.3) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="connection_pool (v2.5.5, RVM: ruby-3.2.3) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="crass (v1.0.6, RVM: ruby-3.2.3) [gem]" level="application" />
@@ -69,6 +70,8 @@
     <orderEntry type="library" scope="PROVIDED" name="erubis (v2.7.0, RVM: ruby-3.2.3) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="et-orbi (v1.4.0, RVM: ruby-3.2.3) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="faraday (v2.14.0, RVM: ruby-3.2.3) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="faraday-follow_redirects (v0.5.0, RVM: ruby-3.2.3) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="faraday-multipart (v1.2.0, RVM: ruby-3.2.3) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="faraday-net_http (v3.4.2, RVM: ruby-3.2.3) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="ffi (v1.17.2, RVM: ruby-3.2.3) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="fugit (v1.12.1, RVM: ruby-3.2.3) [gem]" level="application" />
@@ -101,6 +104,7 @@
     <orderEntry type="library" scope="PROVIDED" name="minitest (v5.26.2, RVM: ruby-3.2.3) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="msgpack (v1.8.0, RVM: ruby-3.2.3) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="multi_xml (v0.7.2, RVM: ruby-3.2.3) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="multipart-post (v2.4.1, RVM: ruby-3.2.3) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="net-http (v0.8.0, RVM: ruby-3.2.3) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="net-imap (v0.5.12, RVM: ruby-3.2.3) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="net-pop (v0.1.2, RVM: ruby-3.2.3) [gem]" level="application" />

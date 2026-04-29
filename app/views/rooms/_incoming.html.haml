@@ -1,0 +1,16 @@
+.modal.fade#incomingCallModal
+  .modal-dialog.modal-dialog-centered
+    .modal-content.p-3.text-center
+      .d-flex.justify-content-center
+        %img.mb-2{ src: second_user.avatar_url, width: 400 }
+      %h5= second_user.login
+      %p.text-muted is calling you...
+
+      %div.d-flex.gap-2.justify-content-center
+        %button.btn.btn-success{ data: { action: "voice#acceptCall" } }
+          %i.bi.bi-telephone
+          Accept
+
+        %button.btn.btn-danger{ data: { action: "voice#declineCall" } }
+          %i.bi.bi-x-lg
+          Decline

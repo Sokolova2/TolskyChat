@@ -18,7 +18,7 @@ production:
   primary: &primary_production
     <<: *default
     database: tolsky_chat_production
-    username: tolsky_chat
+    user: karina
     password: <%= ENV["TOLSKY_CHAT_DATABASE_PASSWORD"] %>
   cache:
     <<: *primary_production

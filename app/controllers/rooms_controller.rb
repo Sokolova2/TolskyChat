@@ -12,6 +12,8 @@ class RoomsController < ApplicationController
 
   def show
     @room = Room.find(params[:id])
+    @caller = @room.messages.first&.user
+
     @message = Message.new
 
     if @room.is_a?(Conversation)

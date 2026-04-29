@@ -22,4 +22,25 @@
               %i.bi.bi-download.fs-3
             = image_tag url_for(blob), class: "img-fluid"
 - else
-  = link_to blob.filename, url_for(blob)
+  = link_to url_for(blob), target: "_blank", class: "text-decoration-none text-dark" do
+    .file-card.mt-2
+      .d-flex.align-items-center.justify-content-between
+        .d-flex.align-items-center.gap-2
+          .file-icon
+            - if blob.content_type == "application/pdf"
+              📄
+            - elsif blob.content_type.include?("word")
+              📘
+            - elsif blob.content_type.include?("excel")
+              📊
+            - elsif blob.content_type.include?("zip")
+              📦
+            - else
+              📁
+
+          .file-info.me-2
+            %p.mb-0.fw-bold= blob.filename.to_s
+            %small.text-muted= number_to_human_size(blob.byte_size)
+
+        = link_to url_for(blob), download: blob.filename.to_s, class: "btn btn-sm btn-outline-dark" do
+          %i.bi.bi-download

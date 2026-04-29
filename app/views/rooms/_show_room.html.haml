@@ -2,26 +2,41 @@
   .chat-header.shadow-lg
     .d-flex.justify-content-between.align-items-center.ms-3.me-3.p-3
       .d-flex.gap-2
-        %h5= room.name
+        - second_user = room.participants.includes(:user).map(&:user).find{ |u| u.id != current_user.id }
         - if room.is_a?(Conversation)
+          %h5= room.name
           - if room.is_private?
             %p.text-secondary private
           - elsif room
             %p.text-secondary public
-      - if room.is_a?(Conversation)
-        %button.btn.btn-outline-dark.ms-1{ 'data-bs-toggle' => 'modal', 'data-bs-target' => '#conversationModal' }
-          %i.bi.bi-three-dots
-        .modal.fade#conversationModal{ tabindex: '-1', 'aria-hidden' => 'true' }
-          .modal-dialog
-            .modal-content
-              .modal-body
-                = render 'rooms/conversation_options', room: room
-      - else
-        - second_user = room.participants.includes(:user).map(&:user).find{ |u| u.id != current_user.id }
-        - contact = Contact.find_by(sender: current_user, receiver: second_user) || Contact.find_by(sender: second_user, receiver: current_user)
-        = link_to contact_path(contact), data: { turbo_frame: "modal" }, class: 'menu-icon' do
-          %i.bi.bi-three-dots.btn.btn-outline-dark.ms-1
+          %button.btn.btn-outline-dark.ms-1{ 'data-bs-toggle' => 'modal', 'data-bs-target' => '#conversationModal' }
+            %i.bi.bi-three-dots
+          .modal.fade#conversationModal{ tabindex: '-1', 'aria-hidden' => 'true' }
+            .modal-dialog
+              .modal-content
+                .modal-body
+                  = render 'rooms/conversation_options', room: room
+        - else
+          %h5= room.other_user(current_user).login
+          - contact = Contact.find_by(sender: current_user, receiver: second_user) || Contact.find_by(sender: second_user, receiver: current_user)
+          = link_to contact_path(contact), data: { turbo_frame: "modal" }, class: 'menu-icon' do
+            %i.bi.bi-three-dots.btn.btn-outline-dark.ms-1
+        %div{ data: { controller: "voice",
+                  voice_room_id_value: room.id,
+                  voice_current_user_id_value: current_user.id,
+                  voice_caller_id_value: current_user.id
+                  }
+                }
 
+          %button.btn.btn-primary{ data: { action: "voice#start" } }
+            📞 Start Call
+          %button#returnToCall.btn.btn-success.d-none{ data: { action: "voice#returnToCall" } }
+            🔙 Back to call
+          %p{ data: { voice_target: "status" } }
+            Idle
+          = render 'rooms/outgoing', second_user: second_user
+          = render 'rooms/incoming', second_user: second_user
+          = render 'rooms/active', second_user: second_user
   #chatroom.chat-messages
     .chat-messages-inner
       = render room.messages.sort_by(&:created_at)
@@ -77,4 +92,12 @@
             #audio-modal-preview
             %button.btn.btn-secondary{ type: "button", "data-bs-dismiss" => "modal" } Cancel
             %button.btn.btn-dark#sendAudioBtn Send
+
+    .modal.fade#fileModal.modal-file{ tabindex: "-1" }
+      .modal-dialog.modal-dialog-centered
+        .modal-content
+          .modal-body
+            #file-modal-preview
+            %button.btn.btn-secondary{ type: "button", "data-bs-dismiss" => "modal" } Cancel
+            %button.btn.btn-dark#sendFileBtn Send
 

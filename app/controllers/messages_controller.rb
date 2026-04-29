@@ -16,10 +16,6 @@ class MessagesController < ApplicationController
           locals: { message: message }
         )
       )
-      respond_to do |format|
-        format.turbo_stream { head :ok }
-        format.html { head :ok }
-      end
     else
       head :unprocessable_entity
     end

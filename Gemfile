@@ -63,6 +63,8 @@ group :development, :test do
   gem 'brakeman', require: false
 end
 
+gem 'haml-rails'
+
 group :development do
   # Use console on exceptions pages [https://github.com/rails/web-console]
   gem 'hotwire-livereload'
@@ -87,3 +89,4 @@ gem 'devise'
 gem 'dotenv'
 gem 'mini_magick'
 gem 'redis', '~> 3.0'
+gem 'cloudinary'
