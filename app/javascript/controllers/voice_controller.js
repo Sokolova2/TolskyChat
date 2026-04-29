@@ -88,7 +88,7 @@ export default class extends Controller {
       this.remoteVideo.remove()
       this.remoteVideo = null
     }
-    
+
     this.stopTimer()
   }
 
@@ -213,13 +213,23 @@ export default class extends Controller {
   async initMedia() {
     if (this.stream) return
 
-    this.stream = await navigator.mediaDevices.getUserMedia({
-      audio: true,
-      video: true
-    })
+    try {
+      this.stream = await navigator.mediaDevices.getUserMedia({
+        audio: true,
+        video: true
+      })
+    } catch (err) {
+      console.warn("❌ Video failed, fallback to audio:", err)
+
+      this.stream = await navigator.mediaDevices.getUserMedia({
+        audio: true,
+        video: false
+      })
+    }
 
     this.stream.getTracks().forEach(track => {
-      this.peer?.addTrack(track, this.stream) })
+      this.peer?.addTrack(track, this.stream)
+    })
   }
 
   async start() {
