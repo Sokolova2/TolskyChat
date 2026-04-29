@@ -9,7 +9,7 @@ Rails.application.configure do
 
   config.consider_all_requests_local = false
 
-  config.active_storage.service = :disk
+  config.active_storage.service = :local
 
   config.action_controller.perform_caching = true
 

@@ -39,6 +39,7 @@
     <orderEntry type="library" scope="PROVIDED" name="activemodel (v8.1.1, RVM: ruby-3.2.3) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="activerecord (v8.1.1, RVM: ruby-3.2.3) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="activestorage (v8.1.1, RVM: ruby-3.2.3) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="activestorage-cloudinary-service (v0.2.3, RVM: ruby-3.2.3) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="activesupport (v8.1.1, RVM: ruby-3.2.3) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="addressable (v2.8.8, RVM: ruby-3.2.3) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="ast (v2.4.3, RVM: ruby-3.2.3) [gem]" level="application" />
