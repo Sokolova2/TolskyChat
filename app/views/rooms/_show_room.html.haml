@@ -22,9 +22,9 @@
           = link_to contact_path(contact), data: { turbo_frame: "modal" }, class: 'menu-icon' do
             %i.bi.bi-three-dots.btn.btn-outline-dark.ms-1
         %div{ data: { controller: "voice",
-                  voice_room_id_value: room.id,
                   voice_current_user_id_value: current_user.id,
-                  voice_caller_id_value: current_user.id
+                  voice_caller_id_value: current_user.id,
+                  voice_other_user_id_value: second_user.id
                   }
                 }
 

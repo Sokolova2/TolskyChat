@@ -5,7 +5,8 @@ export default class extends Controller {
   static values = {
     roomId: Number,
     currentUserId: Number,
-    callerId: Number
+    callerId: Number,
+    otherUserId: Number
   }
 
   static targets = ['status']
@@ -117,7 +118,7 @@ export default class extends Controller {
 
   initCable() {
     this.channel = consumer.subscriptions.create(
-        { channel: 'VoiceChannel', room_id: this.roomIdValue },
+        { channel: 'VoiceChannel' },
         {
           received: (data) => this.handleSignal(data)
         }
@@ -136,7 +137,7 @@ export default class extends Controller {
     this.peer.onicecandidate = (e) => {
       if (e.candidate) {
         this.channel?.perform('signal', {
-          room_id: this.roomIdValue,
+          receiver_id: this.otherUserIdValue,
           candidate: e.candidate
         })
       }
@@ -198,7 +199,7 @@ export default class extends Controller {
     await this.peer.setLocalDescription(offer)
 
     this.channel.perform("signal", {
-      room_id: this.roomIdValue,
+      receiver_id: this.otherUserIdValue,
       offer,
       caller_id: this.currentUserIdValue
     })
@@ -271,7 +272,7 @@ export default class extends Controller {
     await this.peer.setLocalDescription(answer)
 
     this.channel.perform("signal", {
-      room_id: this.roomIdValue,
+      receiver_id: this.otherUserIdValue,
       answer
     })
 
@@ -280,7 +281,7 @@ export default class extends Controller {
 
   declineCall() {
     this.channel?.perform("signal", {
-      room_id: this.roomIdValue,
+      receiver_id: this.otherUserIdValue,
       decline: true
     })
 

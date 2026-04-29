@@ -5,11 +5,15 @@ export class RichText{
         this.createEmojiPickerButton();
     }
     createEmojiPickerButton(){
-        this.emojiButton
-            .addEventListener('click', this.toggleEmojiPicker.bind(this) );
-        document
-            .querySelector("[data-trix-button-group=block-tools]")
-            .prepend(this.emojiButton);
+        const container = document.querySelector("[data-trix-button-group=block-tools]")
+
+        if (!container) return
+
+        this.emojiButton.addEventListener(
+            'click',
+            this.toggleEmojiPicker.bind(this)
+        );
+        container.prepend(this.emojiButton)
     }
 
     toggleEmojiPicker(event){

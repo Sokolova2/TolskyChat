@@ -1,19 +1,17 @@
 class VoiceChannel < ApplicationCable::Channel
   def subscribed
-    reject unless params[:room_id].present?
-
-    stream_from "voice_room_#{params[:room_id]}"
+    stream_from current_user
   end
 
   def signal(data)
-    room_id = data["room_id"]
+    receiver_id = data["receiver_id"]
 
-    return unless room_id.present?
+    return unless receiver_id.present?
 
-    ActionCable.server.broadcast(
-      "voice_room_#{room_id}",
-      data
-    )
+    receiver = User.find_by(id: receiver_id)
+    return unless receiver
+
+    VoiceChannel.broadcast_to(receiver, data)
   end
 
   def unsubscribed
