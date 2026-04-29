@@ -217,13 +217,10 @@ export default class extends Controller {
       this.showModal("incomingCallModal")
     }
 
-    if (data.answer) {
+    if (data.answer && data.caller_id !== this.currentUserIdValue) {
       if (!this.peer) return
 
-      if (this.peer.signalingState !== "have-local-offer") {
-        console.warn("Invalid state for answer")
-        return
-      }
+      if (this.peer.signalingState === "closed") return
 
       await this.peer.setRemoteDescription(
           new RTCSessionDescription(data.answer)
