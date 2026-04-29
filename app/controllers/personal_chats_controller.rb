@@ -14,7 +14,7 @@ class PersonalChatsController < ApplicationController
         format.turbo_stream
       end
     else
-      redirect_to personal_chat_path, alert: @personal_chat_new.errors.full_messages.to_sentence
+      redirect_to room_path, alert: @personal_chat_new.errors.full_messages.to_sentence
     end
   end
 
