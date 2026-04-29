@@ -88,7 +88,7 @@ gem 'carrierwave', '~> 3.0'
 gem 'devise'
 gem 'dotenv'
 gem 'mini_magick'
-gem 'redis', '~> 3.0'
+gem 'redis', '~> 5.0'
 gem 'cloudinary'
 
 gem 'aws-sdk-s3'
