@@ -40,6 +40,8 @@ export default class extends Controller {
     this.peer = null
     this.stream = null
     this.remoteAudio = null
+    this.remoteVideo = null
+    this.localVideo = null
     this.iceQueue = []
     this.remoteReady = false
     this.inCall = false
@@ -80,6 +82,13 @@ export default class extends Controller {
       this.remoteAudio = null
     }
 
+    if (this.remoteVideo) {
+      this.remoteVideo.pause()
+      this.remoteVideo.srcObject = null
+      this.remoteVideo.remove()
+      this.remoteVideo = null
+    }
+    
     this.stopTimer()
   }
 
@@ -142,13 +151,46 @@ export default class extends Controller {
     }
 
     this.peer.ontrack = (e) => {
-      if (!this.remoteAudio) {
-        this.remoteAudio = document.createElement("audio")
-        this.remoteAudio.autoplay = true
-        document.body.appendChild(this.remoteAudio)
+      const stream = e.streams[0]
+
+      const hasVideo = stream.getVideoTracks().length > 0
+
+      if (hasVideo) {
+        if (!this.remoteVideo) {
+          this.remoteVideo = document.createElement("video")
+          this.remoteVideo.autoplay = true
+          this.remoteVideo.playsInline = true
+          this.remoteVideo.style.width = "300px"
+
+          document.body.appendChild(this.remoteVideo)
+        }
+
+        this.remoteVideo.srcObject = stream
+
+        // ❗ ВОТ ЗДЕСЬ удаляем audio
+        if (this.remoteAudio) {
+          this.remoteAudio.remove()
+          this.remoteAudio = null
+        }
+
       }
 
-      this.remoteAudio.srcObject = e.streams[0]
+      else {
+        if (!this.remoteAudio) {
+          this.remoteAudio = document.createElement("audio")
+          this.remoteAudio.autoplay = true
+
+          document.body.appendChild(this.remoteAudio)
+        }
+
+        this.remoteAudio.srcObject = stream
+
+        if (this.remoteVideo) {
+          this.remoteVideo.remove()
+          this.remoteVideo = null
+        }
+      }
+
       this.setStatus("🔊 Connected")
       this.showModal("activeCallModal")
     }
@@ -171,7 +213,10 @@ export default class extends Controller {
   async initMedia() {
     if (this.stream) return
 
-    this.stream = await navigator.mediaDevices.getUserMedia({ audio: true })
+    this.stream = await navigator.mediaDevices.getUserMedia({
+      audio: true,
+      video: true
+    })
 
     this.stream.getTracks().forEach(track => {
       this.peer?.addTrack(track, this.stream) })
