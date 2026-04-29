@@ -39,10 +39,15 @@
     <orderEntry type="library" scope="PROVIDED" name="activemodel (v8.1.1, RVM: ruby-3.2.3) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="activerecord (v8.1.1, RVM: ruby-3.2.3) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="activestorage (v8.1.1, RVM: ruby-3.2.3) [gem]" level="application" />
-    <orderEntry type="library" scope="PROVIDED" name="activestorage-cloudinary-service (v0.2.3, RVM: ruby-3.2.3) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="activesupport (v8.1.1, RVM: ruby-3.2.3) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="addressable (v2.8.8, RVM: ruby-3.2.3) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="ast (v2.4.3, RVM: ruby-3.2.3) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="aws-eventstream (v1.4.0, RVM: ruby-3.2.3) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="aws-partitions (v1.1241.0, RVM: ruby-3.2.3) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="aws-sdk-core (v3.246.0, RVM: ruby-3.2.3) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="aws-sdk-kms (v1.124.0, RVM: ruby-3.2.3) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="aws-sdk-s3 (v1.220.0, RVM: ruby-3.2.3) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="aws-sigv4 (v1.12.1, RVM: ruby-3.2.3) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="base64 (v0.3.0, RVM: ruby-3.2.3) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="bcrypt (v3.1.20, RVM: ruby-3.2.3) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="bcrypt_pbkdf (v1.1.1, RVM: ruby-3.2.3) [gem]" level="application" />
@@ -69,13 +74,11 @@
     <orderEntry type="library" scope="PROVIDED" name="erb (v6.0.0, RVM: ruby-3.2.3) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="erubi (v1.13.1, RVM: ruby-3.2.3) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="erubis (v2.7.0, RVM: ruby-3.2.3) [gem]" level="application" />
-    <orderEntry type="library" scope="PROVIDED" name="et-orbi (v1.4.0, RVM: ruby-3.2.3) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="faraday (v2.14.0, RVM: ruby-3.2.3) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="faraday-follow_redirects (v0.5.0, RVM: ruby-3.2.3) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="faraday-multipart (v1.2.0, RVM: ruby-3.2.3) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="faraday-net_http (v3.4.2, RVM: ruby-3.2.3) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="ffi (v1.17.2, RVM: ruby-3.2.3) [gem]" level="application" />
-    <orderEntry type="library" scope="PROVIDED" name="fugit (v1.12.1, RVM: ruby-3.2.3) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="globalid (v1.3.0, RVM: ruby-3.2.3) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="haml (v7.0.2, RVM: ruby-3.2.3) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="haml-rails (v3.0.0, RVM: ruby-3.2.3) [gem]" level="application" />
@@ -89,6 +92,7 @@
     <orderEntry type="library" scope="PROVIDED" name="io-console (v0.8.1, RVM: ruby-3.2.3) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="irb (v1.15.3, RVM: ruby-3.2.3) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="jbuilder (v2.14.1, RVM: ruby-3.2.3) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="jmespath (v1.6.2, RVM: ruby-3.2.3) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="json (v2.16.0, RVM: ruby-3.2.3) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="jwt (v3.1.2, RVM: ruby-3.2.3) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="kamal (v2.9.0, RVM: ruby-3.2.3) [gem]" level="application" />
@@ -133,7 +137,6 @@
     <orderEntry type="library" scope="PROVIDED" name="psych (v5.2.6, RVM: ruby-3.2.3) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="public_suffix (v7.0.0, RVM: ruby-3.2.3) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="puma (v7.1.0, RVM: ruby-3.2.3) [gem]" level="application" />
-    <orderEntry type="library" scope="PROVIDED" name="raabro (v1.4.0, RVM: ruby-3.2.3) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="racc (v1.8.1, RVM: ruby-3.2.3) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="rack (v3.2.4, RVM: ruby-3.2.3) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="rack-protection (v4.2.1, RVM: ruby-3.2.3) [gem]" level="application" />
@@ -168,9 +171,6 @@
     <orderEntry type="library" scope="TEST" name="selenium-webdriver (v4.38.0, RVM: ruby-3.2.3) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="sexp_processor (v4.17.4, RVM: ruby-3.2.3) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="snaky_hash (v2.0.3, RVM: ruby-3.2.3) [gem]" level="application" />
-    <orderEntry type="library" scope="PROVIDED" name="solid_cable (v3.0.12, RVM: ruby-3.2.3) [gem]" level="application" />
-    <orderEntry type="library" scope="PROVIDED" name="solid_cache (v1.0.10, RVM: ruby-3.2.3) [gem]" level="application" />
-    <orderEntry type="library" scope="PROVIDED" name="solid_queue (v1.2.4, RVM: ruby-3.2.3) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="sshkit (v1.24.0, RVM: ruby-3.2.3) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="ssrf_filter (v1.3.0, RVM: ruby-3.2.3) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="stimulus-rails (v1.3.4, RVM: ruby-3.2.3) [gem]" level="application" />
