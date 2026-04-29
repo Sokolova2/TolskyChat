@@ -1,6 +1,6 @@
 class VoiceChannel < ApplicationCable::Channel
   def subscribed
-    stream_from current_user
+    stream_for current_user
   end
 
   def signal(data)

@@ -21,7 +21,7 @@ export default class extends Controller {
     this.initPeer()
 
     this.isCaller = this.currentUserIdValue === this.callerIdValue
-    this.inCall = localStorage.getItem(`call_${this.roomIdValue}`) === "true"
+    this.inCall = localStorage.getItem(`call_active`) === "true"
 
     if (this.inCall) {
       this.restoreUIOnly()
@@ -45,6 +45,7 @@ export default class extends Controller {
     this.timer = null
     this.seconds = 0
     this.channel = null
+    this.callInProgress = false
   }
 
   destroyEverything() {
@@ -89,7 +90,7 @@ export default class extends Controller {
     this.inCall = false
     this.callStartedByMe = false
 
-    localStorage.removeItem(`call_${this.roomIdValue}`)
+    localStorage.removeItem(`call_active`)
   }
 
   setStatus(text) {
@@ -164,7 +165,7 @@ export default class extends Controller {
       if (state === "connected") {
         this.setStatus("🟢 Connected")
         this.inCall = true
-        localStorage.setItem(`call_${this.roomIdValue}`, "true")
+        localStorage.setItem(`call_active`, "true")
         this.startTimer()
       }
 
@@ -207,7 +208,9 @@ export default class extends Controller {
   }
 
   async handleSignal(data) {
-    if (data.offer) {
+    if (data.receiver_id && data.receiver_id !== this.currentUserIdValue) return
+
+    if (data.offer && data.caller_id !== this.currentUserIdValue) {
       this.pendingOffer = data.offer
       this.initPeer()
       this.setStatus("📲 Incoming call...")
@@ -274,7 +277,8 @@ export default class extends Controller {
 
     this.channel.perform("signal", {
       receiver_id: this.otherUserIdValue,
-      answer
+      answer,
+      caller_id: this.currentUserIdValue
     })
 
     this.showModal("activeCallModal")
@@ -283,7 +287,8 @@ export default class extends Controller {
   declineCall() {
     this.channel?.perform("signal", {
       receiver_id: this.otherUserIdValue,
-      decline: true
+      decline: true,
+      caller_id: this.currentUserIdValue
     })
 
     this.cleanupCall()
@@ -361,5 +366,22 @@ export default class extends Controller {
     this.resetUIAfterCall()
     this.pendingOffer = null
     this.remoteReady = false
+  }
+
+  restoreUIOnly() {
+    if (!this.inCall) return
+
+    if (!this.peer) {
+      this.initPeer()
+    }
+
+    this.inCall = true
+
+    const returnBtn = document.getElementById("returnToCall")
+    if (returnBtn) returnBtn.classList.remove("d-none")
+
+    this.setStatus("🔄 Reconnecting...")
+
+    this.showModal("activeCallModal")
   }
 }
