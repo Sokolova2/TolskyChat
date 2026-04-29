@@ -217,10 +217,8 @@ export default class extends Controller {
       this.showModal("incomingCallModal")
     }
 
-    if (data.answer && data.caller_id !== this.currentUserIdValue) {
+    if (data.answer) {
       if (!this.peer) return
-
-      if (this.peer.signalingState === "closed") return
 
       await this.peer.setRemoteDescription(
           new RTCSessionDescription(data.answer)
@@ -259,12 +257,7 @@ export default class extends Controller {
     this.callInProgress = true
 
     await this.initMedia()
-
-    if (this.peer.signalingState !== "stable") {
-      console.warn("Peer not stable, ignoring accept")
-      return
-    }
-
+    
     await this.peer.setRemoteDescription(
         new RTCSessionDescription(this.pendingOffer)
     )
