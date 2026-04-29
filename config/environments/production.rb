@@ -28,7 +28,7 @@ Rails.application.configure do
 
   config.active_job.queue_adapter = :async
 
-  config.action_mailer.default_url_options = { host: 'example.com' }
+  config.action_mailer.default_url_options = { host: 'tolskychat-2df8101d6866.herokuapp.com' }
 
   config.action_mailer.delivery_method = :smtp
 
