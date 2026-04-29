@@ -20,6 +20,13 @@ export default class extends Controller {
 
     this.inCall = localStorage.getItem("call_active") === "true"
 
+    document.addEventListener("hidden.bs.modal", (event) => {
+      if (event.target.id === "activeCallModal" && this.inCall) {
+        const btn = document.getElementById("returnToCall")
+        if (btn) btn.classList.remove("d-none")
+      }
+    })
+
     const savedOffer = localStorage.getItem("pending_offer")
     if (savedOffer) {
       this.pendingOffer = JSON.parse(savedOffer)
@@ -409,5 +416,12 @@ export default class extends Controller {
     if (returnBtn) returnBtn.classList.remove("d-none")
     this.setStatus("🔄 Reconnecting...")
     this.showModal("activeCallModal")
+  }
+
+  returnToCall() {
+    this.showModal("activeCallModal")
+
+    const btn = document.getElementById("returnToCall")
+    if (btn) btn.classList.add("d-none")
   }
 }
