@@ -17,6 +17,11 @@ export default class extends Controller {
 
     this.resetState()
 
+    const savedOffer = localStorage.getItem("pending_offer")
+    if (savedOffer) {
+      this.pendingOffer = JSON.parse(savedOffer)
+    }
+
     this.initCable()
     this.initPeer()
 
@@ -127,9 +132,7 @@ export default class extends Controller {
   }
 
   initPeer() {
-    if (this.peer) {
-      this.peer.close()
-    }
+    if (this.peer) return
 
     this.peer = new RTCPeerConnection({
       iceServers: [{ urls: 'stun:stun.l.google.com:19302' }]
@@ -186,7 +189,8 @@ export default class extends Controller {
   }
 
   async start() {
-    if (!this.isCaller) return
+    this.otherUserIdValue = event.currentTarget.dataset.voiceOtherUserId
+    this.callerIdValue = event.currentTarget.dataset.voiceCallerId
 
     if (!this.peer) {
       this.initPeer()
@@ -211,6 +215,8 @@ export default class extends Controller {
     if (data.receiver_id && data.receiver_id !== this.currentUserIdValue) return
 
     if (data.offer && data.caller_id !== this.currentUserIdValue) {
+      localStorage.setItem("pending_offer", JSON.stringify(data.offer))
+
       this.pendingOffer = data.offer
       this.initPeer()
       this.setStatus("📲 Incoming call...")
@@ -247,6 +253,8 @@ export default class extends Controller {
   }
 
   async acceptCall() {
+    localStorage.removeItem("pending_offer")
+    
     if (!this.peer) {
       this.initPeer()
     }
@@ -257,7 +265,7 @@ export default class extends Controller {
     this.callInProgress = true
 
     await this.initMedia()
-    
+
     await this.peer.setRemoteDescription(
         new RTCSessionDescription(this.pendingOffer)
     )

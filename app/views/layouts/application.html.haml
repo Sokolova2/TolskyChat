@@ -16,4 +16,8 @@
     = javascript_importmap_tags
     = action_cable_meta_tag
   %body.body
+    %div{ data: {
+      controller: "voice",
+      voice_current_user_id_value: current_user.id
+    } }
     = yield
