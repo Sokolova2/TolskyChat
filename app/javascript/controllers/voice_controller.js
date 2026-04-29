@@ -138,7 +138,8 @@ export default class extends Controller {
       if (e.candidate) {
         this.channel?.perform('signal', {
           receiver_id: this.otherUserIdValue,
-          candidate: e.candidate
+          candidate: e.candidate,
+          caller_id: this.currentUserIdValue
         })
       }
     }
@@ -206,7 +207,7 @@ export default class extends Controller {
   }
 
   async handleSignal(data) {
-    if (data.offer && data.caller_id !== this.currentUserIdValue) {
+    if (data.offer) {
       this.pendingOffer = data.offer
       this.initPeer()
       this.setStatus("📲 Incoming call...")

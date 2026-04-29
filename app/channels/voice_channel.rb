@@ -4,11 +4,7 @@ class VoiceChannel < ApplicationCable::Channel
   end
 
   def signal(data)
-    receiver_id = data["receiver_id"]
-
-    return unless receiver_id.present?
-
-    receiver = User.find_by(id: receiver_id)
+    receiver = User.find_by(id: data["receiver_id"])
     return unless receiver
 
     VoiceChannel.broadcast_to(receiver, data)
