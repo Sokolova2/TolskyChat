@@ -254,7 +254,7 @@ export default class extends Controller {
 
   async acceptCall() {
     localStorage.removeItem("pending_offer")
-    
+
     if (!this.peer) {
       this.initPeer()
     }
