@@ -1,9 +1,7 @@
 import { Controller } from "@hotwired/stimulus"
 import consumer from "channels/consumer";
-
 export default class extends Controller {
   static values = {
-    roomId: Number,
     currentUserId: Number,
     callerId: Number,
     otherUserId: Number
@@ -16,17 +14,17 @@ export default class extends Controller {
     this.hasConnected = true
 
     this.resetState()
+    this.initCable()
+
+    this.isCaller = this.currentUserIdValue === this.callerIdValue
+
+    this.inCall = localStorage.getItem("call_active") === "true"
 
     const savedOffer = localStorage.getItem("pending_offer")
     if (savedOffer) {
       this.pendingOffer = JSON.parse(savedOffer)
+      this.setStatus("📲 Incoming call (restored)")
     }
-
-    this.initCable()
-    this.initPeer()
-
-    this.isCaller = this.currentUserIdValue === this.callerIdValue
-    this.inCall = localStorage.getItem(`call_active`) === "true"
 
     if (this.inCall) {
       this.restoreUIOnly()
@@ -45,7 +43,6 @@ export default class extends Controller {
     this.iceQueue = []
     this.remoteReady = false
     this.inCall = false
-    this.callStartedByMe = false
     this.isMuted = false
     this.timer = null
     this.seconds = 0
@@ -93,9 +90,8 @@ export default class extends Controller {
     document.getElementById("returnToCall")?.classList.add("d-none")
 
     this.inCall = false
-    this.callStartedByMe = false
 
-    localStorage.removeItem(`call_active`)
+    localStorage.removeItem(call_active)
   }
 
   setStatus(text) {
@@ -117,17 +113,14 @@ export default class extends Controller {
   }
 
   hideAllModals() {
-    ["incomingCallModal", "outgoingCallModal", "activeCallModal"].forEach(id =>
-        this.hideModal(id)
-    )
+    ["incomingCallModal", "outgoingCallModal", "activeCallModal"]
+        .forEach(id => this.hideModal(id) )
   }
 
   initCable() {
     this.channel = consumer.subscriptions.create(
         { channel: 'VoiceChannel' },
-        {
-          received: (data) => this.handleSignal(data)
-        }
+        { received: (data) => this.handleSignal(data)}
     )
   }
 
@@ -156,19 +149,16 @@ export default class extends Controller {
       }
 
       this.remoteAudio.srcObject = e.streams[0]
-
       this.setStatus("🔊 Connected")
-      this.hideAllModals()
       this.showModal("activeCallModal")
     }
 
     this.peer.onconnectionstatechange = () => {
       const state = this.peer.connectionState
-
       if (state === "connected") {
         this.setStatus("🟢 Connected")
         this.inCall = true
-        localStorage.setItem(`call_active`, "true")
+        localStorage.setItem(call_active, "true")
         this.startTimer()
       }
 
@@ -184,14 +174,11 @@ export default class extends Controller {
     this.stream = await navigator.mediaDevices.getUserMedia({ audio: true })
 
     this.stream.getTracks().forEach(track => {
-      this.peer?.addTrack(track, this.stream)
-    })
+      this.peer?.addTrack(track, this.stream) })
   }
 
   async start() {
-    this.otherUserIdValue = event.currentTarget.dataset.voiceOtherUserId
-    this.callerIdValue = event.currentTarget.dataset.voiceCallerId
-
+    if (!this.isCaller) return
     if (!this.peer) {
       this.initPeer()
     }
@@ -215,33 +202,31 @@ export default class extends Controller {
     if (data.receiver_id && data.receiver_id !== this.currentUserIdValue) return
 
     if (data.offer && data.caller_id !== this.currentUserIdValue) {
+      this.pendingOffer = data.offer
       localStorage.setItem("pending_offer", JSON.stringify(data.offer))
 
-      this.pendingOffer = data.offer
-      this.initPeer()
       this.setStatus("📲 Incoming call...")
       this.showModal("incomingCallModal")
     }
 
-    if (data.answer) {
-      if (!this.peer) return
-
+    if (data.answer && this.peer) {
       await this.peer.setRemoteDescription(
           new RTCSessionDescription(data.answer)
       )
 
       this.remoteReady = true
-      this.iceQueue.forEach(c => this.peer.addIceCandidate(c))
-      this.iceQueue = []
 
-      this.showModal("activeCallModal")
+      this.iceQueue.forEach(c =>
+          this.peer.addIceCandidate(new RTCIceCandidate(c))
+      )
+      this.iceQueue = []
     }
 
     if (data.candidate) {
-      if (!this.peer) return
-
-      if (this.remoteReady) {
-        this.peer.addIceCandidate(data.candidate).catch(console.error)
+      if (this.peer?.remoteDescription) {
+        this.peer.addIceCandidate(
+            new RTCIceCandidate(data.candidate)
+        )
       } else {
         this.iceQueue.push(data.candidate)
       }
@@ -253,17 +238,9 @@ export default class extends Controller {
   }
 
   async acceptCall() {
-    localStorage.removeItem("pending_offer")
-
-    if (!this.peer) {
-      this.initPeer()
-    }
-
     if (!this.pendingOffer) return
 
-    if (this.callInProgress) return
-    this.callInProgress = true
-
+    this.initPeer()
     await this.initMedia()
 
     await this.peer.setRemoteDescription(
@@ -271,6 +248,7 @@ export default class extends Controller {
     )
 
     const answer = await this.peer.createAnswer()
+
     await this.peer.setLocalDescription(answer)
 
     this.channel.perform("signal", {
@@ -278,6 +256,8 @@ export default class extends Controller {
       answer,
       caller_id: this.currentUserIdValue
     })
+
+    localStorage.removeItem("pending_offer")
 
     this.showModal("activeCallModal")
   }
@@ -289,7 +269,7 @@ export default class extends Controller {
       caller_id: this.currentUserIdValue
     })
 
-    this.cleanupCall()
+    this.forceReset()
   }
 
   cleanupCall() {
@@ -322,25 +302,24 @@ export default class extends Controller {
         const s = String(this.seconds % 60).padStart(2, "0")
         el.textContent = `${m}:${s}`
       }
-    }, 1000)
+      }, 1000)
   }
 
   stopTimer() {
     clearInterval(this.timer)
     this.timer = null
     this.seconds = 0
-
     const el = document.getElementById("callTimer")
     if (el) el.textContent = "00:00"
   }
-
   toggleMute() {
     if (!this.stream) return
-
     const track = this.stream.getAudioTracks()[0]
+
     if (!track) return
 
     this.isMuted = !this.isMuted
+
     track.enabled = !this.isMuted
 
     this.updateMuteButton()
@@ -351,10 +330,10 @@ export default class extends Controller {
     if (!btn) return
 
     if (this.isMuted) {
-      btn.innerHTML = `<i class="bi bi-mic-mute"></i> Unmute`
+      btn.innerHTML = '<i class="bi bi-mic-mute"></i> Unmute'
       btn.classList.replace("btn-warning", "btn-secondary")
-    } else {
-      btn.innerHTML = `<i class="bi bi-mic"></i> Mute`
+    }
+    else { btn.innerHTML = '<i class="bi bi-mic"></i> Mute'
       btn.classList.replace("btn-secondary", "btn-warning")
     }
   }
@@ -369,17 +348,11 @@ export default class extends Controller {
   restoreUIOnly() {
     if (!this.inCall) return
 
-    if (!this.peer) {
-      this.initPeer()
-    }
-
     this.inCall = true
-
     const returnBtn = document.getElementById("returnToCall")
+
     if (returnBtn) returnBtn.classList.remove("d-none")
-
     this.setStatus("🔄 Reconnecting...")
-
     this.showModal("activeCallModal")
   }
 }
