@@ -91,7 +91,7 @@ export default class extends Controller {
 
     this.inCall = false
 
-    localStorage.removeItem(call_active)
+    localStorage.removeItem('call_active')
   }
 
   setStatus(text) {
