@@ -158,7 +158,7 @@ export default class extends Controller {
       if (state === "connected") {
         this.setStatus("🟢 Connected")
         this.inCall = true
-        localStorage.setItem(call_active, "true")
+        localStorage.setItem('call_active', "true")
         this.startTimer()
       }
 
