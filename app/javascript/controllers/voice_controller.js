@@ -53,6 +53,7 @@ export default class extends Controller {
     this.stream = null
     this.remoteAudio = null
     this.remoteVideo = null
+    this.remoteStream = null
     this.localVideo = null
     this.iceQueue = []
     this.remoteReady = false
@@ -175,8 +176,8 @@ export default class extends Controller {
           document.body.appendChild(this.remoteAudio)
         }
 
-        const stream = new MediaStream([track])
-        this.remoteAudio.srcObject = stream
+        const audioStream = new MediaStream([track])
+        this.remoteAudio.srcObject = audioStream
       }
 
       if (track.kind === "video") {
@@ -185,13 +186,19 @@ export default class extends Controller {
 
         if (!remoteVideo) return
 
+        if (!this.remoteStream) {
+          this.remoteStream = new MediaStream()
+        }
+
         this.remoteStream.addTrack(track)
 
         remoteVideo.srcObject = null
         remoteVideo.srcObject = this.remoteStream
         remoteVideo.style.display = "block"
 
-        avatar?.classList.add("d-none")
+        if (avatarFallback) {
+          avatarFallback.style.display = "none"
+        }
       }
 
       this.setStatus("🔊 Connected")
