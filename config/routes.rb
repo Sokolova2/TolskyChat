@@ -8,6 +8,7 @@ Rails.application.routes.draw do
   }
 
   mount ActionCable.server => '/cable'
+  get '/turn_credentials', to: 'turn_credentials#show'
 
   root to: 'home#index'
 

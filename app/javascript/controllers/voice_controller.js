@@ -165,11 +165,38 @@ export default class extends Controller {
     }
   }
 
-  initPeer() {
+  async fetchDynamicIceServers() {
+    try {
+      const response = await fetch("/turn_credentials", {
+        method: "GET",
+        headers: { Accept: "application/json" },
+        credentials: "same-origin"
+      })
+
+      if (!response.ok) return null
+
+      const data = await response.json()
+      if (!Array.isArray(data.ice_servers) || data.ice_servers.length === 0) return null
+      return data.ice_servers
+    } catch (error) {
+      console.warn("Failed to fetch TURN credentials", error)
+      return null
+    }
+  }
+
+  async resolveIceServers() {
+    const dynamicServers = await this.fetchDynamicIceServers()
+    if (dynamicServers) return dynamicServers
+    return this.buildIceServers()
+  }
+
+  async initPeer() {
     if (this.peer) return
 
+    const iceServers = await this.resolveIceServers()
+
     this.peer = new RTCPeerConnection({
-      iceServers: this.buildIceServers()
+      iceServers
     })
 
     this.peer.onicecandidate = (e) => {
@@ -273,7 +300,7 @@ export default class extends Controller {
   async start() {
     if (!this.isCaller) return
     if (!this.peer) {
-      this.initPeer()
+      await this.initPeer()
     }
 
     await this.initMedia()
@@ -345,7 +372,7 @@ export default class extends Controller {
   async acceptCall() {
     if (!this.pendingOffer) return
 
-    this.initPeer()
+    await this.initPeer()
 
     if (this.peer.signalingState !== "stable") {
       console.log("offer already accepted")
