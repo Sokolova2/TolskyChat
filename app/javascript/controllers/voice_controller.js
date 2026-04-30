@@ -161,6 +161,12 @@ export default class extends Controller {
     this.peer.ontrack = (e) => {
       const track = e.track
 
+      if (!this.remoteStream) {
+        this.remoteStream = new MediaStream()
+      }
+
+      this.remoteStream.addTrack(track)
+
       if (track.kind === "audio") {
         if (!this.remoteAudio) {
           this.remoteAudio = document.createElement("audio")
@@ -168,8 +174,7 @@ export default class extends Controller {
           document.body.appendChild(this.remoteAudio)
         }
 
-        const audioStream = new MediaStream([track])
-        this.remoteAudio.srcObject = audioStream
+        this.remoteAudio.srcObject = this.remoteStream
       }
 
       if (track.kind === "video") {
@@ -177,8 +182,6 @@ export default class extends Controller {
         const avatarFallback = document.getElementById("avatarFallback")
 
         if (remoteVideo) {
-          const videoStream = new MediaStream([track])
-
           remoteVideo.srcObject = videoStream
           remoteVideo.style.display = "block"
 
