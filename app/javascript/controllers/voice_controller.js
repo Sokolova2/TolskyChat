@@ -1,5 +1,6 @@
 import { Controller } from "@hotwired/stimulus"
 import consumer from "channels/consumer";
+
 export default class extends Controller {
   static values = {
     currentUserId: Number,
@@ -19,6 +20,10 @@ export default class extends Controller {
     this.isCaller = this.currentUserIdValue === this.callerIdValue
 
     this.inCall = localStorage.getItem("call_active") === "true"
+
+    document.addEventListener("hidden.bs.modal", () => {
+      document.activeElement?.blur()
+    })
 
     document.addEventListener("hidden.bs.modal", (event) => {
       if (event.target.id === "activeCallModal" && this.inCall) {
@@ -82,6 +87,8 @@ export default class extends Controller {
       this.stream.getTracks().forEach(t => t.stop())
       this.stream = null
     }
+
+    this.remoteStream = null
 
     if (this.remoteAudio) {
       this.remoteAudio.pause()
@@ -161,12 +168,6 @@ export default class extends Controller {
     this.peer.ontrack = (e) => {
       const track = e.track
 
-      if (!this.remoteStream) {
-        this.remoteStream = new MediaStream()
-      }
-
-      this.remoteStream.addTrack(track)
-
       if (track.kind === "audio") {
         if (!this.remoteAudio) {
           this.remoteAudio = document.createElement("audio")
@@ -174,21 +175,23 @@ export default class extends Controller {
           document.body.appendChild(this.remoteAudio)
         }
 
-        this.remoteAudio.srcObject = this.remoteStream
+        const stream = new MediaStream([track])
+        this.remoteAudio.srcObject = stream
       }
 
       if (track.kind === "video") {
         const remoteVideo = document.getElementById("remoteVideo")
         const avatarFallback = document.getElementById("avatarFallback")
 
-        if (remoteVideo) {
-          remoteVideo.srcObject = this.remoteStream
-          remoteVideo.style.display = "block"
+        if (!remoteVideo) return
 
-          if (avatarFallback) {
-            avatarFallback.style.display = "none"
-          }
-        }
+        this.remoteStream.addTrack(track)
+
+        remoteVideo.srcObject = null
+        remoteVideo.srcObject = this.remoteStream
+        remoteVideo.style.display = "block"
+
+        avatar?.classList.add("d-none")
       }
 
       this.setStatus("🔊 Connected")
@@ -222,9 +225,13 @@ export default class extends Controller {
     } catch (e) {
       console.warn("No camera, using fake video")
 
-      const audioStream = await navigator.mediaDevices.getUserMedia({
-        audio: true
-      })
+      let audioStream = null
+
+      try {
+        audioStream = await navigator.mediaDevices.getUserMedia({ audio: true })
+      } catch {
+        audioStream = new MediaStream()
+      }
 
       const canvas = document.createElement("canvas")
       canvas.width = 640
@@ -243,10 +250,6 @@ export default class extends Controller {
       ])
     }
 
-    this.stream.getTracks().forEach(track => {
-      this.peer?.addTrack(track, this.stream)
-    })
-
     const localVideo = document.getElementById("localVideo")
     if (localVideo) {
       localVideo.srcObject = this.stream
@@ -254,6 +257,10 @@ export default class extends Controller {
       const hasVideo = this.stream.getVideoTracks().length > 0
       localVideo.style.display = hasVideo ? "block" : "none"
     }
+
+    this.stream.getTracks().forEach(track => {
+      this.peer?.addTrack(track, this.stream)
+    })
   }
 
   async start() {
