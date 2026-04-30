@@ -284,7 +284,7 @@ export default class extends Controller {
     if (this.peer.signalingState !== "stable") {
       return
     }
-    
+
     const offer = await this.peer.createOffer()
     await this.peer.setLocalDescription(offer)
 
@@ -346,6 +346,12 @@ export default class extends Controller {
     if (!this.pendingOffer) return
 
     this.initPeer()
+
+    if (this.peer.signalingState !== "stable") {
+      console.log("offer already accepted")
+      return
+    }
+
     await this.initMedia()
 
     await this.peer.setRemoteDescription(
@@ -362,8 +368,10 @@ export default class extends Controller {
       caller_id: this.currentUserIdValue
     })
 
+    this.pendingOffer = null
     localStorage.removeItem("pending_offer")
 
+    this.hideModal("incomingCallModal")
     this.showModal("activeCallModal")
   }
 
@@ -474,6 +482,9 @@ export default class extends Controller {
     this.cleanupWebRTC()
     this.resetUIAfterCall()
     this.pendingOffer = null
+
+    localStorage.removeItem("pending_offer")
+
     this.remoteReady = false
   }
 
