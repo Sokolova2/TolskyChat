@@ -53,6 +53,7 @@ export default class extends Controller {
     this.remoteReady = false
     this.inCall = false
     this.isMuted = false
+    this.isVideoOff = false
     this.timer = null
     this.seconds = 0
     this.channel = null
@@ -212,8 +213,6 @@ export default class extends Controller {
       })
 
     } catch (videoErr) {
-      console.warn("❌ No video, trying audio:", videoErr)
-
       try {
         this.stream = await navigator.mediaDevices.getUserMedia({
           audio: true
@@ -221,21 +220,22 @@ export default class extends Controller {
 
       } catch (audioErr) {
         console.error("❌ No media devices at all:", audioErr)
-        alert("No access to microphone")
-        return
+        this.stream = null
       }
     }
 
-    this.stream.getTracks().forEach(track => {
-      this.peer?.addTrack(track, this.stream)
-    })
+    if (this.stream) {
+      this.stream.getTracks().forEach(track => {
+        this.peer?.addTrack(track, this.stream)
+      })
 
-    const localVideo = document.getElementById("localVideo")
-    if (localVideo) {
-      localVideo.srcObject = this.stream
+      const localVideo = document.getElementById("localVideo")
+      if (localVideo) {
+        localVideo.srcObject = this.stream
 
-      const hasVideo = this.stream.getVideoTracks().length > 0
-      localVideo.style.display = hasVideo ? "block" : "none"
+        const hasVideo = this.stream.getVideoTracks().length > 0
+        localVideo.style.display = hasVideo ? "block" : "none"
+      }
     }
   }
 
@@ -374,6 +374,7 @@ export default class extends Controller {
     const el = document.getElementById("callTimer")
     if (el) el.textContent = "00:00"
   }
+
   toggleMute() {
     if (!this.stream) return
     const track = this.stream.getAudioTracks()[0]
@@ -387,6 +388,19 @@ export default class extends Controller {
     this.updateMuteButton()
   }
 
+  toggleVideo() {
+    if (!this.stream) return
+
+    const track = this.stream.getVideoTracks()[0]
+
+    if (!track) return
+
+    this.isVideoOff = !this.isVideoOff
+    track.enabled = !this.isVideoOff
+
+    this.updateVideoButton()
+  }
+
   updateMuteButton() {
     const btn = document.querySelector('[data-action="voice#toggleMute"]')
     if (!btn) return
@@ -397,6 +411,19 @@ export default class extends Controller {
     }
     else { btn.innerHTML = '<i class="bi bi-mic"></i> Mute'
       btn.classList.replace("btn-secondary", "btn-warning")
+    }
+  }
+
+  updateVideoButton() {
+    const btn = document.querySelector('[data-action="voice#toggleVideo"]')
+    if (!btn) return
+
+    if (this.isVideoOff) {
+      btn.innerHTML = '<i class="bi bi-camera-video-off"></i> Camera Off'
+      btn.classList.replace("btn-info", "btn-secondary")
+    } else {
+      btn.innerHTML = '<i class="bi bi-camera-video"></i> Camera On'
+      btn.classList.replace("btn-secondary", "btn-info")
     }
   }
 
