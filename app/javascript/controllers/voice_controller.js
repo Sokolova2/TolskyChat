@@ -5,7 +5,8 @@ export default class extends Controller {
   static values = {
     currentUserId: Number,
     callerId: Number,
-    otherUserId: Number
+    otherUserId: Number,
+    iceServers: String
   }
 
   static targets = ['status']
@@ -149,11 +150,26 @@ export default class extends Controller {
     )
   }
 
+  buildIceServers() {
+    const fallback = [{ urls: "stun:stun.l.google.com:19302" }]
+
+    if (!this.hasIceServersValue || !this.iceServersValue) return fallback
+
+    try {
+      const parsed = JSON.parse(this.iceServersValue)
+      if (!Array.isArray(parsed) || parsed.length === 0) return fallback
+      return parsed
+    } catch (error) {
+      console.warn("Invalid ICE config, fallback to STUN", error)
+      return fallback
+    }
+  }
+
   initPeer() {
     if (this.peer) return
 
     this.peer = new RTCPeerConnection({
-      iceServers: [{ urls: 'stun:stun.l.google.com:19302' }]
+      iceServers: this.buildIceServers()
     })
 
     this.peer.onicecandidate = (e) => {
