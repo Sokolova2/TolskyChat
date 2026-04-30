@@ -223,38 +223,22 @@ export default class extends Controller {
   async initMedia() {
     if (this.stream) return
 
+    const audioStream = await navigator.mediaDevices.getUserMedia({
+      audio: true
+    })
+
+    this.stream = new MediaStream(audioStream.getAudioTracks())
+
     try {
-      this.stream = await navigator.mediaDevices.getUserMedia({
-        audio: true,
+      const videoStream = await navigator.mediaDevices.getUserMedia({
         video: true
       })
 
+      videoStream.getVideoTracks().forEach(track => {
+        this.stream.addTrack(track)
+      })
     } catch (e) {
-      console.warn("No camera, using fake video")
-
-      let audioStream = null
-
-      try {
-        audioStream = await navigator.mediaDevices.getUserMedia({ audio: true })
-      } catch {
-        audioStream = new MediaStream()
-      }
-
-      const canvas = document.createElement("canvas")
-      canvas.width = 640
-      canvas.height = 480
-
-      const ctx = canvas.getContext("2d")
-      ctx.fillStyle = "black"
-      ctx.fillRect(0, 0, canvas.width, canvas.height)
-
-      const fakeStream = canvas.captureStream(5)
-      const fakeVideoTrack = fakeStream.getVideoTracks()[0]
-
-      this.stream = new MediaStream([
-        ...audioStream.getTracks(),
-        fakeVideoTrack
-      ])
+      console.warn("No camera, continuing audio-only")
     }
 
     const localVideo = document.getElementById("localVideo")
