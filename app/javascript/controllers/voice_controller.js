@@ -182,7 +182,7 @@ export default class extends Controller {
         const avatarFallback = document.getElementById("avatarFallback")
 
         if (remoteVideo) {
-          remoteVideo.srcObject = videoStream
+          remoteVideo.srcObject = this.remoteStream
           remoteVideo.style.display = "block"
 
           if (avatarFallback) {
