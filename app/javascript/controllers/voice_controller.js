@@ -219,30 +219,40 @@ export default class extends Controller {
         video: true
       })
 
-    } catch (videoErr) {
-      try {
-        this.stream = await navigator.mediaDevices.getUserMedia({
-          audio: true
-        })
+    } catch (e) {
+      console.warn("No camera, using fake video")
 
-      } catch (audioErr) {
-        console.error("❌ No media devices at all:", audioErr)
-        this.stream = null
-      }
-    }
-
-    if (this.stream) {
-      this.stream.getTracks().forEach(track => {
-        this.peer?.addTrack(track, this.stream)
+      const audioStream = await navigator.mediaDevices.getUserMedia({
+        audio: true
       })
 
-      const localVideo = document.getElementById("localVideo")
-      if (localVideo) {
-        localVideo.srcObject = this.stream
+      const canvas = document.createElement("canvas")
+      canvas.width = 640
+      canvas.height = 480
 
-        const hasVideo = this.stream.getVideoTracks().length > 0
-        localVideo.style.display = hasVideo ? "block" : "none"
-      }
+      const ctx = canvas.getContext("2d")
+      ctx.fillStyle = "black"
+      ctx.fillRect(0, 0, canvas.width, canvas.height)
+
+      const fakeStream = canvas.captureStream(5)
+      const fakeVideoTrack = fakeStream.getVideoTracks()[0]
+
+      this.stream = new MediaStream([
+        ...audioStream.getTracks(),
+        fakeVideoTrack
+      ])
+    }
+
+    this.stream.getTracks().forEach(track => {
+      this.peer?.addTrack(track, this.stream)
+    })
+
+    const localVideo = document.getElementById("localVideo")
+    if (localVideo) {
+      localVideo.srcObject = this.stream
+
+      const hasVideo = this.stream.getVideoTracks().length > 0
+      localVideo.style.display = hasVideo ? "block" : "none"
     }
   }
 
