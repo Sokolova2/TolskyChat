@@ -40,6 +40,7 @@ export default class extends Controller {
       const payload = JSON.parse(savedOfferPayload)
       this.pendingOffer = payload.offer
       this.activePeerId = payload.caller_id || null
+      this.ensureCallStartedAt(payload.call_started_at || this.loadCallStartedAt())
       this.updateIncomingCallerUI(payload.caller_login, payload.caller_avatar_url)
       this.setStatus("📲 Incoming call (restored)")
     }
@@ -75,6 +76,9 @@ export default class extends Controller {
     this.channel = null
     this.callInProgress = false
     this.activePeerId = null
+    this.cableConnected = false
+    this.rejoinInProgress = false
+    this.callStartedAtMs = null
   }
 
   destroyEverything() {
@@ -139,6 +143,7 @@ export default class extends Controller {
 
     localStorage.removeItem('call_active')
     localStorage.removeItem('active_peer_id')
+    localStorage.removeItem('call_started_at')
     this.updateVideoButton()
   }
 
@@ -176,8 +181,36 @@ export default class extends Controller {
   initCable() {
     this.channel = consumer.subscriptions.create(
         { channel: 'VoiceChannel' },
-        { received: (data) => this.handleSignal(data)}
+        {
+          connected: () => {
+            this.cableConnected = true
+          },
+          disconnected: () => {
+            this.cableConnected = false
+          },
+          received: (data) => this.handleSignal(data)
+        }
     )
+  }
+
+  ensureCallStartedAt(startedAtMs = null) {
+    if (startedAtMs) {
+      this.callStartedAtMs = startedAtMs
+    } else if (!this.callStartedAtMs) {
+      this.callStartedAtMs = Date.now()
+    }
+
+    if (this.callStartedAtMs) {
+      localStorage.setItem("call_started_at", String(this.callStartedAtMs))
+    }
+  }
+
+  loadCallStartedAt() {
+    const raw = localStorage.getItem("call_started_at")
+    if (!raw) return null
+    const ts = Number(raw)
+    if (!Number.isFinite(ts) || ts <= 0) return null
+    return ts
   }
 
   buildIceServers() {
@@ -242,7 +275,8 @@ export default class extends Controller {
           offer,
           caller_id: this.currentUserIdValue,
           caller_login: this.currentUserLoginValue,
-          caller_avatar_url: this.currentUserAvatarUrlValue
+          caller_avatar_url: this.currentUserAvatarUrlValue,
+          call_started_at: this.callStartedAtMs
         })
       } catch (error) {
         console.warn("Negotiation failed", error)
@@ -307,6 +341,7 @@ export default class extends Controller {
         this.setStatus("🟢 Connected")
         this.inCall = true
         localStorage.setItem('call_active', "true")
+        this.ensureCallStartedAt(this.callStartedAtMs || this.loadCallStartedAt() || Date.now())
         this.startTimer()
       }
 
@@ -335,6 +370,7 @@ export default class extends Controller {
     if (!this.isCaller) return
     this.activePeerId = this.otherUserIdValue
     localStorage.setItem("active_peer_id", String(this.activePeerId))
+    this.ensureCallStartedAt(Date.now())
 
     if (!this.peer) {
       await this.initPeer()
@@ -358,7 +394,8 @@ export default class extends Controller {
       offer,
       caller_id: this.currentUserIdValue,
       caller_login: this.currentUserLoginValue,
-      caller_avatar_url: this.currentUserAvatarUrlValue
+      caller_avatar_url: this.currentUserAvatarUrlValue,
+      call_started_at: this.callStartedAtMs || Date.now()
     })
   }
 
@@ -375,7 +412,8 @@ export default class extends Controller {
         this.channel.perform("signal", {
           receiver_id: data.caller_id,
           answer: renegotiationAnswer,
-          caller_id: this.currentUserIdValue
+          caller_id: this.currentUserIdValue,
+          call_started_at: data.call_started_at || this.callStartedAtMs
         })
         return
       }
@@ -384,11 +422,13 @@ export default class extends Controller {
       localStorage.setItem("active_peer_id", String(this.activePeerId))
       this.updateIncomingCallerUI(data.caller_login, data.caller_avatar_url)
       this.pendingOffer = data.offer
+      this.ensureCallStartedAt(data.call_started_at || Date.now())
       localStorage.setItem("pending_offer_payload", JSON.stringify({
         offer: data.offer,
         caller_id: data.caller_id,
         caller_login: data.caller_login,
-        caller_avatar_url: data.caller_avatar_url
+        caller_avatar_url: data.caller_avatar_url,
+        call_started_at: data.call_started_at || this.callStartedAtMs
       }))
 
       this.setStatus("📲 Incoming call...")
@@ -436,6 +476,7 @@ export default class extends Controller {
 
     await this.initPeer()
     localStorage.setItem("active_peer_id", String(this.activePeerId || this.otherUserIdValue))
+    this.ensureCallStartedAt(this.callStartedAtMs || this.loadCallStartedAt() || Date.now())
 
     if (this.peer.signalingState !== "stable") {
       console.log("offer already accepted")
@@ -456,7 +497,8 @@ export default class extends Controller {
     this.channel.perform("signal", {
       receiver_id: this.activePeerId || this.otherUserIdValue,
       answer,
-      caller_id: this.currentUserIdValue
+      caller_id: this.currentUserIdValue,
+      call_started_at: this.callStartedAtMs
     })
 
     this.pendingOffer = null
@@ -495,11 +537,13 @@ export default class extends Controller {
 
   startTimer() {
     if (this.timer) return
-
-    this.seconds = 0
+    const startedAt = this.loadCallStartedAt() || this.callStartedAtMs || Date.now()
+    this.callStartedAtMs = startedAt
+    localStorage.setItem("call_started_at", String(startedAt))
+    this.seconds = Math.max(0, Math.floor((Date.now() - startedAt) / 1000))
 
     this.timer = setInterval(() => {
-      this.seconds++
+      this.seconds = Math.max(0, Math.floor((Date.now() - startedAt) / 1000))
 
       const el = document.getElementById("callTimer")
       if (el) {
@@ -648,6 +692,7 @@ export default class extends Controller {
 
     this.remoteReady = false
     this.activePeerId = null
+    this.callStartedAtMs = null
   }
 
   restoreUIOnly() {
@@ -662,13 +707,28 @@ export default class extends Controller {
   }
 
   async tryRejoinCall() {
+    if (this.rejoinInProgress) return
+    this.rejoinInProgress = true
+
     const storedPeerId = localStorage.getItem("active_peer_id")
-    if (!storedPeerId) return
+    if (!storedPeerId) {
+      this.rejoinInProgress = false
+      return
+    }
 
     const peerId = Number(storedPeerId)
-    if (!Number.isFinite(peerId) || peerId <= 0) return
+    if (!Number.isFinite(peerId) || peerId <= 0) {
+      this.rejoinInProgress = false
+      return
+    }
 
     this.activePeerId = peerId
+    this.callStartedAtMs = this.loadCallStartedAt()
+
+    // Wait briefly for ActionCable subscription to be connected after page reload.
+    for (let i = 0; i < 15 && !this.cableConnected; i++) {
+      await new Promise(resolve => setTimeout(resolve, 200))
+    }
 
     try {
       await this.initPeer()
@@ -685,10 +745,13 @@ export default class extends Controller {
         offer,
         caller_id: this.currentUserIdValue,
         caller_login: this.currentUserLoginValue,
-        caller_avatar_url: this.currentUserAvatarUrlValue
+        caller_avatar_url: this.currentUserAvatarUrlValue,
+        call_started_at: this.callStartedAtMs
       })
     } catch (error) {
       console.warn("Call rejoin failed", error)
+    } finally {
+      this.rejoinInProgress = false
     }
   }
 
