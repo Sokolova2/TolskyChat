@@ -281,6 +281,10 @@ export default class extends Controller {
     this.setStatus("📞 Calling...")
     this.showModal("outgoingCallModal")
 
+    if (this.peer.signalingState !== "stable") {
+      return
+    }
+    
     const offer = await this.peer.createOffer()
     await this.peer.setLocalDescription(offer)
 
@@ -303,15 +307,23 @@ export default class extends Controller {
     }
 
     if (data.answer && this.peer) {
+      if (this.peer.signalingState === "stable") {
+        console.log("answer already applied")
+        return
+      }
+
       await this.peer.setRemoteDescription(
           new RTCSessionDescription(data.answer)
       )
 
       this.remoteReady = true
 
-      this.iceQueue.forEach(c =>
-          this.peer.addIceCandidate(new RTCIceCandidate(c))
-      )
+      this.iceQueue.forEach(candidate => {
+        this.peer.addIceCandidate(
+            new RTCIceCandidate(candidate)
+        )
+      })
+
       this.iceQueue = []
     }
 
