@@ -46,6 +46,7 @@ export default class extends Controller {
 
     if (this.inCall) {
       this.restoreUIOnly()
+      this.tryRejoinCall()
     }
   }
 
@@ -65,7 +66,10 @@ export default class extends Controller {
     this.remoteReady = false
     this.inCall = false
     this.isMuted = false
-    this.isVideoOff = false
+    this.isVideoOff = true
+    this.currentFacingMode = "user"
+    this.videoSender = null
+    this.isNegotiating = false
     this.timer = null
     this.seconds = 0
     this.channel = null
@@ -115,6 +119,16 @@ export default class extends Controller {
     this.stopTimer()
   }
 
+  syncLocalVideoVisibility() {
+    const localVideo = document.getElementById("localVideo")
+    if (!localVideo || !this.stream) return
+
+    localVideo.srcObject = this.stream
+    const videoTrack = this.stream.getVideoTracks()[0]
+    const show = Boolean(videoTrack && videoTrack.enabled)
+    localVideo.style.display = show ? "block" : "none"
+  }
+
   resetUIAfterCall() {
     this.hideAllModals()
     this.setStatus("Idle")
@@ -124,6 +138,8 @@ export default class extends Controller {
     this.inCall = false
 
     localStorage.removeItem('call_active')
+    localStorage.removeItem('active_peer_id')
+    this.updateVideoButton()
   }
 
   setStatus(text) {
@@ -213,6 +229,28 @@ export default class extends Controller {
       iceServers
     })
 
+    this.peer.onnegotiationneeded = async () => {
+      if (this.isNegotiating) return
+      if (!this.peer || this.peer.signalingState !== "stable") return
+
+      try {
+        this.isNegotiating = true
+        const offer = await this.peer.createOffer()
+        await this.peer.setLocalDescription(offer)
+        this.channel?.perform("signal", {
+          receiver_id: this.activePeerId || this.otherUserIdValue,
+          offer,
+          caller_id: this.currentUserIdValue,
+          caller_login: this.currentUserLoginValue,
+          caller_avatar_url: this.currentUserAvatarUrlValue
+        })
+      } catch (error) {
+        console.warn("Negotiation failed", error)
+      } finally {
+        this.isNegotiating = false
+      }
+    }
+
     this.peer.onicecandidate = (e) => {
       if (e.candidate) {
         const receiverId = this.activePeerId || this.otherUserIdValue
@@ -286,26 +324,7 @@ export default class extends Controller {
     })
 
     this.stream = new MediaStream(audioStream.getAudioTracks())
-
-    try {
-      const videoStream = await navigator.mediaDevices.getUserMedia({
-        video: true
-      })
-
-      videoStream.getVideoTracks().forEach(track => {
-        this.stream.addTrack(track)
-      })
-    } catch (e) {
-      console.warn("No camera, continuing audio-only")
-    }
-
-    const localVideo = document.getElementById("localVideo")
-    if (localVideo) {
-      localVideo.srcObject = this.stream
-
-      const hasVideo = this.stream.getVideoTracks().length > 0
-      localVideo.style.display = hasVideo ? "block" : "none"
-    }
+    this.syncLocalVideoVisibility()
 
     this.stream.getTracks().forEach(track => {
       this.peer?.addTrack(track, this.stream)
@@ -315,12 +334,14 @@ export default class extends Controller {
   async start() {
     if (!this.isCaller) return
     this.activePeerId = this.otherUserIdValue
+    localStorage.setItem("active_peer_id", String(this.activePeerId))
 
     if (!this.peer) {
       await this.initPeer()
     }
 
     await this.initMedia()
+    this.updateVideoButton()
 
     this.setStatus("📞 Calling...")
     this.showModal("outgoingCallModal")
@@ -345,7 +366,22 @@ export default class extends Controller {
     if (data.receiver_id && data.receiver_id !== this.currentUserIdValue) return
 
     if (data.offer && data.caller_id !== this.currentUserIdValue) {
+      if (this.peer) {
+        await this.peer.setRemoteDescription(
+          new RTCSessionDescription(data.offer)
+        )
+        const renegotiationAnswer = await this.peer.createAnswer()
+        await this.peer.setLocalDescription(renegotiationAnswer)
+        this.channel.perform("signal", {
+          receiver_id: data.caller_id,
+          answer: renegotiationAnswer,
+          caller_id: this.currentUserIdValue
+        })
+        return
+      }
+
       this.activePeerId = data.caller_id
+      localStorage.setItem("active_peer_id", String(this.activePeerId))
       this.updateIncomingCallerUI(data.caller_login, data.caller_avatar_url)
       this.pendingOffer = data.offer
       localStorage.setItem("pending_offer_payload", JSON.stringify({
@@ -399,6 +435,7 @@ export default class extends Controller {
     if (!this.pendingOffer) return
 
     await this.initPeer()
+    localStorage.setItem("active_peer_id", String(this.activePeerId || this.otherUserIdValue))
 
     if (this.peer.signalingState !== "stable") {
       console.log("offer already accepted")
@@ -406,6 +443,7 @@ export default class extends Controller {
     }
 
     await this.initMedia()
+    this.updateVideoButton()
 
     await this.peer.setRemoteDescription(
         new RTCSessionDescription(this.pendingOffer)
@@ -498,12 +536,81 @@ export default class extends Controller {
 
     const track = this.stream.getVideoTracks()[0]
 
+    if (this.isVideoOff) {
+      this.enableVideo(track)
+      return
+    }
+
     if (!track) return
-
-    this.isVideoOff = !this.isVideoOff
-    track.enabled = !this.isVideoOff
-
+    track.enabled = false
+    this.isVideoOff = true
+    this.syncLocalVideoVisibility()
     this.updateVideoButton()
+  }
+
+  async enableVideo(existingTrack) {
+    if (existingTrack) {
+      existingTrack.enabled = true
+      this.isVideoOff = false
+      this.syncLocalVideoVisibility()
+      this.updateVideoButton()
+      return
+    }
+
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: { facingMode: this.currentFacingMode }
+      })
+      const newTrack = stream.getVideoTracks()[0]
+      if (!newTrack) return
+
+      this.stream.addTrack(newTrack)
+
+      if (this.videoSender) {
+        await this.videoSender.replaceTrack(newTrack)
+      } else {
+        this.videoSender = this.peer?.addTrack(newTrack, this.stream) || null
+      }
+
+      this.isVideoOff = false
+      this.syncLocalVideoVisibility()
+      this.updateVideoButton()
+    } catch (error) {
+      console.warn("Camera access failed", error)
+    }
+  }
+
+  async flipCamera() {
+    if (!this.stream || this.isVideoOff) return
+
+    const currentTrack = this.stream.getVideoTracks()[0]
+    if (!currentTrack) return
+
+    const nextMode = this.currentFacingMode === "user" ? "environment" : "user"
+
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: { facingMode: { exact: nextMode } }
+      })
+      const newTrack = stream.getVideoTracks()[0]
+      if (!newTrack) return
+
+      this.stream.removeTrack(currentTrack)
+      currentTrack.stop()
+      this.stream.addTrack(newTrack)
+
+      if (!this.videoSender) {
+        this.videoSender = this.peer?.getSenders()?.find(sender => sender.track?.kind === "video") || null
+      }
+      if (this.videoSender) {
+        await this.videoSender.replaceTrack(newTrack)
+      }
+
+      this.currentFacingMode = nextMode
+      this.syncLocalVideoVisibility()
+    } catch (error) {
+      console.warn("Flip camera failed", error)
+    }
   }
 
   updateMuteButton() {
@@ -524,10 +631,10 @@ export default class extends Controller {
     if (!btn) return
 
     if (this.isVideoOff) {
-      btn.innerHTML = '<i class="bi bi-camera-video-off"></i> Camera Off'
+      btn.innerHTML = '<i class="bi bi-camera-video"></i> Camera On'
       btn.classList.replace("btn-info", "btn-secondary")
     } else {
-      btn.innerHTML = '<i class="bi bi-camera-video"></i> Camera On'
+      btn.innerHTML = '<i class="bi bi-camera-video-off"></i> Camera Off'
       btn.classList.replace("btn-secondary", "btn-info")
     }
   }
@@ -552,6 +659,37 @@ export default class extends Controller {
     if (returnBtn) returnBtn.classList.remove("d-none")
     this.setStatus("🔄 Reconnecting...")
     this.showModal("activeCallModal")
+  }
+
+  async tryRejoinCall() {
+    const storedPeerId = localStorage.getItem("active_peer_id")
+    if (!storedPeerId) return
+
+    const peerId = Number(storedPeerId)
+    if (!Number.isFinite(peerId) || peerId <= 0) return
+
+    this.activePeerId = peerId
+
+    try {
+      await this.initPeer()
+      await this.initMedia()
+      this.updateVideoButton()
+
+      if (!this.peer || this.peer.signalingState !== "stable") return
+
+      const offer = await this.peer.createOffer()
+      await this.peer.setLocalDescription(offer)
+
+      this.channel.perform("signal", {
+        receiver_id: this.activePeerId,
+        offer,
+        caller_id: this.currentUserIdValue,
+        caller_login: this.currentUserLoginValue,
+        caller_avatar_url: this.currentUserAvatarUrlValue
+      })
+    } catch (error) {
+      console.warn("Call rejoin failed", error)
+    }
   }
 
   returnToCall() {
