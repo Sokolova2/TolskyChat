@@ -65,6 +65,7 @@ export default class extends Controller {
     this.seconds = 0
     this.channel = null
     this.callInProgress = false
+    this.activePeerId = null
   }
 
   destroyEverything() {
@@ -201,8 +202,9 @@ export default class extends Controller {
 
     this.peer.onicecandidate = (e) => {
       if (e.candidate) {
+        const receiverId = this.activePeerId || this.otherUserIdValue
         this.channel?.perform('signal', {
-          receiver_id: this.otherUserIdValue,
+          receiver_id: receiverId,
           candidate: e.candidate,
           caller_id: this.currentUserIdValue
         })
@@ -299,6 +301,8 @@ export default class extends Controller {
 
   async start() {
     if (!this.isCaller) return
+    this.activePeerId = this.otherUserIdValue
+
     if (!this.peer) {
       await this.initPeer()
     }
@@ -316,7 +320,7 @@ export default class extends Controller {
     await this.peer.setLocalDescription(offer)
 
     this.channel.perform("signal", {
-      receiver_id: this.otherUserIdValue,
+      receiver_id: this.activePeerId,
       offer,
       caller_id: this.currentUserIdValue
     })
@@ -326,6 +330,7 @@ export default class extends Controller {
     if (data.receiver_id && data.receiver_id !== this.currentUserIdValue) return
 
     if (data.offer && data.caller_id !== this.currentUserIdValue) {
+      this.activePeerId = data.caller_id
       this.pendingOffer = data.offer
       localStorage.setItem("pending_offer", JSON.stringify(data.offer))
 
@@ -390,7 +395,7 @@ export default class extends Controller {
     await this.peer.setLocalDescription(answer)
 
     this.channel.perform("signal", {
-      receiver_id: this.otherUserIdValue,
+      receiver_id: this.activePeerId || this.otherUserIdValue,
       answer,
       caller_id: this.currentUserIdValue
     })
@@ -403,8 +408,9 @@ export default class extends Controller {
   }
 
   declineCall() {
+    const receiverId = this.activePeerId || this.otherUserIdValue
     this.channel?.perform("signal", {
-      receiver_id: this.otherUserIdValue,
+      receiver_id: receiverId,
       decline: true,
       caller_id: this.currentUserIdValue
     })
@@ -513,6 +519,7 @@ export default class extends Controller {
     localStorage.removeItem("pending_offer")
 
     this.remoteReady = false
+    this.activePeerId = null
   }
 
   restoreUIOnly() {
