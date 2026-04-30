@@ -4,6 +4,8 @@ import consumer from "channels/consumer";
 export default class extends Controller {
   static values = {
     currentUserId: Number,
+    currentUserLogin: String,
+    currentUserAvatarUrl: String,
     callerId: Number,
     otherUserId: Number,
     iceServers: String
@@ -33,9 +35,12 @@ export default class extends Controller {
       }
     })
 
-    const savedOffer = localStorage.getItem("pending_offer")
-    if (savedOffer) {
-      this.pendingOffer = JSON.parse(savedOffer)
+    const savedOfferPayload = localStorage.getItem("pending_offer_payload")
+    if (savedOfferPayload) {
+      const payload = JSON.parse(savedOfferPayload)
+      this.pendingOffer = payload.offer
+      this.activePeerId = payload.caller_id || null
+      this.updateIncomingCallerUI(payload.caller_login, payload.caller_avatar_url)
       this.setStatus("📲 Incoming call (restored)")
     }
 
@@ -125,6 +130,14 @@ export default class extends Controller {
     if (this.hasStatusTarget) {
       this.statusTarget.textContent = text
     }
+  }
+
+  updateIncomingCallerUI(name, avatarUrl) {
+    const nameEl = document.getElementById("incomingCallerName")
+    if (nameEl && name) nameEl.textContent = name
+
+    const avatarEl = document.getElementById("incomingCallerAvatar")
+    if (avatarEl && avatarUrl) avatarEl.src = avatarUrl
   }
 
   showModal(id) {
@@ -322,7 +335,9 @@ export default class extends Controller {
     this.channel.perform("signal", {
       receiver_id: this.activePeerId,
       offer,
-      caller_id: this.currentUserIdValue
+      caller_id: this.currentUserIdValue,
+      caller_login: this.currentUserLoginValue,
+      caller_avatar_url: this.currentUserAvatarUrlValue
     })
   }
 
@@ -331,8 +346,14 @@ export default class extends Controller {
 
     if (data.offer && data.caller_id !== this.currentUserIdValue) {
       this.activePeerId = data.caller_id
+      this.updateIncomingCallerUI(data.caller_login, data.caller_avatar_url)
       this.pendingOffer = data.offer
-      localStorage.setItem("pending_offer", JSON.stringify(data.offer))
+      localStorage.setItem("pending_offer_payload", JSON.stringify({
+        offer: data.offer,
+        caller_id: data.caller_id,
+        caller_login: data.caller_login,
+        caller_avatar_url: data.caller_avatar_url
+      }))
 
       this.setStatus("📲 Incoming call...")
       this.showModal("incomingCallModal")
@@ -401,7 +422,7 @@ export default class extends Controller {
     })
 
     this.pendingOffer = null
-    localStorage.removeItem("pending_offer")
+    localStorage.removeItem("pending_offer_payload")
 
     this.hideModal("incomingCallModal")
     this.showModal("activeCallModal")
@@ -516,7 +537,7 @@ export default class extends Controller {
     this.resetUIAfterCall()
     this.pendingOffer = null
 
-    localStorage.removeItem("pending_offer")
+    localStorage.removeItem("pending_offer_payload")
 
     this.remoteReady = false
     this.activePeerId = null

@@ -2,8 +2,8 @@
   .modal-dialog.modal-dialog-centered
     .modal-content.p-3.text-center
       .d-flex.flex-column.gap-3.align-items-center.justify-content-center
-        %img.mb-2{ src: second_user.avatar_url, width: 400}
-        %p.fs-4.text-muted= second_user.login
+        %img#outgoingCalleeAvatar.mb-2{ src: second_user.avatar_url, width: 400}
+        %p#outgoingCalleeName.fs-4.text-muted= second_user.login
       %h5 📞 Calling...
       %button.btn.btn-danger.mt-3{ data: { action: "voice#cancelCall" } }
         %i.bi.bi-x-lg
