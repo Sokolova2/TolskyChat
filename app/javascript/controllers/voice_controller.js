@@ -160,41 +160,26 @@ export default class extends Controller {
     this.peer.ontrack = (e) => {
       const stream = e.streams[0]
 
+      const remoteVideo = document.getElementById("remoteVideo")
+      const avatarFallback = document.getElementById("avatarFallback")
+
+      if (!remoteVideo) return
+
       const hasVideo = stream.getVideoTracks().length > 0
 
       if (hasVideo) {
-        if (!this.remoteVideo) {
-          this.remoteVideo = document.createElement("video")
-          this.remoteVideo.autoplay = true
-          this.remoteVideo.playsInline = true
-          this.remoteVideo.style.width = "300px"
+        remoteVideo.srcObject = stream
+        remoteVideo.style.display = "block"
 
-          document.body.appendChild(this.remoteVideo)
+        if (avatarFallback) {
+          avatarFallback.style.display = "none"
         }
 
-        this.remoteVideo.srcObject = stream
+      } else {
+        remoteVideo.style.display = "none"
 
-        // ❗ ВОТ ЗДЕСЬ удаляем audio
-        if (this.remoteAudio) {
-          this.remoteAudio.remove()
-          this.remoteAudio = null
-        }
-
-      }
-
-      else {
-        if (!this.remoteAudio) {
-          this.remoteAudio = document.createElement("audio")
-          this.remoteAudio.autoplay = true
-
-          document.body.appendChild(this.remoteAudio)
-        }
-
-        this.remoteAudio.srcObject = stream
-
-        if (this.remoteVideo) {
-          this.remoteVideo.remove()
-          this.remoteVideo = null
+        if (avatarFallback) {
+          avatarFallback.style.display = "block"
         }
       }
 
@@ -225,18 +210,33 @@ export default class extends Controller {
         audio: true,
         video: true
       })
-    } catch (err) {
-      console.warn("❌ Video failed, fallback to audio:", err)
 
-      this.stream = await navigator.mediaDevices.getUserMedia({
-        audio: true,
-        video: false
-      })
+    } catch (videoErr) {
+      console.warn("❌ No video, trying audio:", videoErr)
+
+      try {
+        this.stream = await navigator.mediaDevices.getUserMedia({
+          audio: true
+        })
+
+      } catch (audioErr) {
+        console.error("❌ No media devices at all:", audioErr)
+        alert("No access to microphone")
+        return
+      }
     }
 
     this.stream.getTracks().forEach(track => {
       this.peer?.addTrack(track, this.stream)
     })
+
+    const localVideo = document.getElementById("localVideo")
+    if (localVideo) {
+      localVideo.srcObject = this.stream
+
+      const hasVideo = this.stream.getVideoTracks().length > 0
+      localVideo.style.display = hasVideo ? "block" : "none"
+    }
   }
 
   async start() {

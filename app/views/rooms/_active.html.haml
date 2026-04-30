@@ -1,9 +1,12 @@
 .modal.fade#activeCallModal{ tabindex: "-1" }
   .modal-dialog.modal-dialog-centered
     .modal-content.p-3.text-center
+      #videoContainer{ style: "position:relative;background:black; min-height:300px;" }
+        #avatarFallback{ style: "display:none;" }
+          %img{ src: second_user.avatar_url, width: 300 }
 
-      .mb-2.d-flex.justify-content-center
-        %img{ src: second_user.avatar_url, width: 400 }
+        %video#remoteVideo{ autoplay: true, playsinline: true, style: "width:100%; display:none;" }
+        %video#localVideo{ autoplay: true, playsinline: true, muted: true, style: "width:120px; position:absolute; bottom:10px; right:10px;" }
 
       %h5= second_user.login
 
