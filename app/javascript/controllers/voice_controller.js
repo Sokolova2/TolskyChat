@@ -161,25 +161,29 @@ export default class extends Controller {
     this.peer.ontrack = (e) => {
       const stream = e.streams[0]
 
+      if (!this.remoteAudio) {
+        this.remoteAudio = document.createElement("audio")
+        this.remoteAudio.autoplay = true
+        document.body.appendChild(this.remoteAudio)
+      }
+
+      this.remoteAudio.srcObject = stream
+
       const remoteVideo = document.getElementById("remoteVideo")
       const avatarFallback = document.getElementById("avatarFallback")
 
-      if (!remoteVideo) return
+      if (remoteVideo){
+        const hasVideo = stream.getVideoTracks().length > 0
 
-      const hasVideo = stream.getVideoTracks().length > 0
+        if (hasVideo) {
+          remoteVideo.srcObject = stream
+          remoteVideo.style.display = "block"
 
-      if (hasVideo) {
-        remoteVideo.srcObject = stream
-        remoteVideo.style.display = "block"
-
-        if (avatarFallback) {
           avatarFallback.style.display = "none"
-        }
 
-      } else {
-        remoteVideo.style.display = "none"
+        } else {
+          remoteVideo.style.display = "none"
 
-        if (avatarFallback) {
           avatarFallback.style.display = "block"
         }
       }
