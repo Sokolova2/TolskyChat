@@ -2,7 +2,7 @@
   .chat-header.shadow-lg
     .d-flex.justify-content-between.align-items-center.ms-3.me-3.p-3
       .d-flex.gap-2
-        - second_user = room.participants.includes(:user).map(&:user).find{ |u| u.id != current_user.id }
+        - second_user = room.participants.includes(:user).map(&:user).find { |u| u.id != current_user.id }
         - if room.is_a?(Conversation)
           %h5= room.name
           - if room.is_private?
@@ -22,27 +22,28 @@
           = link_to contact_path(contact), data: { turbo_frame: "modal" }, class: 'menu-icon' do
             %i.bi.bi-three-dots.btn.btn-outline-dark.ms-1
 
-        %div{ :data => {controller: "voice",
-          voice_current_user_id_value: current_user.id,
-          voice_current_user_login_value: current_user.login,
-          voice_current_user_avatar_url_value: current_user.avatar_url,
-          voice_other_user_id_value: second_user.id,
-          voice_caller_id_value: current_user.id,
-          voice_ice_servers_value: voice_ice_servers.to_json}
-          }
-          %button.btn.btn-primary{ data: { action: "voice#start",
-            voice_other_user_id: second_user.id,
-            voice_caller_id: current_user.id
+        - if second_user.present?
+          %div{ :data => {controller: "voice",
+            voice_current_user_id_value: current_user.id,
+            voice_current_user_login_value: current_user.login,
+            voice_current_user_avatar_url_value: current_user.avatar_url,
+            voice_other_user_id_value: second_user.id,
+            voice_caller_id_value: current_user.id,
+            voice_ice_servers_value: voice_ice_servers.to_json}
             }
-          }
-            📞 Start Call
-          %button#returnToCall.btn.btn-success.d-none{ data: { action: "voice#returnToCall" } }
-            🔙 Back to call
-          %p{ data: { voice_target: "status" } }
-            Idle
-          = render 'rooms/outgoing', second_user: second_user
-          = render 'rooms/incoming', second_user: second_user
-          = render 'rooms/active', second_user: second_user
+            %button.btn.btn-primary{ data: { action: "voice#start",
+              voice_other_user_id: second_user.id,
+              voice_caller_id: current_user.id
+              }
+            }
+              📞 Start Call
+            %button#returnToCall.btn.btn-success.d-none{ data: { action: "voice#returnToCall" } }
+              🔙 Back to call
+            %p{ data: { voice_target: "status" } }
+              Idle
+            = render 'rooms/outgoing', second_user: second_user
+            = render 'rooms/incoming', second_user: second_user
+            = render 'rooms/active', second_user: second_user
   #chatroom.chat-messages
     .chat-messages-inner
       = render room.messages.sort_by(&:created_at)

@@ -14,7 +14,7 @@ export default class extends Controller {
       this.open(event)
     })
 
-    document.addEventListener("click", () => {
+    document.addEventListener("click", (event) => {
       if (!this.element.contains(event.target)) {
         this.close()
       }
