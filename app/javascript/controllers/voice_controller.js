@@ -80,6 +80,8 @@ export default class extends Controller {
     this.cableConnected = false
     this.rejoinInProgress = false
     this.callStartedAtMs = null
+    this.disconnectTimeout = null
+    this.remoteVideoEnabled = true
   }
 
   destroyEverything() {
@@ -95,6 +97,9 @@ export default class extends Controller {
   }
 
   cleanupWebRTC() {
+    clearTimeout(this.disconnectTimeout)
+    this.disconnectTimeout = null
+
     if (this.peer) {
       this.peer.close()
       this.peer = null
@@ -122,6 +127,16 @@ export default class extends Controller {
     }
 
     this.stopTimer()
+  }
+
+  updateRemoteVideoUI(enabled) {
+    const remoteVideo = document.getElementById("remoteVideo")
+    const avatarFallback = document.getElementById("avatarFallback")
+    if (!remoteVideo || !avatarFallback) return
+
+    this.remoteVideoEnabled = enabled
+    remoteVideo.style.display = enabled ? "block" : "none"
+    avatarFallback.style.display = enabled ? "none" : "block"
   }
 
   syncLocalVideoVisibility() {
@@ -321,7 +336,6 @@ export default class extends Controller {
 
       if (track.kind === "video") {
         const remoteVideo = document.getElementById("remoteVideo")
-        const avatarFallback = document.getElementById("avatarFallback")
 
         if (!remoteVideo) return
 
@@ -333,11 +347,11 @@ export default class extends Controller {
 
         remoteVideo.srcObject = null
         remoteVideo.srcObject = this.remoteStream
-        remoteVideo.style.display = "block"
+        this.updateRemoteVideoUI(true)
 
-        if (avatarFallback) {
-          avatarFallback.style.display = "none"
-        }
+        track.onended = () => this.updateRemoteVideoUI(false)
+        track.onmute = () => this.updateRemoteVideoUI(false)
+        track.onunmute = () => this.updateRemoteVideoUI(true)
       }
 
       this.setStatus("🔊 Connected")
@@ -347,6 +361,8 @@ export default class extends Controller {
     this.peer.onconnectionstatechange = () => {
       const state = this.peer.connectionState
       if (state === "connected") {
+        clearTimeout(this.disconnectTimeout)
+        this.disconnectTimeout = null
         this.setStatus("🟢 Connected")
         this.inCall = true
         localStorage.setItem('call_active', "true")
@@ -354,7 +370,16 @@ export default class extends Controller {
         this.startTimer()
       }
 
-      if (["failed", "disconnected", "closed"].includes(state)) {
+      if (state === "disconnected") {
+        this.setStatus("🔄 Reconnecting...")
+        clearTimeout(this.disconnectTimeout)
+        this.disconnectTimeout = setTimeout(() => {
+          this.forceReset()
+        }, 15000)
+        return
+      }
+
+      if (["failed", "closed"].includes(state)) {
         this.forceReset()
       }
     }
@@ -427,6 +452,25 @@ export default class extends Controller {
         return
       }
 
+      if (this.inCall || localStorage.getItem("call_active") === "true") {
+        this.activePeerId = data.caller_id
+        localStorage.setItem("active_peer_id", String(this.activePeerId))
+        await this.initPeer()
+        await this.initMedia()
+        await this.peer.setRemoteDescription(
+          new RTCSessionDescription(data.offer)
+        )
+        const autoAnswer = await this.peer.createAnswer()
+        await this.peer.setLocalDescription(autoAnswer)
+        this.channel.perform("signal", {
+          receiver_id: this.activePeerId,
+          answer: autoAnswer,
+          caller_id: this.currentUserIdValue,
+          call_started_at: data.call_started_at || this.callStartedAtMs
+        })
+        return
+      }
+
       this.activePeerId = data.caller_id
       localStorage.setItem("active_peer_id", String(this.activePeerId))
       this.updateIncomingCallerUI(data.caller_login, data.caller_avatar_url)
@@ -478,6 +522,10 @@ export default class extends Controller {
 
     if (data.decline) {
       this.forceReset()
+    }
+
+    if (Object.prototype.hasOwnProperty.call(data, "video_enabled")) {
+      this.updateRemoteVideoUI(Boolean(data.video_enabled))
     }
   }
 
@@ -598,6 +646,11 @@ export default class extends Controller {
     if (!track) return
     track.enabled = false
     this.isVideoOff = true
+    this.channel?.perform("signal", {
+      receiver_id: this.activePeerId || this.otherUserIdValue,
+      caller_id: this.currentUserIdValue,
+      video_enabled: false
+    })
     this.syncLocalVideoVisibility()
     this.updateVideoButton()
   }
@@ -606,6 +659,11 @@ export default class extends Controller {
     if (existingTrack) {
       existingTrack.enabled = true
       this.isVideoOff = false
+      this.channel?.perform("signal", {
+        receiver_id: this.activePeerId || this.otherUserIdValue,
+        caller_id: this.currentUserIdValue,
+        video_enabled: true
+      })
       this.syncLocalVideoVisibility()
       this.updateVideoButton()
       return
@@ -627,6 +685,11 @@ export default class extends Controller {
       }
 
       this.isVideoOff = false
+      this.channel?.perform("signal", {
+        receiver_id: this.activePeerId || this.otherUserIdValue,
+        caller_id: this.currentUserIdValue,
+        video_enabled: true
+      })
       this.syncLocalVideoVisibility()
       this.updateVideoButton()
     } catch (error) {
