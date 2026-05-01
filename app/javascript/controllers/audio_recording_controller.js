@@ -68,12 +68,15 @@ export default class extends Controller {
 
       this.mediaRecorder.start()
       this.startTimer()
-      this.controlsTarget.classList.remove("d-none")
-      this.controlsTarget.style.display = "flex"
+      if (this.hasControlsTarget) {
+        this.controlsTarget.classList.remove("d-none")
+        this.controlsTarget.style.display = "flex"
+      }
 
-      this.startRecordingTarget.disabled = true
-      this.stopRecordingTarget.disabled = false
-      this.pauseRecordingTarget.disabled = false
+      if (this.hasStartRecordingTarget) this.startRecordingTarget.disabled = true
+      if (this.hasStopRecordingTarget) this.stopRecordingTarget.disabled = false
+      if (this.hasPauseRecordingTarget) this.pauseRecordingTarget.disabled = false
+      if (this.micButton) this.micButton.innerHTML = "🔴 recording..."
 
     } catch(e){
       this.cleanupRecorder()
@@ -163,8 +166,8 @@ export default class extends Controller {
   }
 
   updateTimer() {
-    this.timeElapsedTarget.textContent =
-        `Time: ${this.formatTime(this.secondsElapsed)}`
+    if (!this.hasTimeElapsedTarget) return
+    this.timeElapsedTarget.textContent = `Time: ${this.formatTime(this.secondsElapsed)}`
   }
 
   addMicButton() {
@@ -186,7 +189,6 @@ export default class extends Controller {
     button.addEventListener("click", (e) => {
       e.preventDefault()
       this.startRecording(e)
-      button.innerHTML = "🔴 recording..."
     })
 
     group.appendChild(button)

@@ -726,7 +726,29 @@ export default class extends Controller {
       this.currentFacingMode = nextMode
       this.syncLocalVideoVisibility()
     } catch (error) {
-      console.warn("Flip camera failed", error)
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({
+          video: { facingMode: nextMode }
+        })
+        const newTrack = stream.getVideoTracks()[0]
+        if (!newTrack) return
+
+        this.stream.removeTrack(currentTrack)
+        currentTrack.stop()
+        this.stream.addTrack(newTrack)
+
+        if (!this.videoSender) {
+          this.videoSender = this.peer?.getSenders()?.find(sender => sender.track?.kind === "video") || null
+        }
+        if (this.videoSender) {
+          await this.videoSender.replaceTrack(newTrack)
+        }
+
+        this.currentFacingMode = nextMode
+        this.syncLocalVideoVisibility()
+      } catch (fallbackError) {
+        console.warn("Flip camera failed", fallbackError)
+      }
     }
   }
 
