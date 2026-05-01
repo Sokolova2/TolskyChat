@@ -1,4 +1,4 @@
-.message{ id: "message_#{message.id}", data: { controller: "context-menu", context_menu_room_id_value: message.room_id } }
+.message{ id: "message_#{message.id}", data: { controller: "context-menu", context_menu_room_id_value: message.room_id, context_menu_owner_id_value: message.user_id } }
   .d-flex.gap-2.align-items-start.ps-3
     = image_tag message.user.avatar.url, class: "chat-avatar"
     .message-body
@@ -18,4 +18,3 @@
       .context-menu.hidden
         %button{ data: { action: "click->context-menu#delete" }, class: 'btn btn-outline-dark text-white' } Delete
     %p= message.created_at.strftime("%H:%M")
-

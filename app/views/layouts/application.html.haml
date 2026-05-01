@@ -15,5 +15,7 @@
     = stylesheet_link_tag :application, 'data-turbo-track': Rails.env.production? ? 'reload' : ''
     = javascript_importmap_tags
     = action_cable_meta_tag
+    - if user_signed_in?
+      %meta{ name: "current-user-id", content: current_user.id }
   %body.body
     = yield

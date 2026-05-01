@@ -42,6 +42,7 @@ export default class extends Controller {
       this.activePeerId = payload.caller_id || null
       this.ensureCallStartedAt(payload.call_started_at || this.loadCallStartedAt())
       this.updateIncomingCallerUI(payload.caller_login, payload.caller_avatar_url)
+      this.updateActiveCallPeerUI(payload.caller_login, payload.caller_avatar_url)
       this.setStatus("📲 Incoming call (restored)")
     }
 
@@ -158,6 +159,14 @@ export default class extends Controller {
     if (nameEl && name) nameEl.textContent = name
 
     const avatarEl = document.getElementById("incomingCallerAvatar")
+    if (avatarEl && avatarUrl) avatarEl.src = avatarUrl
+  }
+
+  updateActiveCallPeerUI(name, avatarUrl) {
+    const nameEl = document.getElementById("activeCallPeerName")
+    if (nameEl && name) nameEl.textContent = name
+
+    const avatarEl = document.getElementById("avatarFallback")
     if (avatarEl && avatarUrl) avatarEl.src = avatarUrl
   }
 
@@ -421,6 +430,7 @@ export default class extends Controller {
       this.activePeerId = data.caller_id
       localStorage.setItem("active_peer_id", String(this.activePeerId))
       this.updateIncomingCallerUI(data.caller_login, data.caller_avatar_url)
+      this.updateActiveCallPeerUI(data.caller_login, data.caller_avatar_url)
       this.pendingOffer = data.offer
       this.ensureCallStartedAt(data.call_started_at || Date.now())
       localStorage.setItem("pending_offer_payload", JSON.stringify({
