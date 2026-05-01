@@ -38,9 +38,19 @@ class User < ApplicationRecord
 
   class << self
     def from_omniauth(auth)
-      where(provider: auth.provider, uid: auth.uid).first_or_create do |user|
+      user = find_by(provider: auth.provider, uid: auth.uid) || find_by(email: auth.info.email)
+
+      if user
+        user.provider = auth.provider if user.provider.blank?
+        user.uid = auth.uid if user.uid.blank?
+      else
+        user = new
         user_params(user, auth)
       end
+
+      user.skip_confirmation! if user.respond_to?(:confirmed?) && !user.confirmed?
+      user.save! if user.changed?
+      user
     end
 
     def user_params(user, auth)

@@ -4,6 +4,10 @@ module Users
   class OmniauthCallbacksController < Devise::OmniauthCallbacksController
     def google_oauth2
       user = User.from_omniauth(auth)
+      if user&.respond_to?(:confirmed?) && !user.confirmed?
+        user.skip_confirmation!
+        user.save! if user.changed?
+      end
       hangle_oauth_user(user)
     end
 

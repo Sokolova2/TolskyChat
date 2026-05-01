@@ -1,8 +1,8 @@
 .modal.fade#activeCallModal{ tabindex: "-1" }
   .modal-dialog.modal-dialog-centered
-    .modal-content.p-3.text-center
+    .modal-content.p-3.text-center.bg-dark.text-white.shadow-lg
       #videoContainer{ style: "position:relative;background:black; min-height:300px;" }
-        %img#avatarFallback{ src: second_user.avatar_url, width: 400 }
+        %img#avatarFallback{ src: second_user.avatar_url, width: '100%' }
 
         %video#remoteVideo{ autoplay: true,
           playsinline: true,
@@ -15,10 +15,11 @@
           style: "width:120px; position:absolute; bottom:10px; right:10px;"
         }
 
-      %h5#activeCallPeerName= second_user.login
+      %h5#activeCallPeerName.mt-4= second_user.login
 
       %p.text-success{ data: { voice_target: "status" } }
-        🔊 In call
+        %i.bi.bi-volume-down-fill
+        In call
 
       %h6#callTimer 00:00
 

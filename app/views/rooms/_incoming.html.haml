@@ -1,10 +1,10 @@
-.modal.fade#incomingCallModal
+.modal.fade#incomingCallModal{ tabindex: "-1", data: { bs_backdrop: "static", bs_keyboard: "false" } }
   .modal-dialog.modal-dialog-centered
-    .modal-content.p-3.text-center
+    .modal-content.p-3.text-center.bg-dark.text-white.bg-opacity-75
       .d-flex.justify-content-center
-        %img#incomingCallerAvatar.mb-2{ src: second_user.avatar_url, width: 400 }
-      %h5#incomingCallerName= second_user.login
-      %p.text-muted is calling you...
+        %img#incomingCallerAvatar.mb-2{ src: second_user.avatar_url, width: '100%' }
+      %h5#incomingCallerName.mt-2= second_user.login
+      %p.text-secondary is calling you...
 
       %div.d-flex.gap-2.justify-content-center
         %button.btn.btn-success{ data: { action: "voice#acceptCall" } }

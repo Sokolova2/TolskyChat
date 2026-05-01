@@ -1,10 +1,11 @@
-.modal.fade#outgoingCallModal
+.modal.fade#outgoingCallModal{ tabindex: "-1", data: { bs_backdrop: "static", bs_keyboard: "false" } }
   .modal-dialog.modal-dialog-centered
-    .modal-content.p-3.text-center
+    .modal-content.p-3.text-center.bg-dark.text-white.bg-opacity-75
       .d-flex.flex-column.gap-3.align-items-center.justify-content-center
-        %img#outgoingCalleeAvatar.mb-2{ src: second_user.avatar_url, width: 400}
-        %p#outgoingCalleeName.fs-4.text-muted= second_user.login
-      %h5 📞 Calling...
+        %img#outgoingCalleeAvatar.mb-2{ src: second_user.avatar_url, width: '100%' }
+        %h5#outgoingCalleeName.fs-4.text-white= second_user.login
+      %div
+        %p.text-secondary is calling...
       %button.btn.btn-danger.mt-3{ data: { action: "voice#cancelCall" } }
         %i.bi.bi-x-lg
         Decline
