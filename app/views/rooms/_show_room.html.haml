@@ -10,14 +10,14 @@
           - else
             %p.text-secondary.mb-0 public
         .d-flex.gap-5.align-items-center
-          = render 'rooms/voice_call', second_user: second_user
+          = render 'rooms/voice_call', second_user: second_user, room: room
           %button.btn.btn-outline-dark.me-4{ 'data-bs-toggle' => 'modal', 'data-bs-target' => '#conversationModal' }
             %i.bi.bi-three-dots
       - else
         %h5.mb-0= room.other_user(current_user).login
         - contact = Contact.find_by(sender: current_user, receiver: second_user) || Contact.find_by(sender: second_user, receiver: current_user)
         .d-flex.gap-5.align-items-center
-          = render 'rooms/voice_call', second_user: second_user
+          = render 'rooms/voice_call', second_user: second_user, room: room
           = link_to contact_path(contact), data: { turbo_frame: "modal" }, class: 'menu-icon' do
             %i.bi.bi-three-dots.btn.btn-outline-dark.me-4
 
