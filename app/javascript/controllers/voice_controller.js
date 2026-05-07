@@ -8,6 +8,7 @@ export default class extends Controller {
     currentUserAvatarUrl: String,
     callerId: Number,
     otherUserId: Number,
+    roomId: Number,
     iceServers: String
   }
 
@@ -71,7 +72,6 @@ export default class extends Controller {
     this.isVideoOff = true
     this.currentFacingMode = "user"
     this.videoSender = null
-    this.isNegotiating = false
     this.timer = null
     this.seconds = 0
     this.channel = null
@@ -286,29 +286,6 @@ export default class extends Controller {
       iceServers
     })
 
-    this.peer.onnegotiationneeded = async () => {
-      if (this.isNegotiating) return
-      if (!this.peer || this.peer.signalingState !== "stable") return
-
-      try {
-        this.isNegotiating = true
-        const offer = await this.peer.createOffer()
-        await this.peer.setLocalDescription(offer)
-        this.channel?.perform("signal", {
-          receiver_id: this.activePeerId || this.otherUserIdValue,
-          offer,
-          caller_id: this.currentUserIdValue,
-          caller_login: this.currentUserLoginValue,
-          caller_avatar_url: this.currentUserAvatarUrlValue,
-          call_started_at: this.callStartedAtMs
-        })
-      } catch (error) {
-        console.warn("Negotiation failed", error)
-      } finally {
-        this.isNegotiating = false
-      }
-    }
-
     this.peer.onicecandidate = (e) => {
       if (e.candidate) {
         const receiverId = this.activePeerId || this.otherUserIdValue
@@ -393,6 +370,21 @@ export default class extends Controller {
     })
 
     this.stream = new MediaStream(audioStream.getAudioTracks())
+
+    try {
+      const videoStream = await navigator.mediaDevices.getUserMedia({
+        video: { facingMode: this.currentFacingMode }
+      })
+      const initialVideoTrack = videoStream.getVideoTracks()[0]
+      if (initialVideoTrack) {
+        initialVideoTrack.enabled = false
+        this.stream.addTrack(initialVideoTrack)
+        this.isVideoOff = true
+      }
+    } catch (_error) {
+      // No camera available: continue audio-only.
+    }
+
     this.syncLocalVideoVisibility()
 
     this.stream.getTracks().forEach(track => {
@@ -426,6 +418,7 @@ export default class extends Controller {
     this.channel.perform("signal", {
       receiver_id: this.activePeerId,
       offer,
+      room_id: this.roomIdValue,
       caller_id: this.currentUserIdValue,
       caller_login: this.currentUserLoginValue,
       caller_avatar_url: this.currentUserAvatarUrlValue,
@@ -656,45 +649,17 @@ export default class extends Controller {
   }
 
   async enableVideo(existingTrack) {
-    if (existingTrack) {
-      existingTrack.enabled = true
-      this.isVideoOff = false
-      this.channel?.perform("signal", {
-        receiver_id: this.activePeerId || this.otherUserIdValue,
-        caller_id: this.currentUserIdValue,
-        video_enabled: true
-      })
-      this.syncLocalVideoVisibility()
-      this.updateVideoButton()
-      return
-    }
+    if (!existingTrack) return
 
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({
-        video: { facingMode: this.currentFacingMode }
-      })
-      const newTrack = stream.getVideoTracks()[0]
-      if (!newTrack) return
-
-      this.stream.addTrack(newTrack)
-
-      if (this.videoSender) {
-        await this.videoSender.replaceTrack(newTrack)
-      } else {
-        this.videoSender = this.peer?.addTrack(newTrack, this.stream) || null
-      }
-
-      this.isVideoOff = false
-      this.channel?.perform("signal", {
-        receiver_id: this.activePeerId || this.otherUserIdValue,
-        caller_id: this.currentUserIdValue,
-        video_enabled: true
-      })
-      this.syncLocalVideoVisibility()
-      this.updateVideoButton()
-    } catch (error) {
-      console.warn("Camera access failed", error)
-    }
+    existingTrack.enabled = true
+    this.isVideoOff = false
+    this.channel?.perform("signal", {
+      receiver_id: this.activePeerId || this.otherUserIdValue,
+      caller_id: this.currentUserIdValue,
+      video_enabled: true
+    })
+    this.syncLocalVideoVisibility()
+    this.updateVideoButton()
   }
 
   async flipCamera() {
@@ -838,6 +803,7 @@ export default class extends Controller {
       this.channel.perform("signal", {
         receiver_id: this.activePeerId,
         offer,
+        room_id: this.roomIdValue,
         caller_id: this.currentUserIdValue,
         caller_login: this.currentUserLoginValue,
         caller_avatar_url: this.currentUserAvatarUrlValue,
