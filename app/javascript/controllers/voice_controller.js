@@ -50,6 +50,9 @@ export default class extends Controller {
     if (this.inCall) {
       this.restoreUIOnly()
       this.tryRejoinCall()
+    } else {
+      this.updateMuteButton()
+      this.updateVideoButton()
     }
   }
 
@@ -160,6 +163,9 @@ export default class extends Controller {
     localStorage.removeItem('call_active')
     localStorage.removeItem('active_peer_id')
     localStorage.removeItem('call_started_at')
+    this.isMuted = false
+    this.isVideoOff = true
+    this.updateMuteButton()
     this.updateVideoButton()
   }
 
@@ -725,8 +731,13 @@ export default class extends Controller {
       btn.innerHTML = '<i class="bi bi-mic-mute"></i> Unmute'
       btn.classList.replace("btn-warning", "btn-secondary")
     }
-    else { btn.innerHTML = '<i class="bi bi-mic"></i> Mute'
+    else {
+      btn.innerHTML = '<i class="bi bi-mic"></i> Mute'
       btn.classList.replace("btn-secondary", "btn-warning")
+      if (!btn.classList.contains("btn-warning")) {
+        btn.classList.add("btn-warning")
+      }
+      btn.classList.remove("btn-secondary")
     }
   }
 
@@ -737,9 +748,17 @@ export default class extends Controller {
     if (this.isVideoOff) {
       btn.innerHTML = '<i class="bi bi-camera-video"></i> Camera On'
       btn.classList.replace("btn-info", "btn-secondary")
+      if (!btn.classList.contains("btn-secondary")) {
+        btn.classList.add("btn-secondary")
+      }
+      btn.classList.remove("btn-info")
     } else {
       btn.innerHTML = '<i class="bi bi-camera-video-off"></i> Camera Off'
       btn.classList.replace("btn-secondary", "btn-info")
+      if (!btn.classList.contains("btn-info")) {
+        btn.classList.add("btn-info")
+      }
+      btn.classList.remove("btn-secondary")
     }
   }
 
