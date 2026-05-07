@@ -1,0 +1,40 @@
+.sidebar.body-page
+  = image_tag 'Tolsky.png', size: 60, class: 'mt-4'
+
+  .menu-item
+    = link_to rooms_path, class: 'menu-icon' do
+      %i.bi.bi-house
+    %p.menu-text Home
+
+  .menu-item.ms-2
+    = render 'navbar/notifications'
+
+  .menu-item.ms-2
+    = link_to contacts_path, data: { turbo_frame: "modal" }, class: 'menu-icon' do
+      %i.bi.bi-person-lines-fill
+    %p.menu-text Contact
+
+  .menu-item.ms-2
+    = link_to users_path, data: { turbo_frame: "modal" }, class: 'menu-icon' do
+      %i.bi.bi-search
+    %p.menu-text Users
+
+  .menu-item.mb-5.ms-2
+    = link_to '#', class: 'menu-icon' do
+      %i.bi.bi-archive
+    %p.menu-text Archive
+
+  %br
+
+  .mt-5.ms-2
+    = link_to new_conversation_path, data: { turbo_frame: 'modal' }, class: 'menu-icon' do
+      %i.bi.bi-plus
+
+  = render 'navbar/dropdown_options'
+
+= render "modal/modal"
+
+= form_with(url: users_path, method: :get, data: { turbo_frame: 'result-search', controller: 'search' }) do |f|
+  .d-flex.justify-content-center.search-block.pb-1
+    = f.text_field :search, placeholder: 'Searching...', data: { action: 'input->search#search', search_target: 'input' }, class: 'form-control rounded-2 p-2 w-50 mt-1 h-25'
+  = f.submit 'Search', class: 'btn btn-outline-none', hidden: true

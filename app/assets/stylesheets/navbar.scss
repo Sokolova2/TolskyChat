@@ -74,3 +74,55 @@
 .dropdown-menu {
   z-index: 1102;
 }
+
+.mobile-navbar {
+  display: none;
+}
+
+@media (max-width: 991.98px) {
+  .desktop-navbar {
+    display: none;
+  }
+
+  .mobile-navbar {
+    display: block;
+  }
+
+  .mobile-topbar {
+    position: sticky;
+    top: 0;
+    z-index: 1200;
+  }
+
+  .mobile-bottom-nav {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1200;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 2px;
+    padding: 8px 10px calc(8px + env(safe-area-inset-bottom));
+    background: rgb(75, 30, 90);
+  }
+
+  .mobile-nav-link {
+    min-height: 48px;
+    border-radius: 8px;
+    background: rgba(255,255,255,0.1);
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    font-size: 12px;
+    gap: 2px;
+  }
+
+  .mobile-nav-link i {
+    font-size: 18px;
+    line-height: 1;
+  }
+}

@@ -1,0 +1,22 @@
+.mobile-topbar.search-block
+  = form_with(url: users_path, method: :get, data: { turbo_frame: 'result-search', controller: 'search' }) do |f|
+    .px-2.py-2
+      = f.text_field :search, placeholder: 'Searching...', data: { action: 'input->search#search', search_target: 'input' }, class: 'form-control rounded-2'
+    = f.submit 'Search', class: 'btn btn-outline-none', hidden: true
+
+.mobile-bottom-nav
+  = link_to rooms_path, class: 'mobile-nav-link' do
+    %i.bi.bi-house
+    %span Home
+
+  = link_to notifications_path, data: { turbo_frame: 'modal', turbo_prefetch: false }, class: 'mobile-nav-link' do
+    %i.bi.bi-chat
+    %span Activity
+
+  = link_to contacts_path, data: { turbo_frame: "modal" }, class: 'mobile-nav-link' do
+    %i.bi.bi-person-lines-fill
+    %span Contact
+
+  = link_to users_path, data: { turbo_frame: "modal" }, class: 'mobile-nav-link' do
+    %i.bi.bi-search
+    %span Users
