@@ -45,6 +45,9 @@ export default class extends Controller {
       this.updateIncomingCallerUI(payload.caller_login, payload.caller_avatar_url)
       this.updateActiveCallPeerUI(payload.caller_login, payload.caller_avatar_url)
       this.setStatus("📲 Incoming call (restored)")
+      if (!this.inCall) {
+        this.showModal("incomingCallModal")
+      }
     }
 
     if (this.inCall) {
