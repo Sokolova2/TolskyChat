@@ -607,9 +607,10 @@ export default class extends Controller {
 
       const el = document.getElementById("callTimer")
       if (el) {
-        const m = String(Math.floor(this.seconds / 60)).padStart(2, "0")
+        const h = String(Math.floor(this.seconds / 3600)).padStart(2, "0")
+        const m = String(Math.floor((this.seconds % 3600) / 60)).padStart(2, "0")
         const s = String(this.seconds % 60).padStart(2, "0")
-        el.textContent = `${m}:${s}`
+        el.textContent = `${h}:${m}:${s}`
       }
       }, 1000)
   }
@@ -619,7 +620,7 @@ export default class extends Controller {
     this.timer = null
     this.seconds = 0
     const el = document.getElementById("callTimer")
-    if (el) el.textContent = "00:00"
+    if (el) el.textContent = "00:00:00"
   }
 
   toggleMute() {
