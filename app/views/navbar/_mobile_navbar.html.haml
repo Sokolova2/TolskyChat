@@ -1,6 +1,13 @@
 .mobile-topbar.search-block
+  .mobile-top-actions.px-2.py-2
+    = link_to new_conversation_path, data: { turbo_frame: 'modal' }, class: 'mobile-top-action-btn' do
+      %i.bi.bi-plus-lg
+    = link_to '#', class: 'mobile-top-action-btn' do
+      %i.bi.bi-archive
+      %span Archive
+
   = form_with(url: users_path, method: :get, data: { turbo_frame: 'result-search', controller: 'search' }) do |f|
-    .px-2.py-2
+    .px-2.pb-2
       = f.text_field :search, placeholder: 'Searching...', data: { action: 'input->search#search', search_target: 'input' }, class: 'form-control rounded-2'
     = f.submit 'Search', class: 'btn btn-outline-none', hidden: true
 
@@ -20,3 +27,7 @@
   = link_to users_path, data: { turbo_frame: "modal" }, class: 'mobile-nav-link' do
     %i.bi.bi-search
     %span Users
+
+  = link_to edit_user_registration_path, class: 'mobile-nav-link' do
+    = image_tag current_user.avatar.url(:thumb), class: 'mobile-profile-avatar'
+    %span Profile

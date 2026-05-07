@@ -20,3 +20,50 @@
 .hero-section .hero-main-image {
   max-width: 450px;
 }
+
+@media (max-width: 767.98px) {
+  .home-page .d-flex.justify-content-between {
+    margin-left: 16px !important;
+    margin-right: 16px !important;
+    gap: 12px;
+  }
+
+  .home-page .h3 {
+    font-size: 2rem;
+    margin-top: 16px !important;
+  }
+
+  .home-page .btn {
+    margin-top: 16px !important;
+    white-space: nowrap;
+  }
+
+  .hero-section {
+    padding: 20px 16px 24px;
+  }
+
+  .hero-section .d-flex {
+    width: 100%;
+    align-items: flex-start !important;
+  }
+
+  .hero-section h1 {
+    font-size: 2.1rem;
+    line-height: 1.1;
+    margin-bottom: 6px;
+  }
+
+  .hero-section h4 {
+    font-size: 1.45rem;
+    line-height: 1.25;
+    margin-bottom: 18px;
+  }
+
+  .hero-section .hero-main-image {
+    width: min(82vw, 360px);
+    max-width: none;
+    height: auto;
+    margin: 0 auto;
+    display: block;
+  }
+}
