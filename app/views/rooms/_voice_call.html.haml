@@ -13,10 +13,9 @@
               voice_caller_id: current_user.id
               }
             }
-      📞 Start Call
+      %i.bi.bi-telephone-fill
     %button#returnToCall.btn.btn-success.d-none{ data: { action: "voice#returnToCall" } }
-      %i.bi.bi-telephone-fill.fs-5
-      Back to call
+      %i.bi.bi-telephone-outbound-fill.fs-5
     = render 'rooms/outgoing', second_user: second_user
     = render 'rooms/incoming', second_user: second_user
     = render 'rooms/active', second_user: second_user

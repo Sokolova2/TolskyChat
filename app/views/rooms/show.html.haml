@@ -1,8 +1,8 @@
 = render 'navbar/navbar'
 
 .page-bg
-  .d-flex
-    = render 'navbar/room_list', rooms: @rooms
-    .room-wrapper
+  .rooms-layout
+    .rooms-sidebar.d-none.d-lg-block
+      = render 'navbar/room_list', rooms: @rooms
+    .room-wrapper.room-wrapper--show
       = render 'rooms/show_room', room: @room
-

@@ -1,0 +1,18 @@
+= render 'navbar/navbar'
+
+.page-bg
+  .rooms-layout
+    .rooms-sidebar
+      = render 'navbar/room_list', rooms: @rooms
+    .room-wrapper.d-none.d-lg-block
+      .container-content.pt-2.bg-light.mb-5.me-5
+        .m-3
+          %h5.mb-3 Public Chats Search
+          - if params[:search].blank?
+            %p.text-secondary Type in the top search input to find public chats.
+          - else
+            %p.text-secondary
+              Results for:
+              %b= params[:search]
+
+          = render 'navbar/public_rooms_search_results', rooms: @public_rooms

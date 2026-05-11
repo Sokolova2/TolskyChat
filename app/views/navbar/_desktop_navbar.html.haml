@@ -20,7 +20,7 @@
     %p.menu-text Users
 
   .menu-item.mb-5.ms-2
-    = link_to '#', class: 'menu-icon' do
+    = link_to archive_path, data: { turbo_frame: "modal" }, class: 'menu-icon' do
       %i.bi.bi-archive
     %p.menu-text Archive
 
@@ -32,7 +32,7 @@
 
   = render 'navbar/dropdown_options'
 
-= form_with(url: users_path, method: :get, data: { turbo_frame: 'result-search', controller: 'search' }) do |f|
+= form_with(url: public_search_rooms_path, method: :get, data: { turbo: false, controller: 'search' }) do |f|
   .d-flex.justify-content-center.search-block.pb-1
-    = f.text_field :search, placeholder: 'Searching...', data: { action: 'input->search#search', search_target: 'input' }, class: 'form-control rounded-2 p-2 w-50 mt-1 h-25'
-  = f.submit 'Search', class: 'btn btn-outline-none', hidden: true
+    = f.text_field :search, placeholder: 'Search public chats...', value: params[:search], data: { action: 'input->search#search', search_target: 'input' }, class: 'form-control rounded-2 p-2 w-50 mt-1 h-25'
+  = f.submit 'Search', class: 'btn btn-outline-none', hidden: true, data: { search_target: 'submit' }

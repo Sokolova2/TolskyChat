@@ -1,6 +1,6 @@
 - if devise_mapping.recoverable? && controller_name != 'passwords' && controller_name != 'registrations'
   .text-center
-    = link_to 'Forgot your password?', new_password_path(resource_name)
+    = link_to 'Forgot your password?', new_user_password_path, data: { turbo: false }
   %br/
 
 .space-oauth.mt-2

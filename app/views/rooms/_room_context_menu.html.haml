@@ -1,0 +1,19 @@
+.room-context-menu.context-menu.hidden
+  = button_to room_path(room),
+        method: :delete,
+        data: { turbo_confirm: 'Delete?' },
+        class: 'btn text-white' do
+    %i.bi.bi-trash3.me-2
+    Delete
+  - if room.deleted_at.blank?
+    = button_to room_path(room),
+          method: :patch,
+          class: 'btn text-white' do
+      %i.bi.bi-archive.me-2
+      In archive
+  - else
+    = button_to room_path(room),
+          method: :patch,
+          class: 'btn text-white' do
+      %i.bi.bi-archive.me-2
+      Back

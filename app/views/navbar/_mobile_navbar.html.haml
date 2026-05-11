@@ -1,8 +1,10 @@
 .mobile-topbar.search-block
   .mobile-top-actions.px-2.py-2
-    = link_to new_conversation_path, data: { turbo_frame: 'modal' }, class: 'mobile-top-action-btn' do
-      %i.bi.bi-plus-lg
-    = link_to '#', class: 'mobile-top-action-btn' do
+    .d-flex.align-items-center.gap-2
+      = image_tag 'Tolsky.png', size: 30, class: 'mobile-brand-icon'
+      = link_to new_conversation_path, data: { turbo_frame: 'modal' }, class: 'mobile-top-action-btn' do
+        %i.bi.bi-plus-lg
+    = link_to archive_path, data: { turbo_frame: "modal" }, class: 'mobile-top-action-btn' do
       %i.bi.bi-archive
       %span Archive
 
@@ -28,6 +30,26 @@
     %i.bi.bi-search
     %span Users
 
-  = link_to edit_user_registration_path, class: 'mobile-nav-link' do
+
+  %span.mobile-nav-link{"data-bs-target" => "#exampleModal", "data-bs-toggle" => "modal", :type => "button"}
     = image_tag current_user.avatar.url(:thumb), class: 'mobile-profile-avatar'
     %span Profile
+  #exampleModal.modal.fade{"aria-hidden" => "true", "aria-labelledby" => "exampleModalLabel", :tabindex => "-1"}
+    .modal-dialog
+      .modal-content
+        .modal-body
+          = image_tag current_user.avatar.url, class: 'w-100'
+          %p.fs-3.text-center= current_user.login
+          - if current_user.first_name.present?
+            %p= current_user.first_name
+          - if current_user.last_name.present?
+            %p= current_user.last_name
+          - if current_user.phone_number.present?
+            %p= current_user.phone_number
+          - if current_user.birth_date.present?
+            %p= current_user.birth_date
+          - if current_user.description.present?
+            %p= current_user.description
+
+          = link_to 'Edit profile', edit_user_registration_path, class: 'btn w-100 fs-5 text-start'
+

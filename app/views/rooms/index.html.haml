@@ -1,11 +1,11 @@
 = render 'navbar/navbar'
 
 .page-bg
-  .d-flex
-    = render 'navbar/room_list', rooms: @rooms
-    .room-wrapper
+  .rooms-layout
+    .rooms-sidebar
+      = render 'navbar/room_list', rooms: @rooms
+    .room-wrapper.d-none.d-lg-block
       = render 'rooms/default_page'
-
 
 
 

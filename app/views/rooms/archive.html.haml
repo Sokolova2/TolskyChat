@@ -1,8 +1,7 @@
-.p-1
-  .d-flex.align-items-center.ps-2.gap-5.room-list-item{ data: { controller: 'room-context-menu' } }
-    = link_to room_path(room),
-      data: { turbo_frame: "_top" },
-      class: "conversation-link text-decoration-none text-light pe-4" do
+= turbo_frame_tag "modal" do
+  %h3.text-center.mb-3 Archived
+  - @rooms_archived.each do |room|
+    .card.card-body{data: { controller: "room-context-menu" }}
       .name-conversation
         .d-flex.gap-2.align-items-center
           .avatar-wrapper
@@ -29,4 +28,4 @@
             - else
               %span= room.display_name(current_user)
 
-    = render 'rooms/room_context_menu', room: room
+      = render 'rooms/room_context_menu', room: room

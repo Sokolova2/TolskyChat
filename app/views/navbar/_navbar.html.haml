@@ -1,7 +1,12 @@
-.desktop-navbar
-  = render 'navbar/desktop_navbar'
+- if controller_name == 'rooms' && action_name == 'show'
+  .desktop-navbar
+    = render 'navbar/desktop_navbar'
+- else
+  .desktop-navbar
+    = render 'navbar/desktop_navbar'
 
-.mobile-navbar
-  = render 'navbar/mobile_navbar'
+  .mobile-navbar
+    = render 'navbar/mobile_navbar'
 
-= render "modal/modal"
+.modal-position
+  = render "modal/modal"
