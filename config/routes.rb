@@ -14,6 +14,9 @@ Rails.application.routes.draw do
 
   resources :rooms do
     resources :messages
+    collection do
+      get :public_search
+    end
   end
 
   resources :conversations
@@ -27,4 +30,6 @@ Rails.application.routes.draw do
       delete :reject
     end
   end
+
+  get 'archive', to: 'rooms#archive'
 end
