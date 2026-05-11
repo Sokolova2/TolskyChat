@@ -24,6 +24,35 @@
   border-radius: 8px 0 0 8px;
 }
 
+.rooms-layout {
+  display: flex;
+  height: 100%;
+  width: 100%;
+}
+
+.rooms-sidebar {
+  display: flex;
+  flex: 0 0 clamp(180px, 25vw, 320px);
+  min-width: 0;
+}
+
+.rooms-sidebar .body-page {
+  width: 100%;
+}
+
+.room-list-item {
+  gap: 10px !important;
+}
+
+.room-list-item .conversation-link {
+  flex: 1;
+  min-width: 0;
+}
+
+.room-delete-btn i {
+  color: #ffffff !important;
+}
+
 .tabs.room-block {
   flex: 1;
   height: 100%;
@@ -56,6 +85,10 @@
   padding-right: 7rem;
 }
 
+.room-wrapper--show {
+  width: 100%;
+}
+
 .avatar-initial {
   width: 42px;
   height: 42px;
@@ -76,11 +109,95 @@
   .page-bg {
     margin-left: 0;
     border-radius: 0;
+    background: rgb(75, 30, 90);
+  }
+
+  .rooms-layout {
+    display: block;
+  }
+
+  .rooms-sidebar {
+    flex: 1 1 auto;
+    width: 100%;
+  }
+
+  .conversations-block {
+    background: rgb(75, 30, 90);
+    border-radius: 0;
+    height: auto;
+    min-height: calc(100vh - 84px);
+    padding: 8px 8px 88px;
+  }
+
+  .rooms-sidebar .body-page {
+    background: rgb(75, 30, 90);
+  }
+
+  .conversations-block .me-5 {
+    margin-right: 0 !important;
+  }
+
+  .conversations-block h5 {
+    margin-bottom: 8px;
+  }
+
+  .conversation-link {
+    flex: 1;
+    min-width: 0;
+    padding-right: 0 !important;
+  }
+
+  .name-conversation {
+    min-width: 0;
+  }
+
+  .name-conversation p,
+  .name-conversation span {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .room-list-item {
+    gap: 10px !important;
+    padding: 8px 10px;
+    border-radius: 10px;
+    background: #ffffff;
+    border: 1px solid #e6e6e6;
+  }
+
+  .room-list-item .conversation-link {
+    color: #212529 !important;
+  }
+
+  .room-delete-btn {
+    flex: 0 0 auto;
+    padding: 6px;
+    border-radius: 8px;
+    line-height: 1;
+    margin: 0;
+    color: #6c757d !important;
+  }
+
+  .room-delete-btn i {
+    font-size: 15px;
+    color: #212529 !important;
+  }
+
+  .avatar-wrapper img,
+  .avatar-wrapper .avatar-initial,
+  .avatar-wrapper span {
+    width: 40px !important;
+    height: 40px !important;
   }
 
   .room-wrapper {
     padding-right: 0;
     padding-bottom: 84px;
+  }
+
+  .room-wrapper--show {
+    padding-bottom: 0;
   }
 
   .container-content {

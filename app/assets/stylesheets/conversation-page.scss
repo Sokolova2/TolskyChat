@@ -71,3 +71,55 @@
   width: 100%;
   border-radius: 0 8px 8px 0;
 }
+
+.room-mobile-back-btn {
+  border-radius: 8px;
+}
+
+@media (max-width: 991.98px) {
+  .room-wrapper--show {
+    height: 100dvh;
+  }
+
+  .room-wrapper--show .container-content {
+    height: 100dvh;
+    max-height: 100dvh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  .room-wrapper--show .chat-container {
+    min-height: 0;
+  }
+
+  .room-wrapper--show .chat-messages {
+    min-height: 0;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .chat-input {
+    padding: 8px;
+  }
+
+  .chat-input trix-toolbar {
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .chat-input trix-toolbar .trix-button-group {
+    flex-wrap: nowrap;
+  }
+
+  .room-mobile-back-btn {
+    width: 34px;
+    height: 34px;
+    padding: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+  }
+}
