@@ -5,9 +5,15 @@ class SearchService
     @model = model
   end
 
-  def search(search)
+  def search_user(search)
     return @model.all if search.blank?
 
     @model.where('login ILIKE ?', "%#{search}%")
+  end
+
+  def search_room(search)
+    return @model.all if search.blank?
+
+    @model.where('name ILIKE ?', "%#{search}%")
   end
 end
