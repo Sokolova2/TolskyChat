@@ -569,6 +569,8 @@ export default class extends Controller {
   }
 
   declineCall() {
+    this.sendCallSummaryMessageIfNeeded()
+
     const receiverId = this.activePeerId || this.otherUserIdValue
     this.channel?.perform("signal", {
       receiver_id: receiverId,
@@ -593,6 +595,40 @@ export default class extends Controller {
 
   endCall() {
     this.declineCall()
+  }
+
+  sendCallSummaryMessageIfNeeded() {
+    if (!this.inCall) return
+
+    const startedAt = this.loadCallStartedAt() || this.callStartedAtMs
+    if (!startedAt) return
+
+    const durationSec = Math.max(0, Math.floor((Date.now() - startedAt) / 1000))
+    const tokenMeta = document.querySelector('meta[name="csrf-token"]')
+    if (!tokenMeta) return
+
+    const formData = new FormData()
+    formData.append("message[content]", `📞 Call • ${this.formatDuration(durationSec)}`)
+
+    fetch(`/rooms/${this.roomIdValue}/messages`, {
+      method: "POST",
+      body: formData,
+      headers: {
+        "Accept": "text/vnd.turbo-stream.html",
+        "X-CSRF-Token": tokenMeta.content
+      },
+      credentials: "same-origin"
+    }).catch((error) => {
+      console.warn("Failed to send call summary message", error)
+    })
+  }
+
+  formatDuration(totalSeconds) {
+    const safeSeconds = Math.max(0, Number(totalSeconds) || 0)
+    const h = String(Math.floor(safeSeconds / 3600)).padStart(2, "0")
+    const m = String(Math.floor((safeSeconds % 3600) / 60)).padStart(2, "0")
+    const s = String(safeSeconds % 60).padStart(2, "0")
+    return `${h}:${m}:${s}`
   }
 
   startTimer() {
