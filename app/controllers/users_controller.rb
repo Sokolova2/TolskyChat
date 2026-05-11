@@ -4,7 +4,9 @@ class UsersController < ApplicationController
   before_action :authenticate_user!
 
   def index
-    @users = User.search(params[:search]).all_except(current_user)
+    @users = User.search(params[:search])
+                 .where(deleted_at: nil)
+                 .all_except(current_user)
   end
 
   def show
