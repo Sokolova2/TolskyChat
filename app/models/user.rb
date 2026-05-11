@@ -64,7 +64,7 @@ class User < ApplicationRecord
 
   class << self
     def search(search)
-      SearchService.new(self).search(search)
+      SearchService.new(self).search_user(search)
     end
   end
 end

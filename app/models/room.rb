@@ -25,4 +25,10 @@ class Room < ApplicationRecord
 
     other_user(current_user)&.avatar
   end
+
+  class << self
+    def search(search)
+      SearchService.new(self).search_room(search)
+    end
+  end
 end

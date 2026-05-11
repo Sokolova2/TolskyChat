@@ -33,7 +33,12 @@ class Contact < ApplicationRecord
     select('contacts.*, contacts.id as contact_id')
       .where(approved: true)
       .where('sender_id = :id OR receiver_id = :id', id: user)
-      .joins('JOIN users ON users.id = contacts.receiver_id')
-      .where(users: { deleted_at: nil })
+      .joins('JOIN users AS senders_users ON senders_users.id = contacts.sender_id')
+      .joins('JOIN users AS receivers_users ON receivers_users.id = contacts.receiver_id')
+      .where(
+        '(contacts.sender_id = :id AND receivers_users.deleted_at IS NULL) OR
+         (contacts.receiver_id = :id AND senders_users.deleted_at IS NULL)',
+        id: user
+      )
   }
 end
