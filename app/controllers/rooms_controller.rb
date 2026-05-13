@@ -4,6 +4,7 @@ class RoomsController < ApplicationController
   before_action :authenticate_user!
   before_action :set_rooms, only: %i[index show public_search]
   before_action :set_room, only: %i[update destroy]
+  before_action :ensure_room_owner!, only: %i[update destroy]
 
   def index
     conversation_set
@@ -26,23 +27,28 @@ class RoomsController < ApplicationController
   def update
     if @room.deleted_at.blank?
       @room.update(deleted_at: Time.current)
-      redirect_to rooms_path
-    elsif @room.deleted_at.present?
-      @room.update(deleted_at: nil)
-      redirect_to rooms_path
     else
-      redirect_to rooms_path, alert: @room.errors.full_messages
+      @room.update(deleted_at: nil)
     end
+
+    BroadcastRoomService.new(@room).broadcast_room
+
+    redirect_to rooms_path, alert: @room.errors.full_messages
   end
 
   def destroy
+    BroadcastRoomService.new(@room).broadcast_delete
+
     @room.destroy
 
     redirect_to rooms_path
   end
 
   def archive
-    @rooms_archived = Room.where.not(deleted_at: nil)
+    @rooms_archived = Room.joins(:participants)
+                          .where(participants: { user_id: current_user.id, role: :owner })
+                          .where.not(deleted_at: nil)
+                          .distinct
   end
 
   def public_search
@@ -79,5 +85,13 @@ class RoomsController < ApplicationController
 
   def set_room
     @room = Room.find(params[:id])
+  end
+
+  def ensure_room_owner!
+    participant = @room.participants.find_by(user_id: current_user.id)
+
+    return if participant&.owner?
+
+    redirect_to rooms_path, alert: "Only owner can delete room"
   end
 end

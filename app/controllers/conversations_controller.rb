@@ -14,9 +14,8 @@ class ConversationsController < ApplicationController
     @conversation_new = RoomService.new(conversation_params, current_user).call
 
     if @conversation_new.save
-      respond_to do |format|
-        format.turbo_stream
-      end
+      BroadcastRoomService.new(@conversation_new).broadcast_room
+      redirect_to room_path(@conversation_new)
     else
       redirect_to new_conversation_path, alert: @conversation_new.errors.full_messages.to_sentence
     end
