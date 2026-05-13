@@ -9,8 +9,4 @@ class VoiceChannel < ApplicationCable::Channel
 
     VoiceChannel.broadcast_to(receiver, data)
   end
-
-  def unsubscribed
-    # Any cleanup needed when channel is unsubscribed
-  end
 end
