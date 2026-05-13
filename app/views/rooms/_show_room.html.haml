@@ -62,9 +62,13 @@
       %p{ data: { audio_recording_target: "timeElapsed" } } 00:00
 
     = form_with(model: @message, url: room_messages_path(room), id: "message_form", html: { multipart: true }, data: { controller: 'emoji-picker' }) do |f|
-      .field
+      .field{ data: { controller: "context-menu",
+        action: "contextmenu->context-menu#open"
+        }
+      }
         = content_tag(:div, "", class: "pickerContainer", data: { emoji_picker_target: "pickerContainer" })
-        = f.rich_textarea :content, autofocus: true, data: { controller: "trix-preview", emoji_picker_target: "trixEditor" }
+        = f.rich_textarea :content, autofocus: true, data: { controller: "trix-preview context-menu",
+          emoji_picker_target: "trixEditor" }
         = f.file_field :featured_image, id: 'file_input', style: 'display:none'
       .actions
         = f.submit 'Send'

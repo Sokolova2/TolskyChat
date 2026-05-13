@@ -18,4 +18,8 @@
     - if user_signed_in?
       %meta{ name: "current-user-id", content: current_user.id }
   %body.body
+    - if alert
+      .alert.alert-danger= alert
+    - if notice
+      .alert.alert-success= notice
     = yield

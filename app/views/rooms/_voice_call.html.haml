@@ -8,7 +8,7 @@
             voice_caller_id_value: current_user.id,
             voice_ice_servers_value: voice_ice_servers.to_json}
             }
-    %button.btn.btn-primary{ data: { action: "voice#start",
+    %button.btn.btn-dark{ data: { action: "voice#start",
               voice_other_user_id: second_user.id,
               voice_caller_id: current_user.id
               }

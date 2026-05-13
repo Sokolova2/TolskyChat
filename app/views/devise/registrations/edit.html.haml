@@ -1,5 +1,9 @@
 .overflow-y-scroll.vh-100
-  = link_to rooms_path, class: 'text-decoration-none text-dark fs-2 ms-3' do
+  - if flash[:notice]
+    .alert.alert-success= flash[:notice]
+  - if flash[:alert]
+    .alert.alert-success= flash[:alert]
+  = link_to rooms_path, class: 'text-decoration-none text-dark fs-3 ms-3' do
     %i.bi.bi-arrow-left
   %h2.text-center.mt-4
     Edit #{resource_name.to_s.humanize}
@@ -59,12 +63,8 @@
         - if current_user.deleted_at.present?
           = button_to 'Unarchive my account', user_path(current_user), method: :patch,
         class: 'button-authentication mt-3 text-light rounded-3 mb-3 text-center ms-5 btn btn-dark'
-          - if flash[:alert]
-            .alert.alert-success= flash[:alert]
         - else
           = button_to 'Archive', user_path(current_user), method: :patch,
         class: 'button-authentication mt-3 text-light rounded-3 mb-3 text-center ms-5 btn btn-dark'
-          - if flash[:notice]
-            .alert.alert-success= flash[:notice]
 
   %br

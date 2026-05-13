@@ -1,32 +1,31 @@
-.p-1
-  .d-flex.align-items-center.ps-2.gap-5.room-list-item{ data: { controller: 'room-context-menu' } }
-    = link_to room_path(room),
-      data: { turbo_frame: "_top" },
-      class: "conversation-link text-decoration-none text-light pe-4" do
-      .name-conversation
-        .d-flex.gap-2.align-items-center
-          .avatar-wrapper
-            - if room.is_a?(PersonalChat) && room.other_user(current_user).present?
-              - user = room.other_user(current_user)
+.d-flex.align-items-center.ps-2.mt-3.gap-5.room-list-item{ id: "room_#{room.id}", data: { controller: 'room-context-menu' } }
+  = link_to room_path(room),
+    data: { turbo_frame: "_top" },
+    class: "conversation-link text-decoration-none text-light pe-4" do
+    .name-conversation
+      .d-flex.gap-2.align-items-center
+        .avatar-wrapper
+          - if room.is_a?(PersonalChat) && room.other_user(current_user).present?
+            - user = room.other_user(current_user)
 
-              - if user&.avatar&.present?
-                = image_tag user.avatar.url, size: 42, class: 'rounded-2'
-              - else
-                %span.avatar-initial
-                  = user.login.to_s.first.upcase
-
-            - elsif room.is_a?(PersonalChat)
-              = image_tag "avatar.svg", size: 42, class: "rounded-2"
-
+            - if user&.avatar&.present?
+              = image_tag user.avatar.url, size: 42, class: 'rounded-2'
             - else
-              %span.avatar-initial= room.display_name(current_user).first.upcase
+              %span.avatar-initial
+                = user.login.to_s.first.upcase
 
-          %p.p-0.m-0
-            - if room.is_a?(PersonalChat) && room.other_user(current_user).present?
-              = room.other_user(current_user)&.login
-            - elsif room.is_a?(PersonalChat)
-              %span.text-white User is deleted
-            - else
-              %span= room.display_name(current_user)
+          - elsif room.is_a?(PersonalChat)
+            = image_tag "avatar.svg", size: 42, class: "rounded-2"
 
-    = render 'rooms/room_context_menu', room: room
+          - else
+            %span.avatar-initial= room.display_name(current_user).first.upcase
+
+        %p.p-0.m-0
+          - if room.is_a?(PersonalChat) && room.other_user(current_user).present?
+            = room.other_user(current_user)&.login
+          - elsif room.is_a?(PersonalChat)
+            %span.text-white User is deleted
+          - else
+            %span= room.display_name(current_user)
+
+  = render 'rooms/room_context_menu', room: room, current_user: current_user

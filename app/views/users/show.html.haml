@@ -1,13 +1,32 @@
 = turbo_frame_tag "modal" do
   = link_to users_path, class: 'text-decoration-none text-dark' do
-    %i.bi.bi-box-arrow-left.fs-2
+    %i.bi.bi-arrow-left.fs-3
   = image_tag @user.avatar.url, class: 'w-100'
-  %p.fs-3.text-center= @user.login
-  - if @user.first_name.present? && @user.last_name.present?
-    %p= @user.first_name
-    %p= @user.last_name
-  - if @user.phone_number.present? && @user.birth_date.present?
-    %p= @user.phone_number
-    %p= @user.birth_date
-  - if @user.description.present?
-    %p= @user.description
+  - if @user.first_name.present?
+    %p.fs-3.text-center= @user.first_name
+  - else
+    %p.fs-3.text-center= @user.login
+  .card.shadow-sm.mb-3
+    .list-group.list-group-flush
+
+      .list-group-item
+        %small.text-muted Mobile phone
+        %p.mb-0
+          - if @user.phone_number.present?
+            = @user.phone_number
+          - else
+            no information
+
+      .list-group-item
+        %small.text-muted Login
+        %p.mb-0= @user.login
+
+      - if @user.birth_date.present?
+        .list-group-item
+          %small.text-muted Date of birth
+          %p.mb-0= @user.birth_date
+
+      - if @user.description.present?
+        .list-group-item
+          %small.text-muted About me
+          %p.mb-0= @user.description

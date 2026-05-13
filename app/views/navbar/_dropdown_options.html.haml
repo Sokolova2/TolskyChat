@@ -11,8 +11,6 @@
             %p= current_user.login
     = link_to 'Profile', edit_user_registration_path, class: 'text-decoration-none text-dark ms-3'
     %li
-      %a.dropdown-item{ href: '#' } Preferences
-    %li
       %hr.dropdown-divider
     %li
       = button_to 'Sign out', destroy_user_session_path, method: :delete, class: 'dropdown-item text-danger'
