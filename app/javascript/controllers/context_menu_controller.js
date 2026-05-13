@@ -4,11 +4,13 @@ import { Controller } from "@hotwired/stimulus"
 export default class extends Controller {
   static values = {
     roomId: Number,
-    ownerId: Number
+    ownerId: Number,
+    text: String
   }
 
   connect() {
-    this.menu = this.element.querySelector(".context-menu")
+    this.menu = this.element.querySelector(".message-context-menu") ||
+        document.querySelector(".message-context-menu")
 
     this.element.addEventListener('contextmenu', (event)  => {
       event.preventDefault();
@@ -23,7 +25,7 @@ export default class extends Controller {
   }
 
   open(event){
-    document.querySelectorAll(".context-menu").forEach(menu => {
+    document.querySelectorAll(".message-context-menu").forEach(menu => {
       menu.classList.add("hidden")
     })
 
@@ -36,26 +38,19 @@ export default class extends Controller {
     this.menu.classList.add("hidden")
   }
 
-  delete(){
-    const currentUserMeta = document.querySelector('meta[name="current-user-id"]')
-    const currentUserId = Number(currentUserMeta?.content)
-    if (Number.isFinite(currentUserId) && this.hasOwnerIdValue && currentUserId !== this.ownerIdValue) {
-      this.close()
-      return
+  async copy(){
+    await navigator.clipboard.writeText(this.textValue)
+    this.close()
+  }
+
+  async paste(){
+    const text = await navigator.clipboard.readText()
+
+    const editor = document.querySelector("trix-editor")
+
+    if (editor) {
+      editor.editor.insertString(text)
     }
-
-    const messageId = this.element.id.replace("message_", "")
-
-    fetch(`/rooms/${this.roomIdValue}/messages/${messageId}`, {
-      method: "DELETE",
-      headers: {
-        "X-CSRF-Token": document.querySelector('meta[name="csrf-token"]').content
-      }
-    }).then((response) => {
-      if (response.status === 403) {
-        this.close()
-      }
-    })
 
     this.close()
   }

@@ -15,11 +15,13 @@ export default class extends Controller {
 
     this.onContextMenu = (event) => {
       event.preventDefault()
-      this.open()
+      this.open(event)
     }
 
-    this.onTouchStart = () => {
+    this.onTouchStart = (event) => {
       clearTimeout(this.longPressTimer)
+      const touch = event.touches && event.touches[0]
+      this.lastTouchPoint = touch ? { x: touch.clientX, y: touch.clientY } : null
       this.longPressTimer = setTimeout(() => this.open(), this.longPressDelay)
     }
 
@@ -51,43 +53,21 @@ export default class extends Controller {
     document.removeEventListener("click", this.onClickOutside)
   }
 
-  open() {
+  open(event = null) {
     document.querySelectorAll(".room-context-menu").forEach(menu => {
       menu.classList.add("hidden")
     })
 
     this.menu.classList.remove("hidden")
 
-    const isMobile = window.matchMedia("(max-width: 991.98px)").matches
+    const x = event?.clientX ?? this.lastTouchPoint?.x
+    const y = event?.clientY ?? this.lastTouchPoint?.y
 
-    if (isMobile) {
-      this.menu.style.top = "96px"
-      this.menu.style.right = "16px"
-      this.menu.style.left = "auto"
-      return
-    }
-
-    const modalBody = this.element.closest(".modal-body")
-    if (modalBody) {
-      const rect = modalBody.getBoundingClientRect()
-      this.menu.style.top = `${Math.round(rect.top + 16)}px`
-      this.menu.style.left = `${Math.round(rect.right - 176)}px`
+    if (typeof x === "number" && typeof y === "number") {
+      this.menu.style.left = `${Math.round(x)}px`
+      this.menu.style.top = `${Math.round(y)}px`
       this.menu.style.right = "auto"
-      return
     }
-
-    const sidebar = document.querySelector(".rooms-sidebar") || document.querySelector(".conversations-block")
-    if (sidebar) {
-      const rect = sidebar.getBoundingClientRect()
-      this.menu.style.top = `${Math.round(rect.top + 72)}px`
-      this.menu.style.left = `${Math.round(rect.right - 176)}px`
-      this.menu.style.right = "auto"
-      return
-    }
-
-    this.menu.style.top = "96px"
-    this.menu.style.right = "16px"
-    this.menu.style.left = "auto"
   }
 
   close(){
