@@ -23,6 +23,8 @@ class ParticipantsCreateService
       @room.participants.find_or_create_by(user_id: id)
     end
 
+    BroadcastRoomService.new(@room).broadcast_room
+
     success_result(room_path(@room))
   end
 
