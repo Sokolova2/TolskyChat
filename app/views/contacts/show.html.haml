@@ -8,7 +8,10 @@
     %p.fs-3.text-center= @user.login
 
   .d-flex.justify-content-between.align-items-center.mb-3
-    = button_to 'Create chat', personal_chats_path, method: :post, params: { personal_chat: { second_user_id: @user.id } }, class: 'text-decoration-none text-white btn btn-dark'
+    = button_to 'Create chat', personal_chats_path, method: :post,
+      params: { personal_chat: { second_user_id: @user.id } },
+      form: { data: { turbo_frame: '_top' } },
+      class: 'text-decoration-none text-white btn btn-dark'
     - if @contact.blocked == false
       = button_to 'Block', contact_path(@contact), method: :patch, params: { blocked: true },
     class: 'text-decoration-none text-white btn btn-dark'

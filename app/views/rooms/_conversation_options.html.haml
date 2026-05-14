@@ -1,42 +1,82 @@
-= turbo_frame_tag "modal" do
-  .d-flex.justify-content-between.align-items-center.m-3
-    %h4= room.name
-    - if room.is_private?
-      %p private
+= turbo_frame_tag "conversation_options_modal", data: { controller: "room-options" } do
+  = turbo_stream_from room
+  = turbo_stream_from [room, current_user]
+  - current_participant = Participant.find_by(room_id: room.id, user_id: current_user.id)
+  - can_manage_room = current_participant&.owner?
+  - can_exclude_members = current_participant&.owner? || current_participant&.moderator?
+  - can_invite_members = current_participant.present?
+  .d-flex.justify-content-between.align-items-center.m-3.conversation-options-header
+    - if can_exclude_members
+      %h4.mb-0{ data: { room_options_target: "nameText", action: "click->room-options#showNameForm" } }
+        = room.name
+      .input-name.d-none{ data: { room_options_target: "nameForm" } }
+        = form_with(model: room, url: conversation_path(room), method: :patch, data: { turbo: false }) do |f|
+          = f.text_field :name,
+            value: room.name,
+            class: 'form-control rounded-4',
+            data: { room_options_target: "nameInput", action: "keydown->room-options#onNameKeydown blur->room-options#hideNameForm" }
+          = f.submit 'Change', class: 'btn btn-outline-dark mt-2 hidden'
     - else
-      %p public
+      %h4.mb-0= room.name
 
-  .m-3
+    - if can_manage_room
+      %p.mb-0{ data: { room_options_target: "privacyText", action: "click->room-options#showPrivacyForm" } }
+        = room.is_private? ? 'private' : 'public'
+      .d-none{ data: { room_options_target: "privacyForm" } }
+        = form_with(model: room, url: conversation_path(room), method: :patch, data: { turbo: false }) do |f|
+          = f.select :is_private,
+            [['private', true], ['public', false]],
+            { selected: room.is_private? },
+            class: 'form-select rounded-4',
+            data: { room_options_target: "privacySelect", action: "change->room-options#submitPrivacy keydown->room-options#onPrivacyKeydown blur->room-options#hidePrivacyForm" }
+          = f.submit 'Change', class: 'btn btn-outline-dark mt-2 hidden'
+    - else
+      %p.mb-0= room.is_private? ? 'private' : 'public'
+
+  .m-3.card.card-body
     %h5.ms-2.mb-3 Members
-    - room.participants.each do |participant|
-      .d-flex.justify-content-between
+    - room.participants.each do |member|
+      .d-flex.justify-content-between.member-row
         .d-flex.gap-2.align-items-center.mb-2
-          = image_tag participant.user.avatar.url, size: 45, class: 'rounded-circle'
-          %p= participant.user.login
-        %p= participant.role
+          .dropdown.position-relative
+            - if can_exclude_members && !member.owner?
+              %button.btn{"aria-expanded" => "false", "data-bs-toggle" => "dropdown", :type => "button"}
+                %i.bi.bi-three-dots-vertical
+              %ul.dropdown-menu{ style: "z-index: 2000;" }
+                = button_to participant_path(member, room_id: room.id, user_id: member.user_id), method: :delete, class: 'dropdown-item', form: { data: { turbo_frame: "_top" } } do
+                  %i.bi.bi-arrow-bar-left
+                  Exclude
+            - else
+              %button.btn{"aria-expanded" => "false", "data-bs-toggle" => "dropdown", :type => "button"}
+                %i.bi.bi-three-dots-vertical
+              %ul.dropdown-menu{ style: "z-index: 2000;" }
+          = image_tag member.user.avatar.url, size: 45, class: 'rounded-circle'
+          %p= member.user.login
+        - if can_manage_room && !member.owner?
+          .d-none{ data: { room_options_target: "roleForm" }}
+            = form_with(model: member, url: participant_path(member, room_id: room.id, user_id: member.user_id), method: :patch, data: { turbo: false }) do |f|
+              = f.select :role,
+                [['Moderator', 'moderator'], ['Member', 'member']],
+                { selected: member.role },
+                class: 'form-select rounded-4',
+                data: { room_options_target: "roleSelect", action: "change->room-options#submitRole keydown->room-options#onRoleKeydown blur->room-options#hideRoleForm" }
+              = f.submit 'Change', class: 'btn btn-outline-dark mt-2 hidden'
+          = render "participants/role_value", participant: member, editable: true
+        - else
+          = render "participants/role_value", participant: member, editable: false
 
-  .d-flex.gap-2.align-items-center.m-3
-    %a.btn.btn-outline-dark{ 'aria-controls' => 'collapseExample', 'aria-expanded' => 'false', 'data-bs-toggle' => 'collapse', :href => '#collapseExample', :role => 'button' }
-      %i.bi.bi-people.fs-4
-    %p.fs-5 Add members
-  #collapseExample.collapse
-    .card.card-body.mt-3
-      = form_with(model: Participant.new, url: participants_path, data: { turbo: false }) do |f|
-        = f.hidden_field :room_id, value: room.id
+  - if can_invite_members
+    .d-flex.gap-2.align-items-center.m-3
+      %a.btn.btn-outline-dark{ 'aria-controls' => 'collapseExample', 'aria-expanded' => 'false', 'data-bs-toggle' => 'collapse', :href => '#collapseExample', :role => 'button' }
+        %i.bi.bi-people.fs-4
+      %p.fs-5 Add members
+    #collapseExample.collapse
+      .card.card-body.mt-3
+        = form_with(model: Participant.new, url: participants_path, data: { turbo: false }) do |f|
+          = f.hidden_field :room_id, value: room.id
 
-        - contacts = current_user.sent_contacts.or(current_user.received_contacts)
+          = turbo_frame_tag "contacts_in_options" do
+            = render 'rooms/contacts_in_options', current_user: current_user
 
-        - contacts.each do |contact|
-          - next unless contact.approved?
-
-          - user = contact.sender == current_user ? contact.receiver : contact.sender
-
-          .form-check
-            = check_box_tag 'user_ids[]', user.id, false,
-              class: 'form-check-input',
-              id: "user_#{user.id}"
-            = image_tag user.avatar.url, size: 40
-            = f.label "participant_user_id_#{user.id}", user.login, class: 'form-check-label'
-
-        .actions.mt-3.text-center
-          = f.submit 'Add user', class: 'btn btn-outline-dark form-control rounded-4 w-25'
+          .actions.mt-3.text-center
+            = f.submit 'Add user', class: 'btn btn-outline-dark form-control rounded-4 w-25'

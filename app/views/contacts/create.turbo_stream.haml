@@ -1,0 +1,5 @@
+= turbo_stream.replace 'contacts_in_options' do
+  = render 'rooms/contacts_in_options'
+
+= turbo_stream.replace dom_id(@user, :status) do
+  = render 'users/users', user: @user

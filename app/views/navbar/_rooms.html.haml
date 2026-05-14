@@ -18,7 +18,8 @@
             = image_tag "avatar.svg", size: 42, class: "rounded-2"
 
           - else
-            %span.avatar-initial= room.display_name(current_user).first.upcase
+            - room_label = room.display_name(current_user).to_s
+            %span.avatar-initial= room_label.first&.upcase || "?"
 
         %p.p-0.m-0
           - if room.is_a?(PersonalChat) && room.other_user(current_user).present?
@@ -26,6 +27,6 @@
           - elsif room.is_a?(PersonalChat)
             %span.text-white User is deleted
           - else
-            %span= room.display_name(current_user)
+            %span= room.display_name(current_user).to_s
 
   = render 'rooms/room_context_menu', room: room, current_user: current_user

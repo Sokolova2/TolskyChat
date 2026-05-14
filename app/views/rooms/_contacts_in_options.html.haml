@@ -1,0 +1,7 @@
+- viewer = local_assigns[:current_user] || (defined?(current_user) ? current_user : nil)
+- return if viewer.nil?
+- contacts = viewer.sent_contacts.or(viewer.received_contacts).includes(:sender, :receiver)
+- users = contacts.map { |contact| contact.sender == viewer ? contact.receiver : contact.sender }.uniq(&:id)
+
+- users.each do |user|
+  = render 'rooms/contact', user: user

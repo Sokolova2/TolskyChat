@@ -1,0 +1,5 @@
+- editable = local_assigns.fetch(:editable, false)
+%p.mb-0{
+  id: dom_id(participant, :role_value),
+  data: (editable ? { room_options_target: "roleText", action: "click->room-options#showRoleForm" } : {})
+}= participant.role

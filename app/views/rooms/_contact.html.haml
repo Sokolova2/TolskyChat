@@ -1,0 +1,4 @@
+.form-check
+  = check_box_tag 'user_ids[]', user.id, false, class: 'form-check-input', id: "user_#{user.id}"
+  = image_tag user.avatar.url, size: 40
+  = label_tag "user_#{user.id}", user.login, class: 'form-check-label'
