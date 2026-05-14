@@ -11,10 +11,14 @@ class ContactsController < ApplicationController
 
   def create
     @new_contact = Contact.new(sender_id: current_user.id, receiver_id: params[:receiver_id])
+    @user = User.find(params[:receiver_id])
 
     if @new_contact.save
       create_notification
-      redirect_to users_path
+      respond_to do |format|
+        format.turbo_stream
+        format.html { redirect_to users_path }
+      end
     else
       redirect_to users_path, alert: @new_contact.errors.full_messages
     end
