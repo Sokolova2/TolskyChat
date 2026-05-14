@@ -47,10 +47,10 @@ class ConversationsController < ApplicationController
   end
 
   def ensure_owner_or_moderator!
-    participant = current_room_participant
+    participant = @conversation.participants.find_by(user_id: current_user.id)
 
     return if participant&.owner? || participant&.moderator?
 
-    redirect_to rooms_path, alert: "Only owner or moderator can exclude members"
+    redirect_to rooms_path, alert: "Only owner or moderator can update conversation"
   end
 end
