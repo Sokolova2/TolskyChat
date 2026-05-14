@@ -29,6 +29,8 @@ class User < ApplicationRecord
 
   has_many :messages, dependent: :destroy
 
+  validates :login, presence: true, uniqueness: true
+
   mount_uploader :avatar, AvatarUploader
 
   devise :database_authenticatable, :registerable,
