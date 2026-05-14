@@ -76,6 +76,30 @@
   border-radius: 8px;
 }
 
+.conversation-options-header {
+  padding: 12px 14px;
+  border: 1px solid #e3e6ea;
+  border-radius: 8px;
+  background: #f8f9fb;
+}
+
+.dropdown-menu {
+  z-index: 2000;
+}
+
+.member-row {
+  position: relative;
+  z-index: 0;
+}
+
+.member-row:has(.dropdown-menu.show) {
+  z-index: 20;
+}
+
+.member-row .dropdown-menu {
+  z-index: 2100;
+}
+
 @media (max-width: 991.98px) {
   .room-wrapper--show {
     height: 100dvh;
