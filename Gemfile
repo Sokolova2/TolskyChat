@@ -90,3 +90,5 @@ gem 'mini_magick'
 gem 'redis', '~> 5.0'
 
 gem 'aws-sdk-s3'
+
+gem 'action_push_native'
