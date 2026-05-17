@@ -6,7 +6,7 @@ class NotificationsController < ApplicationController
 
   def index
     @notifications = current_user.receiver_notifications.order(created_at: :desc)
-    @notifications.update_all(read: true)
+    @notifications.find_each { |n| n.update!(read: true) }
 
     NotificationsChannel.broadcast_to(
       current_user,
@@ -15,23 +15,8 @@ class NotificationsController < ApplicationController
   end
 
   def update
-    if @contact.update(approved: true)
-      @notification.destroy
-
-      @user = User.find(@contact.sender_id)
-
-      Notification.create(
-        sender_id: current_user.id,
-        receiver_id: @contact.sender_id,
-        contact_id: @contact.id,
-        content: "The user #{@notification.receiver.login} approved your request"
-      )
-    end
-
-    respond_to do |format|
-      format.turbo_stream
-      format.html { redirect_to notifications_path}
-    end
+    @user = @contact.update(approved: true) ? approve_contact_and_notify : sender_user
+    respond_notification_update
   end
 
   def reject
@@ -56,8 +41,29 @@ class NotificationsController < ApplicationController
 
   private
 
+  def approve_contact_and_notify
+    NotificationServices.new(
+      notification: @notification,
+      sender_id: current_user.id,
+      receiver_id: @contact.sender_id,
+      contact_id: @contact.id,
+      actor_login: current_user.login
+    ).call
+  end
+
+  def sender_user
+    User.find(@contact.sender_id)
+  end
+
+  def respond_notification_update
+    respond_to do |format|
+      format.turbo_stream
+      format.html { redirect_to notifications_path }
+    end
+  end
+
   def set_notification
-    @notification = Notification.find(params[:id])
+    @notification = Notification.find(params.expect[:id])
   end
 
   def set_contact

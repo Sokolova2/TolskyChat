@@ -6,37 +6,44 @@ class BroadcastRoomService
   end
 
   def broadcast_room
-    if @room.deleted_at.present?
-      return broadcast_delete
-    end
+    return broadcast_delete if @room.deleted_at.present?
 
-    @room.participants.includes(:user).each do |participant|
-      html = ApplicationController.render(
-        partial: 'navbar/rooms',
-        locals: {
-          room: @room,
-          current_user: participant.user
-        }
-      )
-
-      RoomChannel.broadcast_to(
-        participant.user,
-        action: 'upsert',
-        room_id: @room.id,
-        html: html
-      )
+    participants_with_users.find_each do |participant|
+      broadcast_upsert(participant.user, render_room_html(participant.user))
     end
   end
 
   def broadcast_delete
-    users = @room.participants.includes(:user).map(&:user)
+    participants_with_users.map(&:user).each { |user| broadcast_delete_for(user) }
+  end
 
-    users.each do |user|
-      RoomChannel.broadcast_to(
-        user,
-        action: 'delete',
-        room_id: @room.id
-      )
-    end
+  private
+
+  def participants_with_users
+    @room.participants.includes(:user)
+  end
+
+  def render_room_html(user)
+    ApplicationController.render(
+      partial: 'navbar/rooms',
+      locals: { room: @room, current_user: user }
+    )
+  end
+
+  def broadcast_upsert(user, html)
+    RoomChannel.broadcast_to(
+      user,
+      action: 'upsert',
+      room_id: @room.id,
+      html: html
+    )
+  end
+
+  def broadcast_delete_for(user)
+    RoomChannel.broadcast_to(
+      user,
+      action: 'delete',
+      room_id: @room.id
+    )
   end
 end

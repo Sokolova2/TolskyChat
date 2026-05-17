@@ -11,7 +11,7 @@ class TurnCredentialsController < ApplicationController
     token = ENV['TWILIO_AUTH_TOKEN'].presence
 
     if sid.blank? || token.blank?
-      render json: { error: 'Twilio credentials are not configured' }, status: :unprocessable_entity
+      render json: { error: 'Twilio credentials are not configured' }, status: :unprocessable_content
       return
     end
 

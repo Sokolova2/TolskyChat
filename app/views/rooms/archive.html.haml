@@ -1,7 +1,7 @@
-= turbo_frame_tag "modal" do
+= turbo_frame_tag 'modal' do
   %h3.text-center.mb-3 Archived
   - @rooms_archived.each do |room|
-    .card.card-body{data: { controller: "room-context-menu" }}
+    .card.card-body{ data: { controller: 'room-context-menu' } }
       .name-conversation
         .d-flex.gap-2.align-items-center
           .avatar-wrapper
@@ -15,7 +15,7 @@
                   = user.login.to_s.first.upcase
 
             - elsif room.is_a?(PersonalChat)
-              = image_tag "avatar.svg", size: 42, class: "rounded-2"
+              = image_tag 'avatar.svg', size: 42, class: 'rounded-2'
 
             - else
               %span.avatar-initial= room.display_name(current_user).first.upcase

@@ -1,7 +1,7 @@
-- return unless user.present?
+- return if user.blank?
 - contacts = Contact.between(current_user.id, user.id)
 
-- if contacts.where(approved: true).exists?
+- if contacts.exists?(approved: true)
   In your contacts
 - elsif contacts.exists?
   Pending approval

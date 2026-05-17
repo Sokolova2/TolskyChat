@@ -14,10 +14,8 @@ class Message < ApplicationRecord
   private
 
   def audio_or_text_present
-    if content.blank? && !audio_file.attached?
-      errors.add(:base, "Message can't be empty")
-    end
+    return unless content.blank? && !audio_file.attached?
+
+    errors.add(:base, "Message can't be empty")
   end
 end
-
-

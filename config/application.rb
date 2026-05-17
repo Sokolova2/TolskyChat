@@ -12,9 +12,9 @@ module TolskyChat
 
     config.autoload_lib(ignore: %w[assets tasks])
 
-    config.assets.paths << Rails.root.join("app/assets/builds")
+    config.assets.paths << Rails.root.join('app/assets/builds')
 
-    config.time_zone = "Europe/Kyiv"
+    config.time_zone = 'Europe/Kyiv'
     config.active_record.default_timezone = :utc
   end
 end

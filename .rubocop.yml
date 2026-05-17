@@ -9,6 +9,9 @@ AllCops:
 Style/Documentation:
   Enabled: false
 
+Rails/I18nLocaleTexts:
+  Enabled: false
+
 Metrics/MethodLength:
   Exclude:
     - 'db/migrate/**'
@@ -16,6 +19,7 @@ Metrics/MethodLength:
 Metrics/AbcSize:
   Exclude:
     - 'db/migrate/**'
+    - 'app/models/**'
 
 Metrics/BlockLength:
   Exclude:

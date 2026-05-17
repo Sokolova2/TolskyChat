@@ -1,4 +1,4 @@
-.modal.fade#outgoingCallModal{ tabindex: "-1", data: { bs_backdrop: "static", bs_keyboard: "false" } }
+.modal.fade#outgoingCallModal{ tabindex: '-1', data: { bs_backdrop: 'static', bs_keyboard: 'false' } }
   .modal-dialog.modal-dialog-centered
     .modal-content.p-3.text-center.bg-dark.text-white.bg-opacity-75
       .d-flex.flex-column.gap-3.align-items-center.justify-content-center
@@ -6,6 +6,6 @@
         %h5#outgoingCalleeName.fs-4.text-white= second_user.login
       %div
         %p.text-secondary is calling...
-      %button.btn.btn-danger.mt-3{ data: { action: "voice#cancelCall" } }
+      %button.btn.btn-danger.mt-3{ data: { action: 'voice#cancelCall' } }
         %i.bi.bi-x-lg
         Decline

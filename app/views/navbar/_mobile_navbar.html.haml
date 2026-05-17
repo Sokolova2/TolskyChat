@@ -4,13 +4,14 @@
       = image_tag 'Tolsky.png', size: 30, class: 'mobile-brand-icon'
       = link_to new_conversation_path, data: { turbo_frame: 'modal' }, class: 'mobile-top-action-btn' do
         %i.bi.bi-plus-lg
-    = link_to archive_path, data: { turbo_frame: "modal" }, class: 'mobile-top-action-btn' do
+    = link_to archive_path, data: { turbo_frame: 'modal' }, class: 'mobile-top-action-btn' do
       %i.bi.bi-archive
       %span Archive
 
   = form_with(url: users_path, method: :get, data: { turbo_frame: 'result-search', controller: 'search' }) do |f|
     .px-2.pb-2
-      = f.text_field :search, placeholder: 'Searching...', data: { action: 'input->search#search', search_target: 'input' }, class: 'form-control rounded-2'
+      = f.text_field :search, placeholder: 'Searching...', data: { action: 'input->search#search', search_target: 'input' }, 
+class: 'form-control rounded-2'
     = f.submit 'Search', class: 'btn btn-outline-none', hidden: true
 
 .mobile-bottom-nav
@@ -22,19 +23,19 @@
     %i.bi.bi-chat
     %span Activity
 
-  = link_to contacts_path, data: { turbo_frame: "modal" }, class: 'mobile-nav-link' do
+  = link_to contacts_path, data: { turbo_frame: 'modal' }, class: 'mobile-nav-link' do
     %i.bi.bi-person-lines-fill
     %span Contact
 
-  = link_to users_path, data: { turbo_frame: "modal" }, class: 'mobile-nav-link' do
+  = link_to users_path, data: { turbo_frame: 'modal' }, class: 'mobile-nav-link' do
     %i.bi.bi-search
     %span Users
 
 
-  %span.mobile-nav-link{"data-bs-target" => "#exampleModal", "data-bs-toggle" => "modal", :type => "button"}
+  %span.mobile-nav-link{ 'data-bs-target' => '#exampleModal', 'data-bs-toggle' => 'modal', :type => 'button' }
     = image_tag current_user.avatar.url(:thumb), class: 'mobile-profile-avatar'
     %span Profile
-  #exampleModal.modal.fade{"aria-hidden" => "true", "aria-labelledby" => "exampleModalLabel", :tabindex => "-1"}
+  #exampleModal.modal.fade{ 'aria-hidden' => 'true', 'aria-labelledby' => 'exampleModalLabel', :tabindex => '-1' }
     .modal-dialog
       .modal-content
         .modal-body

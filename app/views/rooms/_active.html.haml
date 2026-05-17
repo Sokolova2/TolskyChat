@@ -1,23 +1,23 @@
-.modal.fade#activeCallModal{ tabindex: "-1" }
+.modal.fade#activeCallModal{ tabindex: '-1' }
   .modal-dialog.modal-dialog-centered
     .modal-content.p-3.text-center.bg-dark.text-white.shadow-lg
-      #videoContainer{ style: "position:relative;background:black; min-height:300px;" }
+      #videoContainer{ style: 'position:relative;background:black; min-height:300px;' }
         %img#avatarFallback{ src: second_user.avatar_url, width: '100%' }
 
         %video#remoteVideo{ autoplay: true,
           playsinline: true,
-          style: "width:100%; display:none;"
+          style: 'width:100%; display:none;'
         }
 
         %video#localVideo{ autoplay: true,
           playsinline: true,
           muted: true,
-          style: "width:120px; position:absolute; bottom:10px; right:10px;"
+          style: 'width:120px; position:absolute; bottom:10px; right:10px;'
         }
 
       %h5#activeCallPeerName.mt-4= second_user.login
 
-      %p.text-success{ data: { voice_target: "status" } }
+      %p.text-success{ data: { voice_target: 'status' } }
         %i.bi.bi-volume-down-fill
         In call
 
@@ -25,18 +25,18 @@
 
       .d-flex.justify-content-center.gap-2.mt-3
 
-        %button.btn.btn-warning{ data: { action: "voice#toggleMute" } }
+        %button.btn.btn-warning{ data: { action: 'voice#toggleMute' } }
           %i.bi.bi-mic
           Mute
 
-        %button.btn.btn-info{ data: { action: "voice#toggleVideo" } }
+        %button.btn.btn-info{ data: { action: 'voice#toggleVideo' } }
           %i.bi.bi-camera-video
           Camera
 
-        %button.btn.btn-outline-secondary{ data: { action: "voice#flipCamera" } }
+        %button.btn.btn-outline-secondary{ data: { action: 'voice#flipCamera' } }
           %i.bi.bi-arrow-repeat
           Flip
 
-        %button.btn.btn-danger{ data: { action: "voice#endCall" } }
+        %button.btn.btn-danger{ data: { action: 'voice#endCall' } }
           %i.bi.bi-x-lg
           End

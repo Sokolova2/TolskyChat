@@ -50,9 +50,7 @@ class User < ApplicationRecord
         user_params(user, auth)
       end
 
-      user.skip_confirmation! if user.respond_to?(:confirmed?) && !user.confirmed?
-      user.save! if user.changed?
-      user
+      user_skip_confirmation(user)
     end
 
     def user_params(user, auth)
@@ -61,6 +59,14 @@ class User < ApplicationRecord
       user.email = auth.info.email
       user.password = Devise.friendly_token[0, 20]
       user.login = auth.info.email.split('@').first
+    end
+
+    private
+
+    def user_skip_confirmation(user)
+      user.skip_confirmation! if user.respond_to?(:confirmed?) && !user.confirmed?
+      user.save! if user.changed?
+      user
     end
   end
 

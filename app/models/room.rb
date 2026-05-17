@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
 class Room < ApplicationRecord
-  has_many :participants, foreign_key: :room_id, dependent: :destroy
-  has_many :messages, foreign_key: :room_id, dependent: :destroy
+  has_many :participants, dependent: :destroy
+  has_many :messages, dependent: :destroy
 
-  validates_uniqueness_of :name, presence: true, uniqueness: true
+  validates :name, presence: true, uniqueness: true
   scope :public_rooms, -> { where(is_private: false) }
 
   def other_user(current_user)

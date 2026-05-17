@@ -2,6 +2,7 @@
 
 class ContactsController < ApplicationController
   before_action :set_contact, only: %i[show update destroy]
+  before_action :new_contact_params, only: :create
 
   def index
     @contacts = Contact.user_contacts(current_user.id)
@@ -10,9 +11,6 @@ class ContactsController < ApplicationController
   def show; end
 
   def create
-    @new_contact = Contact.new(sender_id: current_user.id, receiver_id: params[:receiver_id])
-    @user = User.find(params[:receiver_id])
-
     if @new_contact.save
       create_notification
       respond_to do |format|
@@ -42,8 +40,13 @@ class ContactsController < ApplicationController
 
   private
 
+  def new_contact_params
+    @new_contact = Contact.new(sender_id: current_user.id, receiver_id: params[:receiver_id])
+    @user = User.find(params.expect[:receiver_id])
+  end
+
   def set_contact
-    @contact = Contact.find(params[:id])
+    @contact = Contact.find(params.expect[:id])
 
     @user = if @contact.sender_id == current_user.id
               @contact.receiver

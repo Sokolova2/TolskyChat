@@ -1,17 +1,15 @@
 # frozen_string_literal: true
 
 class RoomService
-  def initialize(params = {}, user)
-    @params = params
+  def initialize(user, params = {})
     @user = user
+    @params = params
   end
 
   def call
     conversation = Conversation.create(@params)
 
-    if conversation.save
-      conversation.participants.create(user: @user, room: conversation, role: 'Owner')
-    end
+    conversation.participants.create(user: @user, room: conversation, role: 'Owner') if conversation.save
 
     conversation
   end

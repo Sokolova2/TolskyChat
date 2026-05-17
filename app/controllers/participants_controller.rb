@@ -21,12 +21,7 @@ class ParticipantsController < ApplicationController
     role = params.dig(:participant, :role) || params[:role]
 
     if @participant.update(role: role)
-      Turbo::StreamsChannel.broadcast_replace_to(
-        @room,
-        target: view_context.dom_id(@participant, :role_value),
-        partial: "participants/role_value",
-        locals: { participant: @participant, editable: false }
-      )
+      broadcast_participant_role_value!
 
       broadcast_conversation_options!
 
@@ -37,12 +32,12 @@ class ParticipantsController < ApplicationController
   end
 
   def destroy
-    return redirect_to room_path(@room), alert: "Owner cannot be removed" if @participant.owner?
+    return redirect_to room_path(@room), alert: 'Owner cannot be removed' if @participant.owner?
 
     removed_user = @participant.user
 
     if @participant.destroy
-      RoomChannel.broadcast_to(removed_user, action: "delete", room_id: @room.id)
+      RoomChannel.broadcast_to(removed_user, action: 'delete', room_id: @room.id)
       redirect_to room_path(@room)
     else
       redirect_to room_path(@room), alert: @participant.errors.full_messages.to_sentence
@@ -57,11 +52,11 @@ class ParticipantsController < ApplicationController
   end
 
   def set_participant
-    @participant = @room.participants.find_by!(user_id: params[:user_id])
+    @participant = @room.participants.find_by!(user_id: params.expect[:user_id])
   end
 
   def participant_params
-    params.require(:participant).permit(:room_id, :role)
+    params.expect(participant: %i[room_id role])
   end
 
   def ensure_room_owner!
@@ -69,7 +64,7 @@ class ParticipantsController < ApplicationController
 
     return if participant&.owner?
 
-    redirect_to rooms_path, alert: "Only owner can appoint as moderator"
+    redirect_to rooms_path, alert: 'Only owner can appoint as moderator'
   end
 
   def ensure_owner_or_moderator!
@@ -77,18 +72,20 @@ class ParticipantsController < ApplicationController
 
     return if participant&.owner? || participant&.moderator?
 
-    redirect_to rooms_path, alert: "Only owner or moderator can exclude members"
+    redirect_to rooms_path, alert: 'Only owner or moderator can exclude members'
   end
 
   def ensure_can_invite!
     return if params[:user_ids].blank?
     return if current_room_participant.present?
 
-    redirect_to rooms_path, alert: "Only conversation members can invite users"
+    redirect_to rooms_path, alert: 'Only conversation members can invite users'
   end
 
   def current_room_participant
-    @current_room_participant ||= @room.participants.find_by(user_id: current_user.id)
+    return @current_room_participant if defined?(@current_room_participant)
+
+    @current_room_participant = @room.participants.find_by(user_id: current_user.id)
   end
 
   def broadcast_conversation_options!
@@ -97,10 +94,19 @@ class ParticipantsController < ApplicationController
     fresh_room.participants.includes(:user).find_each do |participant|
       Turbo::StreamsChannel.broadcast_replace_to(
         [fresh_room, participant.user],
-        target: "conversation_options_modal",
-        partial: "rooms/conversation_options",
+        target: 'conversation_options_modal',
+        partial: 'rooms/conversation_options',
         locals: { room: fresh_room, current_user: participant.user }
       )
     end
+  end
+
+  def broadcast_participant_role_value!
+    Turbo::StreamsChannel.broadcast_replace_to(
+      @room,
+      target: view_context.dom_id(@participant, :role_value),
+      partial: 'participants/role_value',
+      locals: { participant: @participant, editable: false }
+    )
   end
 end

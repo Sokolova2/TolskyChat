@@ -3,7 +3,7 @@
 class RoomsController < ApplicationController
   before_action :authenticate_user!
   before_action :set_rooms, only: %i[index show public_search]
-  before_action :set_room, only: %i[update destroy]
+  before_action :set_room, only: %i[show update destroy]
   before_action :ensure_room_owner!, only: %i[update destroy]
 
   def index
@@ -12,7 +12,6 @@ class RoomsController < ApplicationController
   end
 
   def show
-    @room = Room.find(params[:id])
     @caller = @room.messages.first&.user
 
     @message = Message.new
@@ -61,30 +60,30 @@ class RoomsController < ApplicationController
 
   def conversation_set
     @conversations = Conversation
-                       .joins(:participants)
-                       .where(participants: { user_id: current_user.id })
-                       .where(deleted_at: nil)
-                       .order(:created_at)
+                     .joins(:participants)
+                     .where(participants: { user_id: current_user.id })
+                     .where(deleted_at: nil)
+                     .order(:created_at)
   end
 
   def personal_chat_set
     @personal_chats = PersonalChat
-                        .joins(:participants)
-                        .where(participants: { user_id: current_user.id })
-                        .where(deleted_at: nil)
-                        .order(:created_at)
+                      .joins(:participants)
+                      .where(participants: { user_id: current_user.id })
+                      .where(deleted_at: nil)
+                      .order(:created_at)
   end
 
   def set_rooms
     @rooms = Room
-    .joins(:participants)
-    .where(participants: { user_id: current_user.id })
-    .where(deleted_at: nil)
-    .distinct
+             .joins(:participants)
+             .where(participants: { user_id: current_user.id })
+             .where(deleted_at: nil)
+             .distinct
   end
 
   def set_room
-    @room = Room.find(params[:id])
+    @room = Room.find(params.expect[:id])
   end
 
   def ensure_room_owner!
@@ -92,6 +91,6 @@ class RoomsController < ApplicationController
 
     return if participant&.owner?
 
-    redirect_to rooms_path, alert: "Only owner can delete room"
+    redirect_to rooms_path, alert: 'Only owner can delete room'
   end
 end

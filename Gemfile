@@ -28,9 +28,9 @@ gem 'jbuilder'
 gem 'tzinfo-data', platforms: %i[windows jruby]
 
 # Use the database-backed adapters for Rails.cache, Active Job, and Action Cable
-#gem 'solid_cable'
-#gem 'solid_cache'
-#gem 'solid_queue'
+# gem 'solid_cable'
+# gem 'solid_cache'
+# gem 'solid_queue'
 
 # Reduces boot times through caching; required in config/boot.rb
 gem 'bootsnap', require: false
@@ -63,8 +63,6 @@ group :development, :test do
   gem 'brakeman', require: false
 end
 
-gem 'haml-rails'
-
 group :development do
   # Use console on exceptions pages [https://github.com/rails/web-console]
   gem 'hotwire-livereload'
@@ -85,10 +83,10 @@ group :test do
 end
 
 gem 'carrierwave', '~> 3.0'
+gem 'cloudinary'
 gem 'devise'
 gem 'dotenv'
 gem 'mini_magick'
 gem 'redis', '~> 5.0'
-gem 'cloudinary'
 
 gem 'aws-sdk-s3'

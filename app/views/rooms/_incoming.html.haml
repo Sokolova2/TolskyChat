@@ -1,4 +1,4 @@
-.modal.fade#incomingCallModal{ tabindex: "-1", data: { bs_backdrop: "static", bs_keyboard: "false" } }
+.modal.fade#incomingCallModal{ tabindex: '-1', data: { bs_backdrop: 'static', bs_keyboard: 'false' } }
   .modal-dialog.modal-dialog-centered
     .modal-content.p-3.text-center.bg-dark.text-white.bg-opacity-75
       .d-flex.justify-content-center
@@ -7,10 +7,10 @@
       %p.text-secondary is calling you...
 
       %div.d-flex.gap-2.justify-content-center
-        %button.btn.btn-success{ data: { action: "voice#acceptCall" } }
+        %button.btn.btn-success{ data: { action: 'voice#acceptCall' } }
           %i.bi.bi-telephone
           Accept
 
-        %button.btn.btn-danger{ data: { action: "voice#declineCall" } }
+        %button.btn.btn-danger{ data: { action: 'voice#declineCall' } }
           %i.bi.bi-x-lg
           Decline

@@ -10,26 +10,23 @@ class Contact < ApplicationRecord
   validate :unique_contact, on: :create
 
   def unique_contact
-    if Contact.where(
-      '(sender_id = :sender AND receiver_id = :receiver)
+    if Contact.exists?(['(sender_id = :sender AND receiver_id = :receiver)
        OR
-       (sender_id = :receiver AND receiver_id = :sender)',
-      sender: sender_id,
-      receiver: receiver_id
-    ).exists?
+       (sender_id = :receiver AND receiver_id = :sender)', { sender: sender_id,
+                                                             receiver: receiver_id }])
       errors.add(:base, 'Contact already exists')
     end
   end
 
-  scope :between, -> (sender, receiver) do
+  scope :between, lambda { |sender, receiver|
     where(
       "(sender_id = :sender AND receiver_id = :receiver) OR
         (sender_id = :receiver AND receiver_id = :sender)",
       sender: sender, receiver: receiver
     )
-  end
+  }
 
-  scope :user_contacts, -> (user) {
+  scope :user_contacts, lambda { |user|
     select('contacts.*, contacts.id as contact_id')
       .where(approved: true)
       .where('sender_id = :id OR receiver_id = :id', id: user)

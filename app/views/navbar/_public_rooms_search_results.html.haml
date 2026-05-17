@@ -3,19 +3,19 @@
     .d-flex.align-items-center
       .card.card-body.m-2.p-3
         .d-flex.align-items-center.justify-content-between
-          = link_to room_path(room), data: { turbo_frame: "_top" }, class: "conversation-link text-decoration-none text-dark pe-4" do
+          = link_to room_path(room), data: { turbo_frame: '_top' }, class: 'conversation-link text-decoration-none text-dark pe-4' do
             .d-flex.align-items-center.ps-2.gap-2.room-list-item
               .avatar-wrapper
                 %span.avatar-initial= room.display_name(current_user).first.upcase
               .name-conversation
                 %p.p-0.m-0= room.display_name(current_user)
           - unless room.participants.exists?(user_id: current_user.id)
-            = button_to "Join the chat",
+            = button_to 'Join the chat',
               participants_path,
               method: :post,
               params: { participant: { room_id: room.id } },
-              class: "btn btn-dark",
-              data: { turbo_frame: "_top" }
+              class: 'btn btn-dark',
+              data: { turbo_frame: '_top' }
 
 
 - else

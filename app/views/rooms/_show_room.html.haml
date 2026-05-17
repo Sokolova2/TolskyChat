@@ -4,7 +4,7 @@
     .d-flex.align-items-center.justify-content-between.w-100.ms-3.me-3.p-3
       - if room.is_a?(Conversation)
         .d-flex.align-items-center.gap-2
-          = link_to rooms_path, class: 'btn btn-sm room-mobile-back-btn d-lg-none', data: { turbo_frame: "_top" } do
+          = link_to rooms_path, class: 'btn btn-sm room-mobile-back-btn d-lg-none', data: { turbo_frame: '_top' } do
             %i.bi.bi-arrow-left.fs-5
           .d-flex.gap-3
             %h5.mb-0= room.name
@@ -19,13 +19,15 @@
       - else
         .d-flex.align-items-center.gap-2
           = image_tag 'Tolsky.png', size: 28, class: 'd-lg-none'
-          = link_to rooms_path, class: 'btn btn-outline-secondary btn-sm room-mobile-back-btn d-lg-none', data: { turbo_frame: "_top" } do
+          = link_to rooms_path, class: 'btn btn-outline-secondary btn-sm room-mobile-back-btn d-lg-none', 
+data: { turbo_frame: '_top' } do
             %i.bi.bi-arrow-left
           %h5.mb-0= room.other_user(current_user).login
-        - contact = Contact.find_by(sender: current_user, receiver: second_user) || Contact.find_by(sender: second_user, receiver: current_user)
+        - contact = Contact.find_by(sender: current_user, 
+receiver: second_user) || Contact.find_by(sender: second_user, receiver: current_user)
         .d-flex.gap-3.align-items-center
           = render 'rooms/voice_call', second_user: second_user, room: room
-          = link_to contact_path(contact), data: { turbo_frame: "modal" }, class: 'menu-icon' do
+          = link_to contact_path(contact), data: { turbo_frame: 'modal' }, class: 'menu-icon' do
             %i.bi.bi-three-dots.btn.btn-outline-dark.me-4
 
     - if room.is_a?(Conversation)
@@ -37,62 +39,63 @@
   #chatroom.chat-messages
     .chat-messages-inner
       = render room.messages.sort_by(&:created_at)
-  .chat-input{ data: { controller: "reaction-form audio-recording", "audio-recording-room-id-value": room.id}}
-    .audio-controls.d-none{ data: { audio_recording_target: "controls" } }
-      %button.btn.btn-outline-warning{ data: { type: "button",
-        action: "audio-recording#pauseRecording",
-        "audio_recording_target": "pauseRecording"
+  .chat-input{ data: { controller: 'reaction-form audio-recording', 'audio-recording-room-id-value': room.id } }
+    .audio-controls.d-none{ data: { audio_recording_target: 'controls' } }
+      %button.btn.btn-outline-warning{ data: { type: 'button',
+        action: 'audio-recording#pauseRecording',
+        audio_recording_target: 'pauseRecording'
         }
       }
         %i.bi.bi-pause-circle
-      %button.btn.btn-outline-success{ data: { type: "button",
-        action: "audio-recording#resumeRecording",
-        "audio_recording_target": "resumeRecording"
+      %button.btn.btn-outline-success{ data: { type: 'button',
+        action: 'audio-recording#resumeRecording',
+        audio_recording_target: 'resumeRecording'
         }
       }
         %i.bi.bi-play-fill
 
-      %button.btn.btn-outline-danger{ data: { type: "button",
-        action: "audio-recording#stopRecording",
-        "audio_recording_target": "stopRecording"
+      %button.btn.btn-outline-danger{ data: { type: 'button',
+        action: 'audio-recording#stopRecording',
+        audio_recording_target: 'stopRecording'
         }
       }
         %i.bi.bi-send-arrow-up
 
-      %p{ data: { audio_recording_target: "timeElapsed" } } 00:00
+      %p{ data: { audio_recording_target: 'timeElapsed' } } 00:00
 
-    = form_with(model: @message, url: room_messages_path(room), id: "message_form", html: { multipart: true }, data: { controller: 'emoji-picker' }) do |f|
-      .field{ data: { controller: "context-menu",
-        action: "contextmenu->context-menu#open"
+    = form_with(model: @message, url: room_messages_path(room), id: 'message_form', html: { multipart: true }, 
+data: { controller: 'emoji-picker' }) do |f|
+      .field{ data: { controller: 'context-menu',
+        action: 'contextmenu->context-menu#open'
         }
       }
-        = content_tag(:div, "", class: "pickerContainer", data: { emoji_picker_target: "pickerContainer" })
-        = f.rich_textarea :content, autofocus: true, data: { controller: "trix-preview context-menu",
-          emoji_picker_target: "trixEditor" }
+        = content_tag(:div, '', class: 'pickerContainer', data: { emoji_picker_target: 'pickerContainer' })
+        = f.rich_textarea :content, autofocus: true, data: { controller: 'trix-preview context-menu',
+          emoji_picker_target: 'trixEditor' }
         = f.file_field :featured_image, id: 'file_input', style: 'display:none'
       .actions
         = f.submit 'Send'
 
-    .modal.fade#videoModal.modal-video{ tabindex: "-1" }
+    .modal.fade#videoModal.modal-video{ tabindex: '-1' }
       .modal-dialog.modal-dialog-centered
         .modal-content
           .modal-body
             #video-modal-preview
-            %button.btn.btn-secondary{ type: "button", "data-bs-dismiss" => "modal" } Cancel
+            %button.btn.btn-secondary{ type: 'button', 'data-bs-dismiss' => 'modal' } Cancel
             %button.btn.btn-dark#sendVideoBtn Send
 
-    .modal.fade#audioModal.modal-audio{ tabindex: "-1" }
+    .modal.fade#audioModal.modal-audio{ tabindex: '-1' }
       .modal-dialog.modal-dialog-centered
         .modal-content
           .modal-body
             #audio-modal-preview
-            %button.btn.btn-secondary{ type: "button", "data-bs-dismiss" => "modal" } Cancel
+            %button.btn.btn-secondary{ type: 'button', 'data-bs-dismiss' => 'modal' } Cancel
             %button.btn.btn-dark#sendAudioBtn Send
 
-    .modal.fade#fileModal.modal-file{ tabindex: "-1" }
+    .modal.fade#fileModal.modal-file{ tabindex: '-1' }
       .modal-dialog.modal-dialog-centered
         .modal-content
           .modal-body
             #file-modal-preview
-            %button.btn.btn-secondary{ type: "button", "data-bs-dismiss" => "modal" } Cancel
+            %button.btn.btn-secondary{ type: 'button', 'data-bs-dismiss' => 'modal' } Cancel
             %button.btn.btn-dark#sendFileBtn Send

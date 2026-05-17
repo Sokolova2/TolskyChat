@@ -1,7 +1,9 @@
-redis_url = ENV["REDIS_URL"]
+# frozen_string_literal: true
+
+redis_url = ENV.fetch('REDIS_URL', nil)
 
 if redis_url.present?
-  uri = URI.parse(redis_url)
+  URI.parse(redis_url)
 
   REDIS = Redis.new(
     url: redis_url,

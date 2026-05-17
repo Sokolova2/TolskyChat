@@ -11,6 +11,7 @@ class ParticipantsCreateService
 
   def call
     return bulk_add if @user_ids.present?
+
     self_join
   end
 
@@ -40,7 +41,7 @@ class ParticipantsCreateService
   end
 
   def normalize_user_ids(raw_ids)
-    return [] unless raw_ids.present?
+    return [] if raw_ids.blank?
 
     raw_ids.map(&:to_i).select(&:positive?).uniq
   end

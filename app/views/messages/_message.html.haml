@@ -1,11 +1,11 @@
 .message{ id: "message_#{message.id}",
-  data: { controller: "context-menu",
+  data: { controller: 'context-menu',
   context_menu_room_id_value: message.room_id,
   context_menu_owner_id_value: message.user_id,
   context_menu_text_value: message.content.to_plain_text
   } }
   .d-flex.gap-2.align-items-start.ps-3
-    = image_tag message.user.avatar.url, class: "chat-avatar"
+    = image_tag message.user.avatar.url, class: 'chat-avatar'
     .message-body
       %b= message.user.login
       .message-content
@@ -21,14 +21,14 @@
             %audio{ controls: true }
               %source{ src: url_for(message.audio_file), type: message.audio_file.content_type }
       .message-context-menu.context-menu.hidden
-        %button.btn.text-white{ data: { action: "click->context-menu#copy" } }
+        %button.btn.text-white{ data: { action: 'click->context-menu#copy' } }
           %i.bi.bi-copy
           Copy
         %br
-        %button.btn.text-white{ data: { action: "click->context-menu#paste" } }
+        %button.btn.text-white{ data: { action: 'click->context-menu#paste' } }
           %i.bi.bi-clipboard
           Paste
         = button_to room_message_path(message.room, message), method: :delete, class: 'btn text-white' do
           %i.bi.bi-trash
           Delete
-    %p= message.created_at.strftime("%H:%M")
+    %p= message.created_at.strftime('%H:%M')

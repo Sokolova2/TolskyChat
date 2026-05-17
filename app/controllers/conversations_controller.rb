@@ -35,7 +35,7 @@ class ConversationsController < ApplicationController
   private
 
   def conversation_params
-    params.require(:conversation).permit(:name, :is_private, :deleted_at, participants_attributes: [:user_id, :role])
+    params.expect(conversation: [:name, :is_private, :deleted_at, { participants_attributes: %i[user_id role] }])
   end
 
   def set_conversations
@@ -43,7 +43,7 @@ class ConversationsController < ApplicationController
   end
 
   def set_conversation
-    @conversation = Conversation.find(params[:id])
+    @conversation = Conversation.find(params.expect[:id])
   end
 
   def ensure_owner_or_moderator!
@@ -51,6 +51,6 @@ class ConversationsController < ApplicationController
 
     return if participant&.owner? || participant&.moderator?
 
-    redirect_to rooms_path, alert: "Only owner or moderator can update conversation"
+    redirect_to rooms_path, alert: 'Only owner or moderator can update conversation'
   end
 end

@@ -1,4 +1,4 @@
-= turbo_frame_tag "modal" do
+= turbo_frame_tag 'modal' do
   = form_with(url: users_path, method: :get, data: { controller: 'search', turbo_frame: 'result-search' }) do |f|
     = f.text_field :search, placeholder: 'Searching...', data: { action: 'input->search#search', search_target: 'input' },
   class: 'form-control rounded-5 p-2 text-center search'

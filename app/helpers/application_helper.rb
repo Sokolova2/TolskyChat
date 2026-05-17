@@ -7,14 +7,14 @@ module ApplicationHelper
     stun_urls = ENV.fetch('STUN_URLS', '')
                    .split(',')
                    .map(&:strip)
-                   .reject(&:blank?)
+                   .compact_blank
     stun_urls = [ENV.fetch('STUN_SERVER', 'stun:stun.l.google.com:19302')] if stun_urls.empty?
     servers << { urls: stun_urls.one? ? stun_urls.first : stun_urls }
 
     turn_urls = ENV.fetch('TURN_URLS', '')
                    .split(',')
                    .map(&:strip)
-                   .reject(&:blank?)
+                   .compact_blank
     if turn_urls.empty?
       single_turn_url = ENV.fetch('TURN_URL', '').strip
       if single_turn_url.present?

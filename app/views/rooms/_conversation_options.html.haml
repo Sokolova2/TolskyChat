@@ -1,4 +1,4 @@
-= turbo_frame_tag "conversation_options_modal", data: { controller: "room-options" } do
+= turbo_frame_tag 'conversation_options_modal', data: { controller: 'room-options' } do
   = turbo_stream_from room
   = turbo_stream_from [room, current_user]
   - current_participant = Participant.find_by(room_id: room.id, user_id: current_user.id)
@@ -7,67 +7,75 @@
   - can_invite_members = current_participant.present?
   .d-flex.justify-content-between.align-items-center.m-3.conversation-options-header
     - if can_exclude_members
-      %h4.mb-0{ data: { room_options_target: "nameText", action: "click->room-options#showNameForm" } }
+      %h4.mb-0{ data: { room_options_target: 'nameText', action: 'click->room-options#showNameForm' } }
         = room.name
-      .input-name.d-none{ data: { room_options_target: "nameForm" } }
+      .input-name.d-none{ data: { room_options_target: 'nameForm' } }
         = form_with(model: room, url: conversation_path(room), method: :patch, data: { turbo: false }) do |f|
           = f.text_field :name,
             value: room.name,
             class: 'form-control rounded-4',
-            data: { room_options_target: "nameInput", action: "keydown->room-options#onNameKeydown blur->room-options#hideNameForm" }
+            data: { room_options_target: 'nameInput', 
+action: 'keydown->room-options#onNameKeydown blur->room-options#hideNameForm' }
           = f.submit 'Change', class: 'btn btn-outline-dark mt-2 hidden'
     - else
       %h4.mb-0= room.name
 
     - if can_manage_room
-      %p.mb-0{ data: { room_options_target: "privacyText", action: "click->room-options#showPrivacyForm" } }
+      %p.mb-0{ data: { room_options_target: 'privacyText', action: 'click->room-options#showPrivacyForm' } }
         = room.is_private? ? 'private' : 'public'
-      .d-none{ data: { room_options_target: "privacyForm" } }
+      .d-none{ data: { room_options_target: 'privacyForm' } }
         = form_with(model: room, url: conversation_path(room), method: :patch, data: { turbo: false }) do |f|
           = f.select :is_private,
             [['private', true], ['public', false]],
             { selected: room.is_private? },
             class: 'form-select rounded-4',
-            data: { room_options_target: "privacySelect", action: "change->room-options#submitPrivacy keydown->room-options#onPrivacyKeydown blur->room-options#hidePrivacyForm" }
+            data: { room_options_target: 'privacySelect', 
+action: 'change->room-options#submitPrivacy keydown->room-options#onPrivacyKeydown blur->room-options#hidePrivacyForm' }
           = f.submit 'Change', class: 'btn btn-outline-dark mt-2 hidden'
     - else
       %p.mb-0= room.is_private? ? 'private' : 'public'
 
   .m-3.card.card-body
     %h5.ms-2.mb-3 Members
-    - room.participants.each do |member|
+    - role_order = { 'owner' => 0, 'moderator' => 1, 'member' => 2 }
+    - sorted_participants = room.participants.sort_by { |participant| [role_order.fetch(participant.role, 3), participant.user.login.to_s.downcase] }
+    - sorted_participants.each do |member|
       .d-flex.justify-content-between.member-row
         .d-flex.gap-2.align-items-center.mb-2
           .dropdown.position-relative
             - if can_exclude_members && !member.owner?
-              %button.btn{"aria-expanded" => "false", "data-bs-toggle" => "dropdown", :type => "button"}
+              %button.btn{ 'aria-expanded' => 'false', 'data-bs-toggle' => 'dropdown', :type => 'button' }
                 %i.bi.bi-three-dots-vertical
-              %ul.dropdown-menu{ style: "z-index: 2000;" }
-                = button_to participant_path(member, room_id: room.id, user_id: member.user_id), method: :delete, class: 'dropdown-item', form: { data: { turbo_frame: "_top" } } do
+              %ul.dropdown-menu{ style: 'z-index: 2000;' }
+                = button_to participant_path(member, room_id: room.id, user_id: member.user_id), method: :delete, class: 'dropdown-item', 
+form: { data: { turbo_frame: '_top' } } do
                   %i.bi.bi-arrow-bar-left
                   Exclude
             - else
-              %button.btn{"aria-expanded" => "false", "data-bs-toggle" => "dropdown", :type => "button"}
+              %button.btn{ 'aria-expanded' => 'false', 'data-bs-toggle' => 'dropdown', :type => 'button' }
                 %i.bi.bi-three-dots-vertical
-              %ul.dropdown-menu{ style: "z-index: 2000;" }
+              %ul.dropdown-menu{ style: 'z-index: 2000;' }
           = image_tag member.user.avatar.url, size: 45, class: 'rounded-circle'
           %p= member.user.login
         - if can_manage_room && !member.owner?
-          .d-none{ data: { room_options_target: "roleForm" }}
-            = form_with(model: member, url: participant_path(member, room_id: room.id, user_id: member.user_id), method: :patch, data: { turbo: false }) do |f|
+          .d-none{ data: { room_options_target: 'roleForm' } }
+            = form_with(model: member, url: participant_path(member, room_id: room.id, user_id: member.user_id), method: :patch, 
+data: { turbo: false }) do |f|
               = f.select :role,
-                [['Moderator', 'moderator'], ['Member', 'member']],
+                [%w[Moderator moderator], %w[Member member]],
                 { selected: member.role },
                 class: 'form-select rounded-4',
-                data: { room_options_target: "roleSelect", action: "change->room-options#submitRole keydown->room-options#onRoleKeydown blur->room-options#hideRoleForm" }
+                data: { room_options_target: 'roleSelect', 
+action: 'change->room-options#submitRole keydown->room-options#onRoleKeydown blur->room-options#hideRoleForm' }
               = f.submit 'Change', class: 'btn btn-outline-dark mt-2 hidden'
-          = render "participants/role_value", participant: member, editable: true
+          = render 'participants/role_value', participant: member, editable: true
         - else
-          = render "participants/role_value", participant: member, editable: false
+          = render 'participants/role_value', participant: member, editable: false
 
   - if can_invite_members
     .d-flex.gap-2.align-items-center.m-3
-      %a.btn.btn-outline-dark{ 'aria-controls' => 'collapseExample', 'aria-expanded' => 'false', 'data-bs-toggle' => 'collapse', :href => '#collapseExample', :role => 'button' }
+      %a.btn.btn-outline-dark{ 'aria-controls' => 'collapseExample', 'aria-expanded' => 'false', 'data-bs-toggle' => 'collapse', 
+:href => '#collapseExample', :role => 'button' }
         %i.bi.bi-people.fs-4
       %p.fs-5 Add members
     #collapseExample.collapse
@@ -75,7 +83,7 @@
         = form_with(model: Participant.new, url: participants_path, data: { turbo: false }) do |f|
           = f.hidden_field :room_id, value: room.id
 
-          = turbo_frame_tag "contacts_in_options" do
+          = turbo_frame_tag 'contacts_in_options' do
             = render 'rooms/contacts_in_options', current_user: current_user
 
           .actions.mt-3.text-center
