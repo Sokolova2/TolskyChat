@@ -20,20 +20,63 @@ class ParticipantsCreateService
   def bulk_add
     return forbidden_result unless can_manage_participants?
 
+    blocked_ids = []
+
     @user_ids.each do |id|
+      if blocked_by_user?(id)
+        blocked_ids << id
+        next
+      end
+
       @room.participants.find_or_create_by(user_id: id)
     end
 
     BroadcastRoomService.new(@room).broadcast_room
 
-    success_result(room_path(@room))
+    return success_result(room_path(@room)) if blocked_ids.empty?
+
+    blocked_logins = User.where(id: blocked_ids).pluck(:login)
+    Result.new(
+    ok: false,
+    redirect_path: rooms_path,
+    alert: "Cannot add: #{blocked_logins.join(', ')} (they blocked you)"
+    )
   end
 
   def self_join
     return public_only_result if @room.is_private? || @room.deleted_at.present?
 
+    owner = @room.participants.find_by(role: 'Owner')
+    return blocked_result if owner_blocked_current_user?(owner)
+
     @room.participants.find_or_create_by(user_id: @current_user.id)
     success_result(room_path(@room))
+  end
+
+  def blocked_by_user?(target_user_id)
+    Contact.exists?(
+      sender_id: target_user_id,
+      receiver_id: @current_user.id,
+      blocked: true
+    )
+  end
+
+  def owner_blocked_current_user?(owner_participant)
+    return false if owner_participant.blank?
+
+    Contact.exists?(
+      sender_id: owner_participant.user_id,
+      receiver_id: @current_user.id,
+      blocked: true
+    )
+  end
+
+  def blocked_result
+    Result.new(
+      ok: false,
+      redirect_path: rooms_path,
+      alert: 'You cannot join this conversation. Owner blocked you.'
+    )
   end
 
   def can_manage_participants?
