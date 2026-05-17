@@ -10,9 +10,20 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_05_17_175642) do
+ActiveRecord::Schema[8.1].define(version: 2026_05_17_204348) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
+
+  create_table "action_push_native_devices", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.string "name"
+    t.bigint "owner_id"
+    t.string "owner_type"
+    t.string "platform", null: false
+    t.string "token", null: false
+    t.datetime "updated_at", null: false
+    t.index ["owner_type", "owner_id"], name: "index_action_push_native_devices_on_owner"
+  end
 
   create_table "action_text_rich_texts", force: :cascade do |t|
     t.text "body"
@@ -55,6 +66,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_17_175642) do
   create_table "contacts", force: :cascade do |t|
     t.boolean "approved", default: false, null: false
     t.boolean "blocked", default: false, null: false
+    t.bigint "blocked_by_id"
     t.datetime "created_at", null: false
     t.bigint "receiver_id", null: false
     t.bigint "sender_id", null: false
