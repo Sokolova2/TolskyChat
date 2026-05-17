@@ -5,6 +5,7 @@ class Contact < ApplicationRecord
 
   belongs_to :sender, class_name: 'User'
   belongs_to :receiver, class_name: 'User'
+  belongs_to :blocked_by, class_name: 'User', optional: true
   has_many :notifications, dependent: :destroy
 
   validate :unique_contact, on: :create

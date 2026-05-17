@@ -29,6 +29,8 @@ class User < ApplicationRecord
 
   has_many :messages, dependent: :destroy
 
+  has_many :application_push_devices, dependent: :destroy
+
   validates :login, presence: true, uniqueness: true
 
   mount_uploader :avatar, AvatarUploader
