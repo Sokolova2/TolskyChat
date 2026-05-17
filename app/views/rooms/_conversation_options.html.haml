@@ -47,10 +47,20 @@ action: 'change->room-options#submitPrivacy keydown->room-options#onPrivacyKeydo
               %button.btn{ 'aria-expanded' => 'false', 'data-bs-toggle' => 'dropdown', :type => 'button' }
                 %i.bi.bi-three-dots-vertical
               %ul.dropdown-menu{ style: 'z-index: 2000;' }
-                = button_to participant_path(member, room_id: room.id, user_id: member.user_id), method: :delete, class: 'dropdown-item', 
+                = button_to participant_path(member, room_id: room.id, user_id: member.user_id), method: :delete, class: 'dropdown-item',
 form: { data: { turbo_frame: '_top' } } do
                   %i.bi.bi-arrow-bar-left
                   Exclude
+            - elsif member.user_id == current_user.id
+              %button.btn{ 'aria-expanded' => 'false', 'data-bs-toggle' => 'dropdown', :type => 'button' }
+                %i.bi.bi-three-dots-vertical
+              %ul.dropdown-menu{ style: 'z-index: 2000;' }
+                = button_to participant_path(member, room_id: room.id, user_id: member.user_id),
+                  method: :delete,
+                  class: 'dropdown-item',
+                  form: { data: { turbo_frame: '_top' } } do
+                  %i.bi.bi-arrow-bar-left
+                  Leave
             - else
               %button.btn{ 'aria-expanded' => 'false', 'data-bs-toggle' => 'dropdown', :type => 'button' }
                 %i.bi.bi-three-dots-vertical
