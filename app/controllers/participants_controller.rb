@@ -6,6 +6,8 @@ class ParticipantsController < ApplicationController
   before_action :ensure_can_invite!, only: :create
   before_action :ensure_room_owner!, only: :update
   before_action :ensure_owner_or_moderator!, only: :destroy
+  before_action :self_removal!, only: :destroy
+  before_action :user_ids, only: :create
 
   def create
     result = ParticipantsCreateService.new(
@@ -13,6 +15,8 @@ class ParticipantsController < ApplicationController
       current_user: current_user,
       user_ids: params[:user_ids]
     ).call
+
+    RoomNotificationsService.new(@added_user_ids, current_user, @room).create_invite_notification
 
     redirect_to result.redirect_path, alert: result.alert
   end
@@ -25,6 +29,8 @@ class ParticipantsController < ApplicationController
 
       broadcast_conversation_options!
 
+      RoomNotificationsService.new([], current_user, @room).notification_role_changed(@participant.user)
+
       redirect_to room_path(@room)
     else
       redirect_to room_path(@room), alert: @participant.errors.full_messages.to_sentence
@@ -35,8 +41,10 @@ class ParticipantsController < ApplicationController
     return redirect_to room_path(@room), alert: 'Owner cannot be removed' if @participant.owner?
 
     removed_user = @participant.user
+    self_removal = removed_user.id == current_user.id
 
     if @participant.destroy
+      RoomNotificationsService.new([], current_user, @room).notification_member_removed(removed_user, self_removal)
       RoomChannel.broadcast_to(removed_user, action: 'delete', room_id: @room.id)
       redirect_to room_path(@room)
     else
@@ -68,6 +76,8 @@ class ParticipantsController < ApplicationController
   end
 
   def ensure_owner_or_moderator!
+    return if self_removal!
+
     participant = current_room_participant
 
     return if participant&.owner? || participant&.moderator?
@@ -108,5 +118,13 @@ class ParticipantsController < ApplicationController
       partial: 'participants/role_value',
       locals: { participant: @participant, editable: false }
     )
+  end
+
+  def self_removal!
+    @participant.user_id == current_user.id
+  end
+
+  def user_ids
+    @added_user_ids = Array(params[:user_ids]).map(&:to_i).select(&:positive?).uniq
   end
 end

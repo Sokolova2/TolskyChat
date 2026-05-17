@@ -5,13 +5,13 @@ class MessagesController < ApplicationController
   before_action :set_room_from_params, only: :destroy
 
   def create
-    message = @room.messages.new(message_params.merge(user: current_user))
+    @message = @room.messages.new(message_params.merge(user: current_user))
 
-    return unless message.save
+    return unless @message.save
+
+    create_nofitication
 
     broadcast_message
-
-
   end
 
   def destroy
@@ -49,12 +49,23 @@ class MessagesController < ApplicationController
       html: render_to_string(
         partial: 'messages/message',
         formats: [:html],
-        locals: { message: message }
+        locals: { message: @message }
       )
     )
   end
 
   def create_nofitication
+    @rooms = Room.find(params.expect(:room_id))
 
+    @rooms.participants.each do |participant|
+      next if participant.user_id == current_user.id
+
+      Notification.create(
+        sender_id: current_user.id,
+        receiver_id: participant.user_id,
+        contact_id: nil,
+        content: @message.content.to_plain_text
+      )
+    end
   end
 end

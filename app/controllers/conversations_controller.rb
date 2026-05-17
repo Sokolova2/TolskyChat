@@ -13,7 +13,7 @@ class ConversationsController < ApplicationController
   end
 
   def create
-    @conversation_new = RoomService.new(conversation_params, current_user).call
+    @conversation_new = RoomService.new(current_user, conversation_params).call
 
     if @conversation_new.save
       BroadcastRoomService.new(@conversation_new).broadcast_room

@@ -23,7 +23,10 @@ class ContactsController < ApplicationController
   end
 
   def update
-    @update_contact = @contact.update(blocked: params[:blocked])
+    blocked = ActiveModel::Type::Boolean.new.cast(params[:blocked])
+
+    @update_contact = @contact.update(blocked: params[:blocked],
+                                      blocked_by_id: blocked ? current_user.id : nil)
 
     redirect_to contacts_path
   end
