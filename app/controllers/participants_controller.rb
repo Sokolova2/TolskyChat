@@ -52,7 +52,7 @@ class ParticipantsController < ApplicationController
   end
 
   def set_participant
-    @participant = @room.participants.find_by!(user_id: params.expect[:user_id])
+    @participant = @room.participants.find_by!(user_id: params.expect(:user_id))
   end
 
   def participant_params

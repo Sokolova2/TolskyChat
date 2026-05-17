@@ -43,7 +43,7 @@ class ConversationsController < ApplicationController
   end
 
   def set_conversation
-    @conversation = Conversation.find(params.expect[:id])
+    @conversation = Conversation.find(params.expect(:id))
   end
 
   def ensure_owner_or_moderator!

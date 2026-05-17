@@ -83,7 +83,7 @@ class RoomsController < ApplicationController
   end
 
   def set_room
-    @room = Room.find(params.expect[:id])
+    @room = Room.find(params.expect(:id))
   end
 
   def ensure_room_owner!

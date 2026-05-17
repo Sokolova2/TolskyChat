@@ -10,10 +10,12 @@ class MessagesController < ApplicationController
     return unless message.save
 
     broadcast_message
+
+
   end
 
   def destroy
-    message = @room.messages.find(params.expect[:id])
+    message = @room.messages.find(params.expect(:id))
     return head :forbidden unless message.user == current_user
 
     message.destroy
@@ -30,11 +32,11 @@ class MessagesController < ApplicationController
   private
 
   def set_room
-    @room = Room.find(params.expect[:room_id])
+    @room = Room.find(params.expect(:room_id))
   end
 
   def set_room_from_params
-    @room = Room.find(params.expect[:room_id])
+    @room = Room.find(params.expect(:room_id))
   end
 
   def message_params
@@ -50,5 +52,9 @@ class MessagesController < ApplicationController
         locals: { message: message }
       )
     )
+  end
+
+  def create_nofitication
+
   end
 end

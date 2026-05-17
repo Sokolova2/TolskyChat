@@ -63,7 +63,7 @@ class NotificationsController < ApplicationController
   end
 
   def set_notification
-    @notification = Notification.find(params.expect[:id])
+    @notification = Notification.find(params.expect(:id))
   end
 
   def set_contact

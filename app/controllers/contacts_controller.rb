@@ -42,11 +42,11 @@ class ContactsController < ApplicationController
 
   def new_contact_params
     @new_contact = Contact.new(sender_id: current_user.id, receiver_id: params[:receiver_id])
-    @user = User.find(params.expect[:receiver_id])
+    @user = User.find(params.expect(:receiver_id))
   end
 
   def set_contact
-    @contact = Contact.find(params.expect[:id])
+    @contact = Contact.find(params.expect(:id))
 
     @user = if @contact.sender_id == current_user.id
               @contact.receiver
