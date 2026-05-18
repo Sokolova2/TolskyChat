@@ -2,9 +2,11 @@
 - contacts = Contact.between(current_user.id, user.id)
 
 - if contacts.exists?(approved: true)
-  In your contacts
+  %span.badge.rounded-pill.text-bg-light.border.text-dark.fw-normal.px-2.py-1
+    In your contacts
 - elsif contacts.exists?
-  Pending approval
+  %span.badge.rounded-pill.text-bg-warning-subtle.border.border-warning.text-dark.fw-normal.px-2.py-1
+    Pending approval
 - else
   = button_to 'Add to contact', contacts_path, method: :post, params: { receiver_id: user.id },
-    class: 'btn btn-outline-dark'
+    class: 'btn btn-outline-dark btn-sm px-3'

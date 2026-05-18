@@ -1,17 +1,24 @@
 - user = (contact.sender_id == current_user.id ? contact.receiver : contact.sender)
 
-.d-flex.justify-content-between.align-items-center
-.d-flex.justify-content-between
-  = link_to contact_path(contact), data: { turbo_frame: 'modal' }, class: 'text-decoration-none text-dark' do
-    .d-flex.gap-2.align-items-center.mt-2
-      = image_tag user.avatar.url(:thumb), size: 50, class: 'rounded-circle'
-      %p= user.login
+.d-flex.justify-content-center.align-items-center{ data: { controller: 'contact-context-menu' } }
+  .d-flex.justify-content-center
+    = link_to contact_path(contact), data: { turbo_frame: 'modal' }, class: 'text-decoration-none text-dark' do
+      .d-flex.gap-2.align-items-center.mt-2
+        = image_tag user.avatar.url(:thumb), size: 50, class: 'rounded-circle'
+        %p= user.login
 
-.d-flex.gap-2
-  - if contact.blocked == false
-    = button_to 'Block', contact_path(contact), method: :patch, params: { blocked: true }, class: 'btn btn-outline-dark'
-  - else
-    = button_to 'Unlock', contact_path(contact), method: :patch, params: { blocked: false }, class: 'btn btn-outline-dark'
+  .context-menu-contact.context-menu.gap-2.hidden
+    - if contact.blocked == false
+      = button_to contact_path(contact), method: :patch, params: { blocked: true }, class: 'btn text-white' do
+        %i.bi.bi-ban
+        Block
+    - elsif contact.blocked_by_id == current_user.id
+      = button_to contact_path(contact), method: :patch, params: { blocked: false }, class: 'btn text-white' do
+        %i.bi.bi-unlock
+        Unlock
+    - else
+      %span.text-white-50.m-2 You are blocked
 
-  = button_to contact_path(contact), method: :delete, class: 'btn btn-outline-dark' do
-    %i.bi.bi-trash
+    = button_to contact_path(contact), method: :delete, class: 'btn text-white' do
+      %i.bi.bi-trash
+      Delete

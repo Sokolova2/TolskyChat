@@ -1,31 +1,35 @@
 = turbo_frame_tag 'modal' do
   %h3.text-center.mb-3 Archived
-  - @rooms_archived.each do |room|
-    .card.card-body{ data: { controller: 'room-context-menu' } }
-      .name-conversation
-        .d-flex.gap-2.align-items-center
-          .avatar-wrapper
-            - if room.is_a?(PersonalChat) && room.other_user(current_user).present?
-              - user = room.other_user(current_user)
+  - if @rooms_archived.present?
+    - @rooms_archived.each do |room|
+      .card.card-body{ data: { controller: 'room-context-menu' } }
+        .name-conversation
+          .d-flex.gap-2.align-items-center
+            .avatar-wrapper
+              - if room.is_a?(PersonalChat) && room.other_user(current_user).present?
+                - user = room.other_user(current_user)
 
-              - if user&.avatar&.present?
-                = image_tag user.avatar.url, size: 42, class: 'rounded-2'
+                - if user&.avatar&.present?
+                  = image_tag user.avatar.url, size: 42, class: 'rounded-2'
+                - else
+                  %span.avatar-initial
+                    = user.login.to_s.first.upcase
+
+              - elsif room.is_a?(PersonalChat)
+                = image_tag 'avatar.svg', size: 42, class: 'rounded-2'
+
               - else
-                %span.avatar-initial
-                  = user.login.to_s.first.upcase
+                %span.avatar-initial= room.display_name(current_user).first.upcase
 
-            - elsif room.is_a?(PersonalChat)
-              = image_tag 'avatar.svg', size: 42, class: 'rounded-2'
+            %p.p-0.m-0
+              - if room.is_a?(PersonalChat) && room.other_user(current_user).present?
+                = room.other_user(current_user)&.login
+              - elsif room.is_a?(PersonalChat)
+                %span.text-white User is deleted
+              - else
+                %span= room.display_name(current_user)
 
-            - else
-              %span.avatar-initial= room.display_name(current_user).first.upcase
-
-          %p.p-0.m-0
-            - if room.is_a?(PersonalChat) && room.other_user(current_user).present?
-              = room.other_user(current_user)&.login
-            - elsif room.is_a?(PersonalChat)
-              %span.text-white User is deleted
-            - else
-              %span= room.display_name(current_user)
-
-      = render 'rooms/room_context_menu', room: room
+        = render 'rooms/room_context_menu', room: room
+  - else
+    %p.text-center.text-muted.mt-4
+      You don’t have archived chats yet

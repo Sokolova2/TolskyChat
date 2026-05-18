@@ -8,9 +8,9 @@
       %i.bi.bi-archive
       %span Archive
 
-  = form_with(url: users_path, method: :get, data: { turbo_frame: 'result-search', controller: 'search' }) do |f|
+  = form_with(url: public_search_rooms_path, method: :get, data: { turbo: false, controller: 'search' }) do |f|
     .px-2.pb-2
-      = f.text_field :search, placeholder: 'Searching...', data: { action: 'input->search#search', search_target: 'input' }, 
+      = f.text_field :search, placeholder: 'Search public chats...', value: params[:search], data: { action: 'input->search#search', search_target: 'input' }, 
 class: 'form-control rounded-2'
     = f.submit 'Search', class: 'btn btn-outline-none', hidden: true
 
@@ -40,17 +40,33 @@ class: 'form-control rounded-2'
       .modal-content
         .modal-body
           = image_tag current_user.avatar.url, class: 'w-100'
-          %p.fs-3.text-center= current_user.login
           - if current_user.first_name.present?
-            %p= current_user.first_name
-          - if current_user.last_name.present?
-            %p= current_user.last_name
-          - if current_user.phone_number.present?
-            %p= current_user.phone_number
-          - if current_user.birth_date.present?
-            %p= current_user.birth_date
-          - if current_user.description.present?
-            %p= current_user.description
+            %p.fs-3.text-center= current_user.first_name
+          - else
+            %p.fs-3.text-center= current_user.login
+          .card.shadow-sm.mb-3
+            .list-group.list-group-flush
 
-          = link_to 'Edit profile', edit_user_registration_path, class: 'btn w-100 fs-5 text-start'
+              .list-group-item
+                %small.text-muted Mobile phone
+                %p.mb-0
+                  - if current_user.phone_number.present?
+                    %p= current_user.phone_number
+                  - else
+                    no information
 
+              .list-group-item
+                %small.text-muted Login
+                %p.mb-0= current_user.login
+
+              - if current_user.birth_date.present?
+                .list-group-item
+                  %small.text-muted Date of birth
+                  %p= current_user.birth_date
+
+              - if current_user.description.present?
+                .list-group-item
+                  %small.text-muted About me
+                  %p= current_user.description
+
+          = link_to 'Edit profile', edit_user_registration_path, class: 'btn w-100 fs-6 text-start'

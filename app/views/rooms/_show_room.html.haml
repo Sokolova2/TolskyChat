@@ -74,7 +74,7 @@ data: { controller: 'emoji-picker' }) do |f|
           emoji_picker_target: 'trixEditor' }
         = f.file_field :featured_image, id: 'file_input', style: 'display:none'
       .actions
-        = f.submit 'Send'
+        = f.submit 'Send', class: 'btn btn-dark'
 
     .modal.fade#videoModal.modal-video{ tabindex: '-1' }
       .modal-dialog.modal-dialog-centered

@@ -1,26 +1,16 @@
 = turbo_frame_tag 'modal' do
-  %h1.text-center Your contacts
-  - if @contacts.present?
-    = turbo_frame_tag 'contacts' do
-      - @contacts.each do |contact|
-        - user = (contact.sender_id == current_user.id ? contact.receiver : contact.sender)
-        .d-flex.justify-content-between.align-items-center{ id: dom_id(contact) }
-          .d-flex.justify-content-between
-            = link_to contact_path(contact), data: { turbo_frame: 'modal' }, class: 'text-decoration-none text-dark' do
-              .d-flex.gap-2.align-items-center.mt-2
-                = image_tag user.avatar.url(:thumb), size: 50, class: 'rounded-circle'
-                %p= user.login
-
-          .d-flex.gap-2
-            - if !contact.blocked?
-              = button_to 'Block', contact_path(contact), method: :patch, params: { blocked: true }, class: 'btn btn-outline-dark'
-            - elsif contact.blocked_by_id == current_user.id
-              = button_to 'Unlock', contact_path(contact), method: :patch, params: { blocked: false }, class: 'btn btn-outline-dark'
-            - else
-              %span.text-muted You are blocked
-
-            = button_to contact_path(contact), method: :delete, class: 'btn btn-outline-dark' do
-              %i.bi.bi-trash
-  - else
-    %p.text-center.text-muted.mt-4
-      You don’t have any contacts yet
+  %h1.text-center.mb-3 Your contacts
+  = form_with(url: contacts_path, method: :get, data: { controller: 'search', turbo_frame: 'contacts-search' }) do |f|
+    = f.text_field :search, value: params[:search], placeholder: 'Search contacts...',
+      data: { action: 'input->search#search' }, class: 'form-control rounded-5 p-2 text-center search'
+  = turbo_frame_tag 'contacts-search' do
+    - if @contacts.present?
+      .card.shadow-sm.mt-3
+        .list-group.list-group-flush
+          - @contacts.each do |contact|
+            .list-group-item{ id: dom_id(contact) }
+              .d-flex.align-items-center
+                = render 'contacts/contacts', contact: contact, current_user: current_user
+    - else
+      %p.text-center.text-muted.mt-4
+        You don’t have any contacts yet

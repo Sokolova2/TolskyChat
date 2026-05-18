@@ -2,9 +2,9 @@
 
 .page-bg
   .rooms-layout
-    .rooms-sidebar
+    .rooms-sidebar.d-none.d-lg-flex
       = render 'navbar/room_list', rooms: @rooms
-    .room-wrapper.d-none.d-lg-block
+    .room-wrapper.w-100
       .container-content.pt-2.bg-light.mb-5.me-5
         .m-3
           %h5.mb-3 Public Chats Search
