@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class ParticipantsCreateService
-  Result = Struct.new(:ok, :redirect_path, :alert, keyword_init: true)
+  Result = Struct.new(:ok, :redirect_path, :alert, :added_user_ids, keyword_init: true)
 
   def initialize(room:, current_user:, user_ids:)
     @room = room
@@ -21,6 +21,7 @@ class ParticipantsCreateService
     return forbidden_result unless can_manage_participants?
 
     blocked_ids = []
+    added_user_ids = []
 
     @user_ids.each do |id|
       if blocked_by_user?(id)
@@ -28,18 +29,20 @@ class ParticipantsCreateService
         next
       end
 
-      @room.participants.find_or_create_by(user_id: id)
+      participant = @room.participants.find_or_create_by(user_id: id)
+      added_user_ids << id if participant.persisted?
     end
 
     BroadcastRoomService.new(@room).broadcast_room
 
-    return success_result(room_path(@room)) if blocked_ids.empty?
+    return success_result(room_path(@room), added_user_ids) if blocked_ids.empty?
 
     blocked_logins = User.where(id: blocked_ids).pluck(:login)
     Result.new(
     ok: false,
     redirect_path: rooms_path,
-    alert: "Cannot add: #{blocked_logins.join(', ')} (they blocked you)"
+    alert: "Cannot add: #{blocked_logins.join(', ')} (they blocked you)",
+    added_user_ids: added_user_ids
     )
   end
 
@@ -50,7 +53,7 @@ class ParticipantsCreateService
     return blocked_result if owner_blocked_current_user?(owner)
 
     @room.participants.find_or_create_by(user_id: @current_user.id)
-    success_result(room_path(@room))
+    success_result(room_path(@room), [@current_user.id])
   end
 
   def blocked_by_user?(target_user_id)
@@ -89,16 +92,16 @@ class ParticipantsCreateService
     raw_ids.map(&:to_i).select(&:positive?).uniq
   end
 
-  def success_result(path)
-    Result.new(ok: true, redirect_path: path, alert: nil)
+  def success_result(path, added_user_ids = [])
+    Result.new(ok: true, redirect_path: path, alert: nil, added_user_ids: added_user_ids)
   end
 
   def forbidden_result
-    Result.new(ok: false, redirect_path: rooms_path, alert: 'Forbidden')
+    Result.new(ok: false, redirect_path: rooms_path, alert: 'Forbidden', added_user_ids: [])
   end
 
   def public_only_result
-    Result.new(ok: false, redirect_path: rooms_path, alert: 'Only public chats can be joined')
+    Result.new(ok: false, redirect_path: rooms_path, alert: 'Only public chats can be joined', added_user_ids: [])
   end
 
   def room_path(room)
