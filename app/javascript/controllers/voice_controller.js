@@ -608,7 +608,7 @@ export default class extends Controller {
     if (!tokenMeta) return
 
     const formData = new FormData()
-    formData.append("message[content]", `📞 Call • ${this.formatDuration(durationSec)}`)
+    formData.append("message[content]", `Call • ${this.formatDuration(durationSec)} 📞 ` )
 
     fetch(`/rooms/${this.roomIdValue}/messages`, {
       method: "POST",

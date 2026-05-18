@@ -12,19 +12,28 @@ export default class extends Controller {
     this.menu = this.element.querySelector(".message-context-menu") ||
         document.querySelector(".message-context-menu")
 
-    this.element.addEventListener('contextmenu', (event)  => {
+    this.onContextMenu = (event) => {
       event.preventDefault();
       this.open(event)
-    })
+    }
+    this.element.addEventListener("contextmenu", this.onContextMenu)
 
-    document.addEventListener("click", (event) => {
+    this.onDocumentClick = (event) => {
       if (!this.element.contains(event.target)) {
         this.close()
       }
-    })
+    }
+    document.addEventListener("click", this.onDocumentClick)
+  }
+
+  disconnect() {
+    if (this.onContextMenu) this.element.removeEventListener("contextmenu", this.onContextMenu)
+    if (this.onDocumentClick) document.removeEventListener("click", this.onDocumentClick)
   }
 
   open(event){
+    if (!this.menu) return
+
     document.querySelectorAll(".message-context-menu").forEach(menu => {
       menu.classList.add("hidden")
     })
@@ -35,6 +44,7 @@ export default class extends Controller {
   }
 
   close(){
+    if (!this.menu) return
     this.menu.classList.add("hidden")
   }
 

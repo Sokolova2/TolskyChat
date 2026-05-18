@@ -1,14 +1,9 @@
 import { Controller } from "@hotwired/stimulus"
 
-// Connects to data-controller="room-context-menu"
+// Connects to data-controller="contact-context-menu"
 export default class extends Controller {
-  static values = {
-    roomId: Number
-  }
-
   connect() {
-    this.menu = this.element.querySelector(".room-context-menu")
-
+    this.menu = this.element.querySelector(".context-menu-contact")
     if (!this.menu) return
 
     this.longPressTimer = null
@@ -31,9 +26,7 @@ export default class extends Controller {
     }
 
     this.onClickOutside = (event) => {
-      if (!this.element.contains(event.target)) {
-        this.close()
-      }
+      if (!this.element.contains(event.target)) this.close()
     }
 
     this.element.addEventListener("contextmenu", this.onContextMenu)
@@ -55,7 +48,9 @@ export default class extends Controller {
   }
 
   open(event = null) {
-    document.querySelectorAll(".room-context-menu").forEach(menu => {
+    if (!this.menu) return
+
+    document.querySelectorAll(".context-menu-contact").forEach((menu) => {
       menu.classList.add("hidden")
     })
 
@@ -71,7 +66,8 @@ export default class extends Controller {
     }
   }
 
-  close(){
+  close() {
+    if (!this.menu) return
     this.menu.classList.add("hidden")
   }
 }
