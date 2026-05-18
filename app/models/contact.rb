@@ -39,4 +39,16 @@ class Contact < ApplicationRecord
         id: user
       )
   }
+
+  scope :for_user, ->(user_id) { user_contacts(user_id) }
+
+  scope :search_by_login, ->(user_id, query) {
+    q = "%#{sanitize_sql_like(query.to_s.strip)}%"
+
+    joins(:sender, :receiver).where(
+      "(contacts.sender_id = :me AND receivers_users.login ILIKE :q) OR
+     (contacts.receiver_id = :me AND senders_users.login ILIKE :q)",
+      me: user_id, q: q
+    )
+  }
 end
