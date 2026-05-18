@@ -146,4 +146,35 @@
     justify-content: center;
     border-radius: 10px;
   }
+
+  .member-row {
+    align-items: center;
+    gap: 10px;
+  }
+
+  .member-row > .d-flex:first-child {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .member-row > .d-flex:first-child p {
+    margin: 0;
+    max-width: 40vw;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .member-row [id$="_role_value"] {
+    margin: 0;
+    flex-shrink: 0;
+    font-size: 12px;
+    line-height: 1;
+    padding: 5px 8px;
+    border-radius: 999px;
+    border: 1px solid #d8dee6;
+    background: #f8f9fb;
+    color: #495057;
+    text-transform: lowercase;
+  }
 }

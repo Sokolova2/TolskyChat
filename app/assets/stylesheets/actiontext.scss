@@ -946,3 +946,16 @@ trix-editor .attachment--preview img{
   gap: 8px;
   z-index: 10;
 }
+
+/* Custom style for ActionText attach button */
+trix-toolbar .trix-button-group--file-tools .trix-button {
+  border-radius: 10px;
+  border: 1px solid #d0d7de;
+  background: #f8f9fb;
+  color: #344054;
+  padding: 6px 10px;
+}
+
+trix-toolbar .trix-button-group--file-tools .trix-button:hover {
+  background: #eef2f7;
+}
