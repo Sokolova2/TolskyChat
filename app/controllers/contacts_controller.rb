@@ -5,7 +5,7 @@ class ContactsController < ApplicationController
   before_action :new_contact_params, only: :create
 
   def index
-    @contacts = Contact.user_contacts(current_user.id)
+    @contacts = SearchService.new(Contact).search_contacts_for(current_user.id, params[:search])
   end
 
   def show; end

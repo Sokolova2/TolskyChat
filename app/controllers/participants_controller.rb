@@ -16,7 +16,9 @@ class ParticipantsController < ApplicationController
       user_ids: params[:user_ids]
     ).call
 
-    RoomNotificationsService.new(@added_user_ids, current_user, @room).create_invite_notification
+    if result.added_user_ids.present?
+      RoomNotificationsService.new(result.added_user_ids, current_user, @room).create_invite_notification
+    end
 
     redirect_to result.redirect_path, alert: result.alert
   end
