@@ -89,6 +89,7 @@ class RoomsController < ApplicationController
 
   def ensure_room_owner!
     participant = @room.participants.find_by(user_id: current_user.id)
+    return if @room.is_a?(PersonalChat) && participant.present?
 
     return if participant&.owner?
 

@@ -7,7 +7,8 @@
         class: 'btn text-white' do
       %i.bi.bi-mic-mute.me-2
       = participant.muted? ? 'Unmute' : 'Mute'
-  - if participant&.owner?
+  - can_delete_room = participant&.owner? || (room.is_a?(PersonalChat) && participant.present?)
+  - if can_delete_room
     = button_to room_path(room),
           method: :delete,
           data: { turbo_confirm: 'Delete?' },
