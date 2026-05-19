@@ -7,18 +7,10 @@ class MessagesController < ApplicationController
   def create
     @message = @room.messages.new(message_params.merge(user: current_user))
 
-    unless @message.save
-      return head :unprocessable_entity
-    end
-
+    return head :unprocessable_entity unless @message.save
     create_nofitication
-
     broadcast_message
-
-    respond_to do |format|
-      format.turbo_stream { head :no_content }
-      format.html { head :no_content }
-    end
+    head :no_content
   end
 
   def destroy

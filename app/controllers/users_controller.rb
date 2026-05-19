@@ -31,14 +31,14 @@ class UsersController < ApplicationController
 
     subscription_params = JSON.parse(subscription_json)
     keys = subscription_params['keys'] || {}
+    endpoint_attr = PushSubscription.column_names.include?('endpoint') ? :endpoint : :endpoints
 
-    subscription = current_user.push_subscriptions.find_or_initialize_by(
-      endpoint: subscription_params['endpoint']
+    subscription = PushSubscription.find_or_initialize_by(
+      endpoint_attr => subscription_params['endpoint']
     )
-    subscription.assign_attributes(
-      auth_key: keys['auth'],
-      p256dh_key: keys['p256dh']
-    )
+    subscription.user = current_user
+    subscription.auth_key = keys['auth']
+    subscription.p256dh_key = keys['p256dh']
 
     return head :ok if subscription.save
 
