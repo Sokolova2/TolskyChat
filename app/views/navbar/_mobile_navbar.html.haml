@@ -70,3 +70,4 @@ class: 'form-control rounded-2'
                   %p= current_user.description
 
           = link_to 'Edit profile', edit_user_registration_path, class: 'btn w-100 fs-6 text-start'
+          = button_to 'Sign out', destroy_user_session_path, method: :delete, class: 'dropdown-item text-danger'
