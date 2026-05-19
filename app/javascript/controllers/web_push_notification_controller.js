@@ -23,7 +23,15 @@ export default class extends Controller {
 
   async enableNotifications(event) {
     event.preventDefault()
-    await this.initializeSubscription({ askPermission: true })
+    let permission = Notification.permission
+    if (permission === 'default') {
+      permission = await Notification.requestPermission()
+    }
+
+    this.updateEnableButtonVisibility()
+    if (permission !== 'granted') return
+
+    await this.initializeSubscription({ askPermission: false })
   }
 
   updateEnableButtonVisibility() {
@@ -46,9 +54,6 @@ export default class extends Controller {
       console.log('Service worker registered', registration)
 
       let permission = Notification.permission
-      if (permission === 'default' && askPermission) {
-        permission = await Notification.requestPermission()
-      }
       this.updateEnableButtonVisibility()
       if (permission !== 'granted') return
 
