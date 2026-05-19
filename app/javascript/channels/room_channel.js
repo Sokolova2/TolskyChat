@@ -13,6 +13,17 @@ consumer.subscriptions.create("RoomChannel", {
     if (data.action === "delete") {
       const el = document.getElementById(`room_${data.room_id}`)
       if (el) el.remove()
+
+      const currentRoomMatch =
+        window.location.pathname.match(/^\/rooms\/(\d+)$/) ||
+        window.location.pathname.match(/^\/conversations\/(\d+)$/)
+      if (currentRoomMatch && Number(currentRoomMatch[1]) === Number(data.room_id)) {
+        if (window.Turbo?.visit) {
+          window.Turbo.visit("/rooms")
+        } else {
+          window.location.assign("/rooms")
+        }
+      }
       return
     }
 

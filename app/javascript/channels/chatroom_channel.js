@@ -2,6 +2,7 @@ import consumer from "channels/consumer"
 
 document.addEventListener("turbo:load", () => {
   const chatroom = document.getElementById("chatroom")
+  const currentUserId = Number(document.querySelector('meta[name="current-user-id"]')?.content)
   if (chatroom){
       chatroom.scrollTop = chatroom.scrollHeight
   }
@@ -36,8 +37,10 @@ document.addEventListener("turbo:load", () => {
 
             chatroom.insertAdjacentHTML("beforeend", data.html)
 
-            const trix = document.querySelector("trix-editor")
-            if (trix) trix.editor.loadHTML("");
+            if (Number(data.sender_id) === currentUserId) {
+              const trix = document.querySelector("trix-editor")
+              if (trix) trix.editor.loadHTML("")
+            }
 
             chatroom.scrollTop = chatroom.scrollHeight
         }
