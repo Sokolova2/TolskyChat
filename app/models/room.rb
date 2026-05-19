@@ -15,13 +15,13 @@ class Room < ApplicationRecord
   end
 
   def display_name(current_user)
-    return name unless is_private?
+    return name unless is_private? && is_a?(PersonalChat)
 
-    other_user(current_user)&.login
+    other_user(current_user)&.login || name
   end
 
   def display_avatar(current_user)
-    return nil unless is_private?
+    return nil unless is_private? && is_a?(PersonalChat)
 
     other_user(current_user)&.avatar
   end
