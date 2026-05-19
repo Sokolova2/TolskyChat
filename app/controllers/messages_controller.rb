@@ -46,6 +46,7 @@ class MessagesController < ApplicationController
   def broadcast_message
     ChatroomChannel.broadcast_to(
       @room,
+      sender_id: current_user.id,
       html: render_to_string(
         partial: 'messages/message',
         formats: [:html],

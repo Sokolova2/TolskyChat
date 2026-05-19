@@ -4,6 +4,7 @@ class RoomsController < ApplicationController
   before_action :authenticate_user!
   before_action :set_rooms, only: %i[index show public_search]
   before_action :set_room, only: %i[show update destroy]
+  before_action :ensure_room_access!, only: :show
   before_action :ensure_room_owner!, only: %i[update destroy]
 
   def index
@@ -92,5 +93,12 @@ class RoomsController < ApplicationController
     return if participant&.owner?
 
     redirect_to rooms_path, alert: 'Only owner can delete room'
+  end
+
+  def ensure_room_access!
+    return unless @room.is_private?
+    return if @room.participants.exists?(user_id: current_user.id)
+
+    redirect_to rooms_path, alert: 'You do not have access to this private room'
   end
 end
