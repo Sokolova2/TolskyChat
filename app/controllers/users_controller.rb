@@ -24,4 +24,26 @@ class UsersController < ApplicationController
 
     redirect_to edit_user_path(current_user)
   end
+
+  def register_subscription
+    subscription_json = params[:subscription]
+    return head :bad_request if subscription_json.blank?
+
+    subscription_params = JSON.parse(subscription_json)
+    keys = subscription_params['keys'] || {}
+
+    subscription = current_user.push_subscriptions.find_or_initialize_by(
+      endpoint: subscription_params['endpoint']
+    )
+    subscription.assign_attributes(
+      auth_key: keys['auth'],
+      p256dh_key: keys['p256dh']
+    )
+
+    return head :ok if subscription.save
+
+    render json: { errors: subscription.errors.full_messages }, status: :unprocessable_entity
+  rescue JSON::ParserError
+    head :bad_request
+  end
 end

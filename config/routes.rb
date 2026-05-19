@@ -23,8 +23,17 @@ Rails.application.routes.draw do
 
   resources :personal_chats
   resources :contacts
-  resources :users
-  resources :participants
+  resources :users do
+    collection do
+      patch :register_subscription
+    end
+  end
+  resources :participants do
+    member do
+      patch :toggle_mute
+    end
+  end
+
   resources :notifications do
     member do
       delete :reject

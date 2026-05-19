@@ -1,6 +1,12 @@
 - participant = room.participants.find_by(user_id: current_user.id)
 
 .room-context-menu.context-menu.hidden
+  - if participant.present?
+    = button_to toggle_mute_participant_path(participant, room_id: room.id),
+        method: :patch,
+        class: 'btn text-white' do
+      %i.bi.bi-mic-mute.me-2
+      = participant.muted? ? 'Unmute' : 'Mute'
   - if participant&.owner?
     = button_to room_path(room),
           method: :delete,

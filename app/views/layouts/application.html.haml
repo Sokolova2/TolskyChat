@@ -17,7 +17,11 @@
     = action_cable_meta_tag
     - if user_signed_in?
       %meta{ name: 'current-user-id', content: current_user.id }
-  %body.body
+  %body.body{ data: {
+    controller: 'web-push-notification',
+    web_push_notification_vap_value: Base64.urlsafe_decode64(
+      ENV.fetch('VAPID_PUBLIC_KEY')).bytes
+    } }
     .position-fixed.top-0.start-50.translate-middle-x.mt-3.w-100.px-3{ style: 'z-index: 3000; max-width: 720px;' }
       - if alert
         .alert.alert-danger.mb-2= alert

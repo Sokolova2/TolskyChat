@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class ParticipantsController < ApplicationController
-  before_action :set_room, only: %i[create update destroy]
+  before_action :set_room, only: %i[create update destroy toggle_mute]
   before_action :set_participant, only: %i[update destroy]
   before_action :ensure_can_invite!, only: :create
   before_action :ensure_room_owner!, only: :update
@@ -25,13 +25,16 @@ class ParticipantsController < ApplicationController
 
   def update
     role = params.dig(:participant, :role) || params[:role]
+    previous_role = @participant.role
 
     if @participant.update(role: role)
       broadcast_participant_role_value!
 
       broadcast_conversation_options!
 
-      RoomNotificationsService.new([], current_user, @room).notification_role_changed(@participant.user)
+      if previous_role != @participant.role
+        RoomNotificationsService.new([], current_user, @room).notification_role_changed(@participant.user, @participant.moderator?)
+      end
 
       redirect_to room_path(@room)
     else
@@ -52,6 +55,14 @@ class ParticipantsController < ApplicationController
     else
       redirect_to room_path(@room), alert: @participant.errors.full_messages.to_sentence
     end
+  end
+
+  def toggle_mute
+    participant = @room.participants.find_by(user_id: current_user.id)
+    return redirect_to rooms_path, alert: 'Only room members can mute notifications' if participant.blank?
+
+    participant.update!(muted: !participant.muted?)
+    redirect_to room_path(@room), notice: participant.muted? ? 'Notifications muted' : 'Notifications unmuted'
   end
 
   private

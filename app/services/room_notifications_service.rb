@@ -27,7 +27,10 @@ class RoomNotificationsService
   end
 
   def notification_invited(added_user)
-    recipient_ids = Room.find(@room.id).participants.pluck(:user_id) - [@sender.id, added_user.id]
+    recipient_ids = Room.find(@room.id)
+                        .participants
+                        .where(muted: false)
+                        .pluck(:user_id) - [@sender.id, added_user.id]
 
     recipient_ids.each do |receiver_id|
       Notification.create(
@@ -40,29 +43,45 @@ class RoomNotificationsService
   end
 
 
-  def notification_role_changed(target_user)
-    role_changed_you!(target_user)
-    role_changed!(target_user)
+  def notification_role_changed(target_user, moderator_assigned)
+    role_changed_you!(target_user, moderator_assigned)
+    role_changed!(target_user, moderator_assigned)
   end
 
-  def role_changed_you!(target_user)
+  def role_changed_you!(target_user, moderator_assigned)
+    message =
+      if moderator_assigned
+        "#{@sender.login} appointed you as moderator in #{@room.name}"
+      else
+        "#{@sender.login} changed your role to member in #{@room.name}"
+      end
+
     Notification.create(
       sender_id: @sender.id,
       receiver_id: target_user.id,
       contact_id: nil,
-      content: "#{@sender.login} appointed you as moderator in #{@room.name}"
+      content: message
     )
   end
 
-  def role_changed!(target_user)
-    recipient_ids = Room.find(@room.id).participants.pluck(:user_id) - [@sender.id, target_user.id]
+  def role_changed!(target_user, moderator_assigned)
+    recipient_ids = Room.find(@room.id)
+                        .participants
+                        .where(muted: false)
+                        .pluck(:user_id) - [@sender.id, target_user.id]
+    message =
+      if moderator_assigned
+        "#{@sender.login} appointed #{target_user.login} as moderator in #{@room.name}"
+      else
+        "#{@sender.login} changed #{target_user.login} role to member in #{@room.name}"
+      end
 
     recipient_ids.each do |receiver_id|
       Notification.create(
         sender_id: @sender.id,
         receiver_id: receiver_id,
         contact_id: nil,
-        content: "#{@sender.login} appointed #{target_user.login} as moderator in #{@room.name}"
+        content: message
       )
     end
   end
@@ -82,7 +101,10 @@ class RoomNotificationsService
   end
 
   def removed_for_others!(removed_user, self_removal)
-    recipient_ids = Room.find(@room.id).participants.pluck(:user_id) - [@sender.id]
+    recipient_ids = Room.find(@room.id)
+                        .participants
+                        .where(muted: false)
+                        .pluck(:user_id) - [@sender.id]
 
     content =
       if self_removal

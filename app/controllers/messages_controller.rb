@@ -7,11 +7,18 @@ class MessagesController < ApplicationController
   def create
     @message = @room.messages.new(message_params.merge(user: current_user))
 
-    return unless @message.save
+    unless @message.save
+      return head :unprocessable_entity
+    end
 
     create_nofitication
 
     broadcast_message
+
+    respond_to do |format|
+      format.turbo_stream { head :ok }
+      format.html { head :ok }
+    end
   end
 
   def destroy
@@ -60,6 +67,7 @@ class MessagesController < ApplicationController
 
     @rooms.participants.each do |participant|
       next if participant.user_id == current_user.id
+      next if participant.muted?
 
       Notification.create(
         sender_id: current_user.id,
