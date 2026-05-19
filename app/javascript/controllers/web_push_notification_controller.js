@@ -5,8 +5,11 @@ export default class extends Controller {
   static values = {
     vap: Array,
   }
+  static targets = ["enableButton"]
 
   connect() {
+    this.updateEnableButtonVisibility()
+
     if (!navigator.serviceWorker) {
       console.error('Service worker is not supported in this browser');
       return
@@ -15,10 +18,26 @@ export default class extends Controller {
     if (window.__webPushInitDone) return
     window.__webPushInitDone = true
 
-    this.initializeSubscription()
+    this.initializeSubscription({ askPermission: false })
   }
 
-  async initializeSubscription() {
+  async enableNotifications(event) {
+    event.preventDefault()
+    await this.initializeSubscription({ askPermission: true })
+  }
+
+  updateEnableButtonVisibility() {
+    if (!this.hasEnableButtonTarget) return
+
+    if (Notification.permission === 'granted') {
+      this.enableButtonTarget.classList.add('d-none')
+      return
+    }
+
+    this.enableButtonTarget.classList.remove('d-none')
+  }
+
+  async initializeSubscription({ askPermission }) {
     try {
       if (!this.hasVapValue || !Array.isArray(this.vapValue) || this.vapValue.length === 0) return
 
@@ -27,9 +46,10 @@ export default class extends Controller {
       console.log('Service worker registered', registration)
 
       let permission = Notification.permission
-      if (permission === 'default') {
+      if (permission === 'default' && askPermission) {
         permission = await Notification.requestPermission()
       }
+      this.updateEnableButtonVisibility()
       if (permission !== 'granted') return
 
       const serviceWorkerRegistration = await navigator.serviceWorker.ready
@@ -52,6 +72,7 @@ export default class extends Controller {
         },
         body: JSON.stringify({ subscription: JSON.stringify(subscription) })
       })
+      this.updateEnableButtonVisibility()
     } catch (error) {
       console.error('Web push subscription failed', error)
     }
