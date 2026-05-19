@@ -29,6 +29,9 @@
 !/tmp/storage/.keep
 
 /public/assets
+/public/packs
+
+!public/serviceworker.js
 
 # Ignore key files for decrypting credentials and more.
 /config/*.key
