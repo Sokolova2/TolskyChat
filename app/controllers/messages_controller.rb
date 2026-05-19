@@ -16,8 +16,8 @@ class MessagesController < ApplicationController
     broadcast_message
 
     respond_to do |format|
-      format.turbo_stream { head :ok }
-      format.html { head :ok }
+      format.turbo_stream { head :no_content }
+      format.html { head :no_content }
     end
   end
 

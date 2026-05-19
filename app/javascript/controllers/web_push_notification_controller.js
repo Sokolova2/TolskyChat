@@ -20,11 +20,17 @@ export default class extends Controller {
 
   async initializeSubscription() {
     try {
+      if (!this.hasVapValue || !Array.isArray(this.vapValue) || this.vapValue.length === 0) return
+
       const vapidPublicKey = new Uint8Array(this.vapValue)
       const registration = await navigator.serviceWorker.register('/serviceworker.js')
       console.log('Service worker registered', registration)
 
-      if (Notification.permission !== 'granted') return
+      let permission = Notification.permission
+      if (permission === 'default') {
+        permission = await Notification.requestPermission()
+      }
+      if (permission !== 'granted') return
 
       const serviceWorkerRegistration = await navigator.serviceWorker.ready
       let subscription = await serviceWorkerRegistration.pushManager.getSubscription()
