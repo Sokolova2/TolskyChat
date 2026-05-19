@@ -70,12 +70,11 @@ class: 'form-control rounded-2'
                   %p= current_user.description
 
           = link_to 'Edit profile', edit_user_registration_path, class: 'btn w-100 fs-6 text-start'
-          = button_to 'Sign out', destroy_user_session_path, method: :delete, class: 'dropdown-item text-danger'
-          %button.dropdown-item.text-dark{
-        type: 'button',
-        data: {
-          action: 'click->web-push-notification#enableNotifications',
-          web_push_notification_target: 'enableButton'
-        }
-      }
-        Enable notifications
+          = button_to 'Sign out', destroy_user_session_path, method: :delete, class: 'dropdown-item text-danger ms-2 p-1'
+          %button.dropdown-item.text-dark.mb-3.mt-1.ms-2.p-1{ type: 'button',
+            data: {
+              action: 'click->web-push-notification#enableNotifications',
+              web_push_notification_target: 'enableButton'
+            }
+          }
+            Enable notifications
