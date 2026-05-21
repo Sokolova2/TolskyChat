@@ -4,5 +4,5 @@ Hello, #{@user.login || @user.email}!
 You have #{@notifications.size} unread notification(s) older than 1 hour.
 Check https://tolskychat-2df8101d6866.herokuapp.com
 
-- @notification.each do |notification|
-  = "-#{notification.content}"
+- @notifications.each do |notification|
+  = "- #{notification.content}"
