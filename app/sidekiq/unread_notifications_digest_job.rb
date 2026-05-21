@@ -1,4 +1,4 @@
-class UnreadNotificationDigestJob
+class UnreadNotificationsDigestJob
   include Sidekiq::Job
 
   def perform(*args)
