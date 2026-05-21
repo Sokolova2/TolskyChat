@@ -12,7 +12,7 @@ class UnreadNotificationDigestJob
       .each do |user, notifications|
         next if user.blank? || user.email.blank?
 
-        NotificationMailer.unread_digest(user, notification).deliver_now()
+        NotificationMailer.unread_digest(user, notifications).deliver_now()
     end
   end
 end
