@@ -1,4 +1,7 @@
-%h1= class_name + "#" + @action
-
-%p
-  = @greeting + ", find me in app/views/notification_mailer/unread_digest.html.haml"
+%h2 You have unread notifications
+%p Hello, #{@user.login || @user.email}!
+%p You have #{@notifications.size} unread notification(s) older than 1 hour.
+%p Check https://tolskychat-2df8101d6866.herokuapp.com
+%ul
+  - notification.each do |notification|
+    %li= notification.content

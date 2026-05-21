@@ -1,3 +1,8 @@
-Notification#unread_digest
+You have unread notifications
 
-= @greeting + ", find me in app/views/notification_mailer/unread_digest.text.haml"
+Hello, #{@user.login || @user.email}!
+You have #{@notifications.size} unread notification(s) older than 1 hour.
+Check https://tolskychat-2df8101d6866.herokuapp.com
+
+- @notification.each do |notification|
+  = "-#{notification.content}"
