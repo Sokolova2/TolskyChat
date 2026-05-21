@@ -32,3 +32,8 @@
           %i.bi.bi-trash
           Delete
     %p= message.created_at.strftime('%H:%M')
+    %span.ticks
+      - if message.read?
+        %i.bi.bi-check2-all
+      - else
+        %i.bi.bi-check2

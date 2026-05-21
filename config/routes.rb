@@ -41,4 +41,10 @@ Rails.application.routes.draw do
   end
 
   get 'archive', to: 'rooms#archive'
+
+  require 'sidekiq/web'
+
+  Rails.application.routes.draw do
+    mount Sidekiq::Web => '/sidekiq'
+  end
 end

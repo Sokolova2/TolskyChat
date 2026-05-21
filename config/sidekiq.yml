@@ -1,0 +1,18 @@
+:concurrency: 10
+:queues:
+  - default
+  - mailers
+
+:cron:
+  unread_messages_reminder:
+    cron: '*/10 * * * *'
+    class: 'UnreadMessagesReminderJob'
+    queue: default
+  unread_notifications_digest:
+    cron: '*/15 * * * *'
+    class: 'UnreadNotificationsDigestJob'
+    queue: mailers
+  arсhive_cleanup:
+    cron: '0 3 * * *'
+    class: 'ArсhiveCleanupJob'
+    queue: default

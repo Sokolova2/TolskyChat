@@ -92,3 +92,6 @@ gem 'redis', '~> 5.0'
 gem 'aws-sdk-s3'
 
 gem "web-push"
+
+gem 'sidekiq'
+gem 'sidekiq-cron'

@@ -4,15 +4,43 @@ import { Controller } from "@hotwired/stimulus"
 export default class extends Controller {
   connect() {
     const editor = this.element.querySelector("trix-editor")
-    const form = document.getElementById("message_form")
+    this.form = document.getElementById("message_form")
 
-    if (!editor || !form) return
+    if (!editor || !this.form) return
+
+    this.onSubmit = this.handleSubmit.bind(this)
+    this.form.addEventListener("submit", this.onSubmit)
 
     editor.addEventListener("keydown", (e) => {
       if (e.key === "Enter" && !e.shiftKey){
         e.preventDefault()
-        form.requestSubmit()
+        this.form.requestSubmit()
       }
+    })
+  }
+
+  disconnect() {
+    if (this.form && this.onSubmit) {
+      this.form.removeEventListener("submit", this.onSubmit)
+    }
+  }
+
+  async handleSubmit(event) {
+    event.preventDefault()
+
+    if (!this.form) return
+
+    const formData = new FormData(this.form)
+    const token = document.querySelector('meta[name="csrf-token"]')?.content
+
+    await fetch(this.form.action, {
+      method: "POST",
+      body: formData,
+      headers: {
+        "Accept": "text/vnd.turbo-stream.html",
+        "X-CSRF-Token": token
+      },
+      credentials: "same-origin"
     })
   }
 }

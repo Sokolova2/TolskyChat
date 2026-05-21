@@ -17,6 +17,18 @@ class RoomsController < ApplicationController
 
     @message = Message.new
 
+    unread_scope = @room.messages.where(read: false).where.not(user_id: current_user.id)
+    read_message_ids = unread_scope.pluck(:id)
+    unread_scope.update_all(read: true, updated_at: Time.current)
+
+    if read_message_ids.any?
+      ChatroomChannel.broadcast_to(
+        @room,
+        action: 'read_update',
+        message_ids: read_message_ids
+      )
+    end
+
     if @room.is_a?(Conversation)
       @participants = @room.participants.order(role: :desc)
     elsif @room.is_a?(PersonalChat)

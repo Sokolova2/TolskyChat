@@ -6,6 +6,7 @@ class MessagesController < ApplicationController
 
   def create
     @message = @room.messages.new(message_params.merge(user: current_user))
+    @message.read = recipients_viewing_room_now?
 
     return head :unprocessable_entity unless @message.save
     create_nofitication
@@ -68,5 +69,14 @@ class MessagesController < ApplicationController
         content: @message.content.to_plain_text
       )
     end
+  end
+
+  def recipients_viewing_room_now?
+    return false unless defined?(REDIS) && REDIS
+
+    present_ids = REDIS.smembers("room:#{@room.id}:present_users").map(&:to_i)
+    recipient_ids = @room.participants.where.not(user_id: current_user.id).pluck(:user_id)
+
+    (present_ids & recipient_ids).any?
   end
 end

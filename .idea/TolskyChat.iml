@@ -249,9 +249,6 @@
     <entry key="config/locales">
       <value>file://$MODULE_DIR$/config/locales</value>
     </entry>
-    <entry key="config/push">
-      <value>file://$MODULE_DIR$/config/push.yml</value>
-    </entry>
     <entry key="config/routes">
       <value>file://$MODULE_DIR$/config/routes</value>
     </entry>
