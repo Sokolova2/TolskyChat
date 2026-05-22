@@ -1,6 +1,10 @@
 = turbo_frame_tag 'modal' do
   %h1.mb-4.text-center Your notifications
 
+  - if @notifications.present?
+    .d-flex.justify-content-end.mb-3
+      = button_to 'Delete all', clear_all_notifications_path, method: :delete, class: 'btn btn-outline-danger'
+
   #notifications-list
     - if @notifications.present?
       - @notifications.each do |notification|

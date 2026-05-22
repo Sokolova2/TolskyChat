@@ -39,6 +39,17 @@ class NotificationsController < ApplicationController
     redirect_to notifications_path
   end
 
+  def clear_all
+    current_user.receiver_notifications.delete_all
+
+    NotificationsChannel.broadcast_to(
+      current_user,
+      { count: 0 }
+    )
+
+    redirect_to notifications_path
+  end
+
   private
 
   def approve_contact_and_notify

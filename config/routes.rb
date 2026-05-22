@@ -35,6 +35,10 @@ Rails.application.routes.draw do
   end
 
   resources :notifications do
+    collection do
+      delete :clear_all
+    end
+
     member do
       delete :reject
     end
