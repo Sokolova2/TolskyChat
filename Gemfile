@@ -96,3 +96,4 @@ gem "web-push"
 
 gem 'sidekiq'
 gem 'sidekiq-cron'
+gem 'pundit'

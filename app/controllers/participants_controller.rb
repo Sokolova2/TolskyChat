@@ -4,12 +4,15 @@ class ParticipantsController < ApplicationController
   before_action :set_room, only: %i[create update destroy toggle_mute]
   before_action :set_participant, only: %i[update destroy]
   before_action :ensure_can_invite!, only: :create
-  before_action :ensure_room_owner!, only: :update
-  before_action :ensure_owner_or_moderator!, only: :destroy
   before_action :self_removal!, only: :destroy
   before_action :user_ids, only: :create
+  before_action :authorize_update! , only: :update
+  before_action :authorize_destroy! , only: :destroy
+  before_action :authorize_toggle_mute! , only: :toggle_mute
 
   def create
+    ensure_can_invite!
+
     result = ParticipantsCreateService.new(
       room: @room,
       current_user: current_user,
@@ -80,37 +83,6 @@ class ParticipantsController < ApplicationController
     params.expect(participant: %i[room_id role])
   end
 
-  def ensure_room_owner!
-    participant = current_room_participant
-
-    return if participant&.owner?
-
-    redirect_to rooms_path, alert: 'Only owner can appoint as moderator'
-  end
-
-  def ensure_owner_or_moderator!
-    return if self_removal!
-
-    participant = current_room_participant
-
-    return if participant&.owner? || participant&.moderator?
-
-    redirect_to rooms_path, alert: 'Only owner or moderator can exclude members'
-  end
-
-  def ensure_can_invite!
-    return if params[:user_ids].blank?
-    return if current_room_participant.present?
-
-    redirect_to rooms_path, alert: 'Only conversation members can invite users'
-  end
-
-  def current_room_participant
-    return @current_room_participant if defined?(@current_room_participant)
-
-    @current_room_participant = @room.participants.find_by(user_id: current_user.id)
-  end
-
   def broadcast_conversation_options!
     fresh_room = Room.find(@room.id)
 
@@ -139,5 +111,23 @@ class ParticipantsController < ApplicationController
 
   def user_ids
     @added_user_ids = Array(params[:user_ids]).map(&:to_i).select(&:positive?).uniq
+  end
+
+  def authorize_update!
+    authorize @participant
+  end
+
+  def authorize_destroy!
+    authorize @participant
+  end
+
+  def authorize_toggle_mute!
+    authorize @room, :toggle_mute?
+  end
+
+  def ensure_can_invite!
+    return redirect_to room_path(@room) if params[:user_ids].blank?
+
+    authorize @room, :invite?
   end
 end

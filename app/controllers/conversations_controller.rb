@@ -3,7 +3,10 @@
 class ConversationsController < ApplicationController
   before_action :set_conversations, only: :index
   before_action :set_conversation, only: :update
-  before_action :ensure_owner_or_moderator!, only: :update
+  before_action :authorize_index! , only: :index
+  before_action :authorize_new! , only: :new
+  before_action :authorize_create! , only: :create
+  before_action :authorize_update! , only: :update
 
   def index; end
 
@@ -39,18 +42,26 @@ class ConversationsController < ApplicationController
   end
 
   def set_conversations
-    @conversations = current_user.rooms
+    @conversations = policy_scope(Conversation)
   end
 
   def set_conversation
     @conversation = Conversation.find(params.expect(:id))
   end
 
-  def ensure_owner_or_moderator!
-    participant = @conversation.participants.find_by(user_id: current_user.id)
+  def authorize_index!
+    authorize Conversation
+  end
 
-    return if participant&.owner? || participant&.moderator?
+  def authorize_new!
+    authorize Conversation
+  end
 
-    redirect_to rooms_path, alert: 'Only owner or moderator can update conversation'
+  def authorize_create!
+    authorize Conversation
+  end
+
+  def authorize_update!
+    authorize @conversation
   end
 end

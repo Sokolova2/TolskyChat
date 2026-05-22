@@ -1,12 +1,16 @@
 class UnreadMessagesReminderJob
   include Sidekiq::Job
 
+  REMINDER_DELAY = 30.minutes
+  WINDOW = 10.minutes
+
   def perform(*args)
-    time = 30.minutes.ago
+    upper_bound = REMINDER_DELAY.ago
+    lower_bound = (REMINDER_DELAY + WINDOW).ago
 
     Message
       .where(read: false)
-      .where('created_at <= ?', time)
+      .where(created_at: lower_bound...upper_bound)
       .includes(:room)
       .find_each do |message|
 

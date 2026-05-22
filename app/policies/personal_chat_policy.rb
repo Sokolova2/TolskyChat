@@ -1,0 +1,3 @@
+class PersonalChatPolicy < RoomPolicy
+
+end

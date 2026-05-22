@@ -4,8 +4,9 @@ class RoomsController < ApplicationController
   before_action :authenticate_user!
   before_action :set_rooms, only: %i[index show public_search]
   before_action :set_room, only: %i[show update destroy]
-  before_action :ensure_room_access!, only: :show
-  before_action :ensure_room_owner!, only: %i[update destroy]
+  before_action :authorize_room!, only: %i[show update destroy]
+  before_action :authorize_archive!, only: :archive
+  before_action :authorize_public_search!, only: :public_search
 
   def index
     conversation_set
@@ -88,30 +89,22 @@ class RoomsController < ApplicationController
   end
 
   def set_rooms
-    @rooms = Room
-             .joins(:participants)
-             .where(participants: { user_id: current_user.id })
-             .where(deleted_at: nil)
-             .distinct
+    @rooms = policy_scope(Room)
   end
 
   def set_room
     @room = Room.find(params.expect(:id))
   end
 
-  def ensure_room_owner!
-    participant = @room.participants.find_by(user_id: current_user.id)
-    return if @room.is_a?(PersonalChat) && participant.present?
-
-    return if participant&.owner?
-
-    redirect_to rooms_path, alert: 'Only owner can delete room'
+  def authorize_room!
+    authorize @room
   end
 
-  def ensure_room_access!
-    return unless @room.is_private?
-    return if @room.participants.exists?(user_id: current_user.id)
+  def authorize_archive!
+    authorize Room, :archive?
+  end
 
-    redirect_to rooms_path, alert: 'You do not have access to this private room'
+  def authorize_public_search!
+    authorize Room, :public_search?
   end
 end

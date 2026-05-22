@@ -29,5 +29,5 @@ example_id                                                    | status | run_tim
 ./spec/services/room_service_spec.rb[1:2:1]                   | passed | 0.07407 seconds |
 ./spec/services/search_service_spec.rb[1:1:1]                 | passed | 0.04263 seconds |
 ./spec/sidekiq/archive_cleanup_job_spec.rb[1:1:1]             | passed | 0.01813 seconds |
-./spec/sidekiq/unread_messages_reminder_job_spec.rb[1:1:1]    | passed | 0.28238 seconds |
-./spec/sidekiq/unread_notifications_digest_job_spec.rb[1:1:1] | passed | 0.03046 seconds |
+./spec/sidekiq/unread_messages_reminder_job_spec.rb[1:1:1]    | passed | 0.18079 seconds |
+./spec/sidekiq/unread_notifications_digest_job_spec.rb[1:1:1] | passed | 0.3143 seconds  |
