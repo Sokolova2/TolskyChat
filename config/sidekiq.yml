@@ -14,5 +14,5 @@
     queue: mailers
   arсhive_cleanup:
     cron: '0 3 * * *'
-    class: 'ArсhiveCleanupJob'
+    class: 'ArchiveCleanupJob'
     queue: default
