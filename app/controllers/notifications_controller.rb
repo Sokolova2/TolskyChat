@@ -5,8 +5,12 @@ class NotificationsController < ApplicationController
   before_action :set_contact, only: %i[update destroy reject]
 
   def index
-    @notifications = current_user.receiver_notifications.order(created_at: :desc)
-    @notifications.find_each { |n| n.update!(read: true) }
+    current_user.receiver_notifications.where(read: false).update_all(read: true, updated_at: Time.current)
+
+    @notifications = current_user.receiver_notifications
+                                 .includes(:sender)
+                                 .order(created_at: :desc)
+                                 .limit(20)
 
     NotificationsChannel.broadcast_to(
       current_user,
